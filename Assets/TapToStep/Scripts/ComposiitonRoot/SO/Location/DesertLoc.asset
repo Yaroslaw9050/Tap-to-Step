@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba9dd2cbcbf4d2088e7a1bf69b605ca, type: 3}
+  m_Name: DesertLoc
+  m_EditorClassIdentifier: 
+  StartTransitionPrefab: {fileID: 24215352035938102, guid: bc7c55f5b61bb634fbe2710f8988f92b, type: 3}
+  MiddleLocationPrefab: {fileID: 4452298845154633766, guid: d8668728fcf0b034f91ea143d8e5eeb1, type: 3}
+  EndTransitionPrefab: {fileID: 1042556035260758754, guid: ef3b3af4089c34e499ec7acc451b8614, type: 3}
+  LocationOffset: 46
