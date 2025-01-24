@@ -11,16 +11,25 @@ namespace SO.Location.Logic
         public GameObject EndTransitionPrefab;
 
         public float LocationOffset;
+
+        [Header("MIN mast be less (<) than MAX")]
+        [Range(1, 20)]
+        public int MinElements;
         
-        public Queue<GameObject> GetLocations(int length)
+        [Range(1, 100)]
+        public int MaxElements;
+        
+        public Queue<GameObject> GetLocations()
         {
-            if (length <= 0)
+            if (MinElements >= MaxElements)
             {
-                Debug.LogError("Location length equal 0! You can't use this!");
+                Debug.LogError("Min elements mast be less than max elements!");
                 return new Queue<GameObject>(0);
             }
 
-            var elementsQueue = new Queue<GameObject>(length + 2);
+            var length = Random.Range(MinElements, MaxElements);
+
+            var elementsQueue = new Queue<GameObject>( length + 2);
             
             elementsQueue.Enqueue(StartTransitionPrefab);
             for (var i = 0; i < length; i++)

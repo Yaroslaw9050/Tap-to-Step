@@ -5,6 +5,6 @@ namespace SO.Location.Logic
 {
     public interface ILocation
     {
-        public Queue<GameObject> GetLocations(int length);
+        public Queue<GameObject> GetLocations();
     }
 }

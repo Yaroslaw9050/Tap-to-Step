@@ -13,10 +13,6 @@ namespace Runtime.Service.LocationGenerator
         [SerializeField] private List<SwitchedLocationSO> _supportedLocationPull;
         [SerializeField] private Transform _locationParent;
         
-        [Header("Generation Settings")]
-        [Range(1, 100)]
-        [SerializeField] private int _maxLocationLength = 1;
-        
         private List<GameObject> _locationElementHoldersPull;
         private Vector3 _locationGenerationPoint;
         private bool _isFirstGeneration = true;
@@ -40,7 +36,7 @@ namespace Runtime.Service.LocationGenerator
 
         private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, int millisDelay = 500)
         {
-            var elementQueue = locationSo.GetLocations(_maxLocationLength);
+            var elementQueue = locationSo.GetLocations();
             var startLocationSpawnPosition = _locationGenerationPoint;
             var locationElementsHolder = new GameObject($"{nameof(locationSo)}");
             locationElementsHolder.transform.SetParent(_locationParent);
