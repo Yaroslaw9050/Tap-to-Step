@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace Runtime.Service.LocationGenerator
 {
-    public class LocationGenerator: MonoBehaviour, ILocationGenerator
+    public class LocationBuilder: MonoBehaviour, ILocationGenerator
     {
         [Header("Locations")]
         [SerializeField] private List<SwitchedLocationSO> _supportedLocationPull;
