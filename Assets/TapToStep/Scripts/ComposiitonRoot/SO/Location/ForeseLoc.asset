@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba9dd2cbcbf4d2088e7a1bf69b605ca, type: 3}
+  m_Name: ForeseLoc
+  m_EditorClassIdentifier: 
+  StartTransitionPrefab: {fileID: 1743815544390950078, guid: cec00f1e2baf745709604f25144a2d20, type: 3}
+  MiddleLocationPrefab: {fileID: 1743815544390950078, guid: 7a3002dda636c4b038516e18e56afe6f, type: 3}
+  EndTransitionPrefab: {fileID: 1743815544390950078, guid: e42db178e17d64e6f939984949fb4f92, type: 3}
+  LocationOffset: 46
