@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Runtime.Builders.Location;
@@ -16,7 +17,12 @@ namespace Runtime.Service.LocationGenerator
         private List<GameObject> _locationElementHoldersPull;
         private Vector3 _locationGenerationPoint;
         private bool _isFirstGeneration = true;
-        
+
+        private void Start()
+        {
+            GenerateNewLocationAsync().Forget();
+        }
+
         public async UniTask GenerateNewLocationAsync()
         {
             var randomLocationIndex = Random.Range(0, _supportedLocationPull.Count);
