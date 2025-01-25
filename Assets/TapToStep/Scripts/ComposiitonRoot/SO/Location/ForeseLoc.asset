@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba9dd2cbcbf4d2088e7a1bf69b605ca, type: 3}
   m_Name: ForeseLoc
   m_EditorClassIdentifier: 
-  StartTransitionPrefab: {fileID: 1743815544390950078, guid: cec00f1e2baf745709604f25144a2d20, type: 3}
-  MiddleLocationPrefab: {fileID: 1743815544390950078, guid: 7a3002dda636c4b038516e18e56afe6f, type: 3}
-  EndTransitionPrefab: {fileID: 1743815544390950078, guid: e42db178e17d64e6f939984949fb4f92, type: 3}
+  StartTransitionPrefab: {fileID: 2959863770337690830, guid: 8f8add41c45c1064dab74cdd8519ff16, type: 3}
+  MiddleLocationPrefabs:
+  - {fileID: 356171701614122504, guid: 88dd00f6624b58645a2199bf03fccde5, type: 3}
+  - {fileID: 1709829785413703730, guid: 2fc0f90d71e1eef449405bfefdaa53e9, type: 3}
+  EndTransitionPrefab: {fileID: 2477069774198562226, guid: 8e0f1c7ccd45ed546afced900dd5de6d, type: 3}
   LocationOffset: 46
+  MinElements: 2
+  MaxElements: 6
