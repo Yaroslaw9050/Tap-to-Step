@@ -34,9 +34,16 @@ namespace Runtime.Player
             var screenPosition = context.ReadValue<Vector2>();
             
             float screenWidth = Screen.width;
+            float screenHeight = Screen.height;
+
+            var upperLimit = screenHeight * 0.75f;
+            var bottomLimit = screenHeight * 0.1f;
             
             var leftBound = screenWidth * 0.25f;
             var rightBound = screenWidth * 0.75f;
+            
+            if(screenPosition.y < bottomLimit || screenPosition.y > upperLimit) 
+                return;
             
             if (screenPosition.x < leftBound)
             {
