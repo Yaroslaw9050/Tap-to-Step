@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba9dd2cbcbf4d2088e7a1bf69b605ca, type: 3}
   m_Name: DesertLoc
   m_EditorClassIdentifier: 
-  StartTransitionPrefab: {fileID: 24215352035938102, guid: bc7c55f5b61bb634fbe2710f8988f92b, type: 3}
-  MiddleLocationPrefab: {fileID: 4452298845154633766, guid: d8668728fcf0b034f91ea143d8e5eeb1, type: 3}
-  EndTransitionPrefab: {fileID: 1042556035260758754, guid: ef3b3af4089c34e499ec7acc451b8614, type: 3}
+  StartTransitionPrefab: {fileID: 696043237896002005, guid: d17588616e3950c48824bdaddccafd93, type: 3}
+  MiddleLocationPrefabs:
+  - {fileID: 4136633589679986220, guid: 7e8d1c630225c50429fadc9489da45e5, type: 3}
+  EndTransitionPrefab: {fileID: 3903392615988023582, guid: 3addbcfb692301b468bb716a8ef2b6d7, type: 3}
   LocationOffset: 46
+  MinElements: 1
+  MaxElements: 4
