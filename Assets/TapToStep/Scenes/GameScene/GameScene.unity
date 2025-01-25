@@ -226,8 +226,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d1865ee3ce1485283f636395f49e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _backgroundPrefab: {fileID: 0}
   _supportedLocationPull:
-  - {fileID: 11400000, guid: 2cba166d8f39042bd97e1ea1befaacc0, type: 2}
+  - {fileID: 11400000, guid: 0b7a2b8fffdce4d4bb2906d6b4248e12, type: 2}
   - {fileID: 11400000, guid: 2cba166d8f39042bd97e1ea1befaacc0, type: 2}
   _locationParent: {fileID: 136312642}
 --- !u!1 &1754383584
