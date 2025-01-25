@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using CompositionRoot.SO.Location.Logic;
 using Cysharp.Threading.Tasks;
 using Runtime.Builders.Location;
-using SO.Location.Logic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,11 +23,6 @@ namespace Runtime.Service.LocationGenerator
         
         private const int BACKGROUND_OFFSET = 1000;
 
-        private void Start()
-        {
-            GenerateNewLocationAsync().Forget();
-        }
-
         public async UniTask GenerateNewLocationAsync()
         {
             var randomLocationIndex = Random.Range(0, _supportedLocationPull.Count);
@@ -37,6 +30,7 @@ namespace Runtime.Service.LocationGenerator
             if (_isFirstGeneration)
             {
                 _isFirstGeneration = !_isFirstGeneration;
+                await CreateBackgroundAsync();
                 await CreateBackgroundAsync();
                 await CreateLocationAsync(_supportedLocationPull[0], 20);
                 await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], 20);
@@ -83,11 +77,10 @@ namespace Runtime.Service.LocationGenerator
 
         private async UniTask CreateBackgroundAsync()
         {
-            if(_backgroundPrefab == null) return;
-            
             var spawnPosition = Vector3.forward * (BACKGROUND_OFFSET * _backgroundCounter);
             _backgroundCounter++;
             var temp = Instantiate(_backgroundPrefab, spawnPosition, Quaternion.identity);
+            temp.transform.SetParent(_locationParent);
             r_backgroundElementHoldersPull.Add(temp);
             await UniTask.NextFrame();
         }

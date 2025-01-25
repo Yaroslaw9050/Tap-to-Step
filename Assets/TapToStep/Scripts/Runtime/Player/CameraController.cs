@@ -1,0 +1,93 @@
+using System;
+using DG.Tweening;
+using UnityEngine;
+
+namespace Runtime.Player
+{
+    public class CameraController : MonoBehaviour
+    {
+        [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private Camera _camera;
+
+        private PlayerEntryPoint _entryPoint;
+        private Tween _cameraTurnTween;
+        
+        private float _currentRotationY;
+        
+        private const float CAMERA_LIFT_AMOUNT = 0.05f;
+
+        public void Init(PlayerEntryPoint playerEntryPoint)
+        {
+            _entryPoint = playerEntryPoint;
+            _entryPoint.EventHandler.OnPlayerStartMoving += MoveLikeStep;
+            _entryPoint.EventHandler.OnPlayerDied += MoveToDeadPosition;
+            
+            //LookAt(CameraTargetType.OnFloor);
+        }
+        
+        private void MoveLikeStep()
+        {
+            var setting = _entryPoint.PlayerSettingSo;
+            var firstHalfCamPosition = _cameraTransform.localPosition.z + CAMERA_LIFT_AMOUNT;
+            var secondHalfCamPosition = firstHalfCamPosition - CAMERA_LIFT_AMOUNT;
+            var halfStepTime = setting.StepTime / 2;
+
+            _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
+            {
+                _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
+            });
+        }
+        
+        private void MoveToDeadPosition()
+        {
+            var camPosition = new Vector3(_cameraTransform.position.x, 0.15f, _cameraTransform.position.z);
+            _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
+        }
+        
+        public void LookAt(CameraTargetType cameraTargetType, float animTime = 0, Action onCompleted = null)
+        {
+            if (_cameraTurnTween != null && _cameraTurnTween.IsActive() && !_cameraTurnTween.IsComplete()) return;
+
+            switch (cameraTargetType)
+            {
+                case CameraTargetType.Forward:
+                    TurnCameraForward(animTime, onCompleted);
+                    _camera.DOFieldOfView(136, animTime);
+                    break;
+                case CameraTargetType.OnFloor:
+                    TurnCameraToGround(animTime, onCompleted);
+                    _camera.DOFieldOfView(90f, animTime);
+                    break;
+                case CameraTargetType.Backward:
+                    TurnCameraBackward(animTime, onCompleted);
+                    _camera.DOFieldOfView(136, animTime);
+                    break;
+            }
+        }
+
+        private void TurnCameraToGround(float duration, Action onCompleted)
+        {
+            var rotationValue = Vector3.right * 60f;
+            _cameraTurnTween = _cameraTransform.DOLocalRotate(rotationValue, duration).SetEase(Ease.InOutCubic).OnComplete(() => onCompleted?.Invoke());
+        }
+
+        private void TurnCameraForward(float duration, Action onCompleted)
+        {
+            var rotationValue = Vector3.zero;
+            _cameraTurnTween = _cameraTransform.DOLocalRotate(rotationValue, duration).SetEase(Ease.InOutCubic).OnComplete(() => onCompleted?.Invoke());
+        }
+        
+        private void TurnCameraBackward(float duration, Action onCompleted)
+        {
+            var rotationValue = Vector3.up * -180f;
+            _cameraTurnTween = _cameraTransform.DOLocalRotate(rotationValue, duration).SetEase(Ease.InOutCubic).OnComplete(() => onCompleted?.Invoke());
+        }
+    }
+
+    public enum CameraTargetType
+    {
+        Forward,
+        Backward,
+        OnFloor 
+    }
+}

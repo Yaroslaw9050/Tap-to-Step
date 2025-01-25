@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/TapToStep/Scenes/GameScene/GameScene.unity
+    guid: a2b1a8752b29240e0a4c18ef9053dcd3
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 93415678037164f15a2ee2c30317cba3, type: 3}
   m_UseUCBPForAssetBundles: 0

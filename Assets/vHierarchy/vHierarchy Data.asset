@@ -15,16 +15,53 @@ MonoBehaviour:
   sceneDatas_byGuid:
     keys:
     - a2b1a8752b29240e0a4c18ef9053dcd3
+    - 5de166b0fa7b744098c07f21deab1f5f
     values:
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-112605598-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-136312641-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1149702568-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1579732900-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1734320278-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
         - colorIndex: 0
           iconNameOrGuid: Terrain Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: Favorite
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-8992320910516185413-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-6386293572317870900-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-7899622829506906632-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-5278147590244681802-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-952299561143674194-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-4759629779287785581-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-3281833266806503976-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-7372276395163744659-0
+        - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-2030170424231369678-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: Camera Icon
+        - colorIndex: 0
+          iconNameOrGuid: AvatarMask On Icon
+        - colorIndex: 0
+          iconNameOrGuid: Favorite
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: LightProbes Icon
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using SO.Location.Logic;
 using UnityEngine;
 
-namespace SO.Location.Logic
+namespace CompositionRoot.SO.Location.Logic
 {
     [CreateAssetMenu(fileName = "LocationSO", menuName = "Location/SwitchedLocation", order = 1)]
     public class SwitchedLocationSO : ScriptableObject, ILocation
