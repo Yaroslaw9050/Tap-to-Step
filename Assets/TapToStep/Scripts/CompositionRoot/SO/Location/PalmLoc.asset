@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba9dd2cbcbf4d2088e7a1bf69b605ca, type: 3}
+  m_Name: PalmLoc
+  m_EditorClassIdentifier: 
+  StartTransitionPrefab: {fileID: 8153438711745493506, guid: 85dab177a6e0be342ba8ec16a96d5e26, type: 3}
+  MiddleLocationPrefabs:
+  - {fileID: 5338482404773840935, guid: b75e37ca1b106f94ca01a4c9daf857ad, type: 3}
+  EndTransitionPrefab: {fileID: 7883815834250201622, guid: dd4af8f04d484a44e8973f698d09019f, type: 3}
+  LocationOffset: 46
+  MinElements: 2
+  MaxElements: 3

@@ -16,6 +16,10 @@ MonoBehaviour:
     keys:
     - a2b1a8752b29240e0a4c18ef9053dcd3
     - 5de166b0fa7b744098c07f21deab1f5f
+    - 8f8add41c45c1064dab74cdd8519ff16
+    - 88dd00f6624b58645a2199bf03fccde5
+    - 2fc0f90d71e1eef449405bfefdaa53e9
+    - 8e0f1c7ccd45ed546afced900dd5de6d
     values:
     - goDatas_byGlobalId:
         keys:
@@ -24,6 +28,13 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1149702568-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1579732900-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1734320278-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-236532894-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-2010184776-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-940034998-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1322196253-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-349532906-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1869589376-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-897158546-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
@@ -35,6 +46,20 @@ MonoBehaviour:
           iconNameOrGuid: cs Script Icon
         - colorIndex: 0
           iconNameOrGuid: Favorite
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-8992320910516185413-0
@@ -65,3 +90,54 @@ MonoBehaviour:
           iconNameOrGuid: LightProbes Icon
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-8f8add41c45c1064dab74cdd8519ff16-534574820301534922-0
+        - globalObjectIdString: GlobalObjectId_V1-1-8f8add41c45c1064dab74cdd8519ff16-8107504641170321059-0
+        - globalObjectIdString: GlobalObjectId_V1-1-8f8add41c45c1064dab74cdd8519ff16-1415066990191107209-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-88dd00f6624b58645a2199bf03fccde5-2343840011891004977-0
+        - globalObjectIdString: GlobalObjectId_V1-1-88dd00f6624b58645a2199bf03fccde5-8968276403183097281-0
+        - globalObjectIdString: GlobalObjectId_V1-1-88dd00f6624b58645a2199bf03fccde5-6300089897560903256-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-2fc0f90d71e1eef449405bfefdaa53e9-2737227857521375862-0
+        - globalObjectIdString: GlobalObjectId_V1-1-2fc0f90d71e1eef449405bfefdaa53e9-5995939064914374330-0
+        - globalObjectIdString: GlobalObjectId_V1-1-2fc0f90d71e1eef449405bfefdaa53e9-0-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-8e0f1c7ccd45ed546afced900dd5de6d-6635391812894873533-0
+        - globalObjectIdString: GlobalObjectId_V1-1-8e0f1c7ccd45ed546afced900dd5de6d-103733116508163313-0
+        - globalObjectIdString: GlobalObjectId_V1-1-8e0f1c7ccd45ed546afced900dd5de6d-8545611951991985304-0
+        - globalObjectIdString: GlobalObjectId_V1-1-8e0f1c7ccd45ed546afced900dd5de6d-0-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon

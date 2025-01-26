@@ -1,5 +1,5 @@
 using System;
-using TapToStep.Scripts.Runtime.Obstacles;
+using Runtime.InteractedObjects.Obstacles;
 using UnityEngine.EventSystems;
 
 namespace Runtime.Player

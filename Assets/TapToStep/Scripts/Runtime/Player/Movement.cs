@@ -1,7 +1,7 @@
 using System;
 using DG.Tweening;
 using InputActions;
-using TapToStep.Scripts.Runtime.Obstacles;
+using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
