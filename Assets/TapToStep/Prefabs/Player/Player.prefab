@@ -233,7 +233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1b8dc249841b4ec59a558ff075c4378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerSettingSo: {fileID: 11400000, guid: d59ad5ea60a464aa1b19c664b4ea6bfb, type: 2}
   _cameraController: {fileID: 1589377371684194065}
   _movement: {fileID: 7953108650998189919}
   _screenCaster: {fileID: 7749972876994611380}

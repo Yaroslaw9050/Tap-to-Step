@@ -1,4 +1,5 @@
 using CompositionRoot.SO.Player.Logic;
+using Core.Extension;
 using DG.Tweening;
 using MPUIKIT;
 using Runtime.EntryPoints.EventHandlers;
@@ -11,6 +12,7 @@ namespace UI.Views
     public class GameView : MonoBehaviour
     {
         [Header("Base")]
+        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TextMeshProUGUI _distanceText;
         [SerializeField] private Button _toMenuButton;
 
@@ -34,6 +36,16 @@ namespace UI.Views
             _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
             _coinsText.SetText(ConvertToCoin(_playerSetting.Coins));
             _energyLine.fillAmount = 1f;
+        }
+
+        public void ShowView()
+        {
+            _canvasGroup.SetActive(true, 0.5f);
+        }
+
+        public void HideView()
+        {
+            _canvasGroup.SetActive(false, 0.5f);
         }
 
         private void OnPlayerStartMoving()

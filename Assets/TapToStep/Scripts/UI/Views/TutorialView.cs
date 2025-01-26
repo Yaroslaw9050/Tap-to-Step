@@ -8,13 +8,13 @@ namespace UI.Views
         [SerializeField] private CanvasGroup _canvasGroup;
         private bool _isTutorialActive = false;
         
-        public void ActivateTutorial()
+        public void ShowView()
         {
             _isTutorialActive = true;
             _canvasGroup.alpha = 0.2f;
         }
 
-        public void DeactivateTutorial()
+        public void HideView()
         {
             if(_isTutorialActive == false) return;
             

@@ -29,8 +29,7 @@ namespace Runtime.Player
             
             _cameraController.Init(this);
             _movement.Init(this);
-            _screenCaster.Init(this);
-            _screenCaster.ActivateControl();
+            _screenCaster.Init(this, globalEventHandler);
             _interactionTrigger.Initialize(_playerEventHandler);
         }
     }

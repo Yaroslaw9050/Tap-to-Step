@@ -21,15 +21,25 @@ namespace UI.Views
             _playerSettingSo = playerSetting;
             _globalEventHandler = globalEventHandler;
             _gameView.Init(_globalEventHandler, playerSetting);
+            _deadView.Init();
             
-            _tutorialView.ActivateTutorial();
+            _tutorialView.ShowView();
+            _gameView.ShowView();
+            _deadView.HideView();
             
             _globalEventHandler.OnPlayerStartMoving += PlayerStartMoving;
+            _globalEventHandler.OnPlayerDied += OnPlayerDied;
         }
 
         private void PlayerStartMoving()
         {
-            _tutorialView.DeactivateTutorial();
+            _tutorialView.HideView();
+        }
+
+        private void OnPlayerDied()
+        {
+            _gameView.HideView();
+            _deadView.ShowView();
         }
     }
 }

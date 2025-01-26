@@ -52,8 +52,8 @@ namespace Runtime.Player
                     TurnCameraForward(animTime, onCompleted);
                     _camera.DOFieldOfView(136, animTime);
                     break;
-                case CameraTargetType.OnFloor:
-                    TurnCameraToGround(animTime, onCompleted);
+                case CameraTargetType.Up:
+                    TurnCameraToUp(animTime, onCompleted);
                     _camera.DOFieldOfView(90f, animTime);
                     break;
                 case CameraTargetType.Backward:
@@ -63,9 +63,9 @@ namespace Runtime.Player
             }
         }
 
-        private void TurnCameraToGround(float duration, Action onCompleted)
+        private void TurnCameraToUp(float duration, Action onCompleted)
         {
-            var rotationValue = Vector3.right * 60f;
+            var rotationValue = Vector3.left * 60f;
             _cameraTurnTween = _cameraTransform.DOLocalRotate(rotationValue, duration).SetEase(Ease.InOutCubic).OnComplete(() => onCompleted?.Invoke());
         }
 
@@ -86,6 +86,6 @@ namespace Runtime.Player
     {
         Forward,
         Backward,
-        OnFloor 
+        Up 
     }
 }

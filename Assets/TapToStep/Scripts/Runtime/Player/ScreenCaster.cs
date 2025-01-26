@@ -1,5 +1,6 @@
 using System;
 using InputActions;
+using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,28 +11,38 @@ namespace Runtime.Player
     {
         private TouchInputAction _inputAction;
         private PlayerEntryPoint _entryPoint;
+        private GlobalEventHandler _globalEventHandler;
 
-        public void ActivateControl()
+        public void Init(PlayerEntryPoint entryPoint, GlobalEventHandler globalEventHandler)
+        {
+            _entryPoint = entryPoint;
+            _globalEventHandler = globalEventHandler;
+            
+            _inputAction = new TouchInputAction();
+            _inputAction.GameTouch.Tap.performed += TapPrefer;
+            _globalEventHandler.OnPlayerDied += OnPlayerDied;
+
+
+            ActivateControl();
+        }
+
+        private void ActivateControl()
         {
             _inputAction.Enable();
         }
 
-        public void DeactivateControl()
+        private void DeactivateControl()
         {
             _inputAction.Disable();
         }
 
-        public void Init(PlayerEntryPoint entryPoint)
+        private void OnPlayerDied()
         {
-            _entryPoint = entryPoint;
-            
-            _inputAction = new TouchInputAction();
-            _inputAction.GameTouch.Tap.performed += TapPrefer;
+            DeactivateControl();
         }
 
         private void TapPrefer(InputAction.CallbackContext context)
         {
-            Debug.Log("Touched to screen!");
             var screenPosition = context.ReadValue<Vector2>();
             
             float screenWidth = Screen.width;

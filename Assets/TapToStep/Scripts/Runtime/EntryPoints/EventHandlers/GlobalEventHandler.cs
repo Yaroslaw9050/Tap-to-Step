@@ -20,7 +20,7 @@ namespace Runtime.EntryPoints.EventHandlers
 
         public void InvokeOnPlayerDied()
         {
-            
+            OnPlayerDied?.Invoke();
         }
     }
 }
