@@ -1,0 +1,26 @@
+using System;
+
+namespace Runtime.EntryPoints.EventHandlers
+{
+    public class GlobalEventHandler
+    {
+        public event Action<int> OnCollectablesChanged;
+        public event Action OnPlayerStartMoving;
+        public event Action OnPlayerDied;
+
+        public void InvokeOnCollectablesChanged(int value)
+        {
+            OnCollectablesChanged?.Invoke(value);
+        }
+        
+        public void InvokeOnPlayerStartMoving()
+        {
+            OnPlayerStartMoving?.Invoke();
+        }
+
+        public void InvokeOnPlayerDied()
+        {
+            
+        }
+    }
+}

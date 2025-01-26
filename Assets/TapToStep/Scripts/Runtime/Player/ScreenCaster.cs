@@ -31,6 +31,7 @@ namespace Runtime.Player
 
         private void TapPrefer(InputAction.CallbackContext context)
         {
+            Debug.Log("Touched to screen!");
             var screenPosition = context.ReadValue<Vector2>();
             
             float screenWidth = Screen.width;
@@ -47,15 +48,15 @@ namespace Runtime.Player
             
             if (screenPosition.x < leftBound)
             {
-                _entryPoint.EventHandler.MoveButtonTouched(MoveDirection.Left);
+                _entryPoint.PlayerEventHandler.InvokeMoveButtonTouched(MoveDirection.Left);
             }
             else if (screenPosition.x > rightBound)
             {
-                _entryPoint.EventHandler.MoveButtonTouched(MoveDirection.Right);
+                _entryPoint.PlayerEventHandler.InvokeMoveButtonTouched(MoveDirection.Right);
             }
             else
             {
-                _entryPoint.EventHandler.MoveButtonTouched(MoveDirection.Up);
+                _entryPoint.PlayerEventHandler.InvokeMoveButtonTouched(MoveDirection.Up);
             }
         }
     }

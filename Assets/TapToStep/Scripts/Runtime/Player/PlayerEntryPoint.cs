@@ -1,41 +1,37 @@
 using CompositionRoot.SO.Player.Logic;
 using Runtime.Builders.Location;
+using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 
 namespace Runtime.Player
 {
     public class PlayerEntryPoint : MonoBehaviour
     {
-        [SerializeField] private PlayerSettingSO _playerSettingSo;
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Movement _movement;
         [SerializeField] private ScreenCaster _screenCaster;
-        //[SerializeField] private InteractionTriggerHolder _interactionTrigger;
-        //[SerializeField] private PlayerViewsHolder _viewsHolder;
-        private EventHandler _eventHandler;
-
+        [SerializeField] private InteractionTriggerHolder _interactionTrigger;
+        
+        private PlayerEventHandler _playerEventHandler;
         private ILocationGenerator _locationGenerator;
-        //private ISceneLoader _sceneLoader;
+        private PlayerSettingSO _playerSetting;
         
         public ScreenCaster ScreenCaster => _screenCaster;
-        public EventHandler EventHandler => _eventHandler;
-        public PlayerSettingSO PlayerSettingSo => _playerSettingSo;
-
+        public PlayerEventHandler PlayerEventHandler => _playerEventHandler;
+        public PlayerSettingSO PlayerSettingSo => _playerSetting;
         public ILocationGenerator LocationGenerator => _locationGenerator;
-        //public InteractionTriggerHolder InteractionTrigger => _interactionTrigger;
-        //public ISceneLoader SceneLoader => _sceneLoader;
+        public InteractionTriggerHolder InteractionTrigger => _interactionTrigger;
 
-        public void Init()
+        public void Init(GlobalEventHandler globalEventHandler, PlayerSettingSO playerSetting)
         {
-            _eventHandler = new EventHandler();
+            _playerSetting = playerSetting;
+            _playerEventHandler = new PlayerEventHandler(this, globalEventHandler);
             
             _cameraController.Init(this);
             _movement.Init(this);
             _screenCaster.Init(this);
             _screenCaster.ActivateControl();
-            //_sceneLoader = sceneLoader;
-            //_interactionTrigger.Initialize(locationGenerator, _eventHandler);
-            //_viewsHolder.Initialise(viewService, _cameraRotation);
+            _interactionTrigger.Initialize(_playerEventHandler);
         }
     }
 }

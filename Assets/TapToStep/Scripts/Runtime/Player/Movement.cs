@@ -1,7 +1,6 @@
 using System;
 using DG.Tweening;
 using InputActions;
-using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -26,15 +25,15 @@ namespace Runtime.Player
             _canMove = true;
             
             _entryPoint = entryPoint;
-            _entryPoint.EventHandler.OnMoveButtonTouched += MoveAfterTouch;
-            _entryPoint.EventHandler.OnTouchedToObstacle += TouchedToObstacle;
+            _entryPoint.PlayerEventHandler.OnMoveButtonTouched += MoveAfterTouch;
+            _entryPoint.PlayerEventHandler.OnPlayerDied += OnPlayerDied;
         }
 
         private void MoveAfterTouch(MoveDirection moveDirection)
         {
             if (_movementTween != null && _movementTween.IsActive() && !_movementTween.IsComplete()) return;
             if(_canMove == false) return;
-            _entryPoint.EventHandler.StartMoving();
+            
             MakeStep(moveDirection);
         }
 
@@ -49,31 +48,26 @@ namespace Runtime.Player
             _playerRoot.DOMoveX(newSlidePosition, setting.StepTime).SetEase(Ease.InOutFlash);
 
             setting.Distance += setting.StepDistance;
+            _entryPoint.PlayerEventHandler.InvokeStartMoving();
         }
 
         private float GetOffsetByDirection(MoveDirection moveDirection)
         {
             return moveDirection switch
             {
-                MoveDirection.Left => -0.5f,
+                MoveDirection.Left => -0.75f,
                 MoveDirection.Up => 0f,
-                MoveDirection.Right => 0.5f,
+                MoveDirection.Right => 0.75f,
                 MoveDirection.Down => 0f,
                 MoveDirection.None => 0f,
                 _ => 0f
             };
         }
 
-        private void TouchedToObstacle(ObstacleType obstacleType)
+        private void OnPlayerDied()
         {
-            switch (obstacleType)
-            {
-                case ObstacleType.OneTouch:
-                    _canMove = false;
-                    _movementTween.Pause();
-                    _entryPoint.EventHandler.Died();
-                    break;
-            }
+            _movementTween?.Kill();
+            _canMove = false;
         }
     }
 }

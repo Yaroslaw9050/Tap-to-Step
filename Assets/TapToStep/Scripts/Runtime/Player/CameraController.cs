@@ -19,10 +19,8 @@ namespace Runtime.Player
         public void Init(PlayerEntryPoint playerEntryPoint)
         {
             _entryPoint = playerEntryPoint;
-            _entryPoint.EventHandler.OnPlayerStartMoving += MoveLikeStep;
-            _entryPoint.EventHandler.OnPlayerDied += MoveToDeadPosition;
-            
-            //LookAt(CameraTargetType.OnFloor);
+            _entryPoint.PlayerEventHandler.OnPlayerStartMoving += MoveLikeStep;
+            _entryPoint.PlayerEventHandler.OnPlayerDied += MoveToDeadPosition;
         }
         
         private void MoveLikeStep()
@@ -40,7 +38,7 @@ namespace Runtime.Player
         
         private void MoveToDeadPosition()
         {
-            var camPosition = new Vector3(_cameraTransform.position.x, 0.15f, _cameraTransform.position.z);
+            var camPosition = new Vector3(_cameraTransform.position.x, 0.2f, _cameraTransform.position.z);
             _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
         }
         

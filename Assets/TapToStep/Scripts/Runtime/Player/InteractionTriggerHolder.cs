@@ -1,35 +1,39 @@
-using Runtime.Builders.Location;
+using Runtime.InteractedObjects.Collectables;
+using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
 
 namespace Runtime.Player
 {
     public class InteractionTriggerHolder : MonoBehaviour
     {
-        private ILocationGenerator _locationGenerator;
-        private EventHandler _eventHandler;
+        private PlayerEventHandler _playerEventHandler;
 
-        public void Initialize(ILocationGenerator locationGenerator, EventHandler eventHandler)
+        public void Initialize(PlayerEventHandler playerEventHandler)
         {
-            _locationGenerator = locationGenerator;
-            _eventHandler = eventHandler;
+            _playerEventHandler = playerEventHandler;
         }
         
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Interaction"))
             {
-                // if (other.TryGetComponent<LocationEndTrigger>(out _))
-                // {
-                //     _locationGenerator.GenerateNewLocationAsync();
-                //     return;
-                // }
-                //
-                // if (other.TryGetComponent<Obstacle>(out var element))
-                // {
-                //     _eventHandler.TouchedToObstacle(element.ObstacleType);
-                //     Debug.Log($"Touched to obstacle by type: {element.ObstacleType}");
-                //     return;
-                // }
+                if (other.TryGetComponent<Coin>(out var coin))
+                {
+                    _playerEventHandler.InvokeTouchedToCollectables(coin.Value);
+                    coin.Collect();
+                    return;
+                }
+
+                if (other.TryGetComponent<Obstacle>(out var obstacle))
+                {
+                    switch (obstacle.ObstacleType)
+                    {
+                        case ObstacleType.OneTouch:
+                            obstacle.Collect();
+                            _playerEventHandler.InvokeDied();
+                            break;
+                    }
+                }
             }
         }
     }
