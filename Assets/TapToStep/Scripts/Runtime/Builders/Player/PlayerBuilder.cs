@@ -1,3 +1,4 @@
+using System;
 using CompositionRoot.SO.Player.Logic;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
@@ -22,6 +23,12 @@ public class PlayerBuilder : MonoBehaviour
     }
 
     private void OnDestroy()
+    {
+        _playerEntryPoint.Destruct();
+        Debug.Log("Called Destroy!");
+    }
+
+    private void OnApplicationQuit()
     {
         _playerSettingSo.SaveToMemory();
     }

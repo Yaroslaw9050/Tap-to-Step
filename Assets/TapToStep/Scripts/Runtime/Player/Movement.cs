@@ -29,6 +29,12 @@ namespace Runtime.Player
             _entryPoint.PlayerEventHandler.OnPlayerDied += OnPlayerDied;
         }
 
+        public void Destruct()
+        {
+            _entryPoint.PlayerEventHandler.OnMoveButtonTouched -= MoveAfterTouch;
+            _entryPoint.PlayerEventHandler.OnPlayerDied -= OnPlayerDied;
+        }
+
         private void MoveAfterTouch(MoveDirection moveDirection)
         {
             if (_movementTween != null && _movementTween.IsActive() && !_movementTween.IsComplete()) return;

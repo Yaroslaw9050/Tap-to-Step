@@ -11,13 +11,14 @@ namespace Runtime.Player
         public void Initialize(PlayerEventHandler playerEventHandler)
         {
             _playerEventHandler = playerEventHandler;
+            
         }
         
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Interaction"))
             {
-                if (other.TryGetComponent<Coin>(out var coin))
+                if (other.TryGetComponent<Bit>(out var coin))
                 {
                     _playerEventHandler.InvokeTouchedToCollectables(coin.Value);
                     coin.Collect();

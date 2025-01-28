@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace TapToStep.Scripts.Runtime.Builders.Coins
 {
-    public class CoinBuilder : MonoBehaviour
+    public class BitBuilder : MonoBehaviour
     {
-        [SerializeField] private Coin[] _coinsPrefabPull;
+        [SerializeField] private Bit[] _coinsPrefabPull;
         [SerializeField] private Transform _coinSpawnPointHolder;
         [SerializeField] private float _yOffset;
         

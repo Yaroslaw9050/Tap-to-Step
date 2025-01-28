@@ -8,6 +8,8 @@ namespace Runtime.EntryPoints.EventHandlers
         public event Action OnPlayerStartMoving;
         public event Action OnPlayerDied;
 
+        public event Action OnUiElementClicked;
+
         public void InvokeOnCollectablesChanged(int value)
         {
             OnCollectablesChanged?.Invoke(value);
@@ -21,6 +23,11 @@ namespace Runtime.EntryPoints.EventHandlers
         public void InvokeOnPlayerDied()
         {
             OnPlayerDied?.Invoke();
+        }
+
+        public void InvokeOnUiElementClicked()
+        {
+            OnUiElementClicked?.Invoke();
         }
     }
 }
