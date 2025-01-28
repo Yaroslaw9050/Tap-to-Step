@@ -32,11 +32,6 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _audioController.Destruct();
         }
 
-        private void OnApplicationQuit()
-        {
-            _audioController.Destruct();
-        }
-
         private void SetupGraphicSetting()
         {
             Application.targetFrameRate = 60;
