@@ -1,4 +1,5 @@
 using Core.Extension;
+using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,10 +13,15 @@ namespace UI.Views
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _continueButton;
 
-        public void Init()
+        private GlobalEventHandler _globalEventHandler;
+        
+        public void Init(GlobalEventHandler globalEventHandler)
         {
+            _globalEventHandler = globalEventHandler;
+            
             _restartButton.onClick.AddListener(() =>
             {
+                _globalEventHandler.InvokeOnUiElementClicked();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             });
         }

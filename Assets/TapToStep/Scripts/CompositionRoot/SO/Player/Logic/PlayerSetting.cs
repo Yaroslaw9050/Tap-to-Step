@@ -5,7 +5,7 @@ namespace CompositionRoot.SO.Player.Logic
     [CreateAssetMenu(fileName = "PlayerSettingSO", menuName = "Player/Parameters", order = 1)]
     public class PlayerSettingSO : ScriptableObject
     {
-        [SerializeField] private int  _coins = 0;
+        [SerializeField] private int  _bits = 0;
         [SerializeField] private float _stepDistance = 1;
         [SerializeField] private float _stepTime = 1;
         [SerializeField] private float _distance;
@@ -13,14 +13,14 @@ namespace CompositionRoot.SO.Player.Logic
 
         public float StepTime => _stepTime;
 
-        public int Coins
+        public int Bits
         {
-            get => _coins;
+            get => _bits;
             set
             {
                 if (value > 0)
                 {
-                    _coins = value;
+                    _bits = value;
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace CompositionRoot.SO.Player.Logic
             PlayerPrefs.SetFloat("Distance", _distance);
             PlayerPrefs.SetFloat("StepTime", _stepTime);
             PlayerPrefs.SetFloat("StepDistance", _stepDistance);
-            PlayerPrefs.SetInt("Coins", _coins);
+            PlayerPrefs.SetInt("Bits", _bits);
             PlayerPrefs.Save();
         }
 
@@ -53,7 +53,7 @@ namespace CompositionRoot.SO.Player.Logic
             PlayerPrefs.GetFloat("Distance", _distance);
             PlayerPrefs.GetFloat("StepTime", _stepTime);
             PlayerPrefs.GetFloat("StepDistance", _stepDistance);
-            PlayerPrefs.GetInt("Coins", _coins);
+            PlayerPrefs.GetInt("Bits", _bits);
         }
 
         public void ClearData()
@@ -61,7 +61,7 @@ namespace CompositionRoot.SO.Player.Logic
             PlayerPrefs.DeleteKey("Distance");
             PlayerPrefs.DeleteKey("StepTime");
             PlayerPrefs.DeleteKey("StepDistance");
-            PlayerPrefs.DeleteKey("Coins");
+            PlayerPrefs.DeleteKey("Bits");
         }
     }
 }

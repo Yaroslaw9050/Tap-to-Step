@@ -15,9 +15,9 @@ namespace UI.Views
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TextMeshProUGUI _distanceText;
         [SerializeField] private Button _toMenuButton;
-
-        [Header("Coin")]
-        [SerializeField] private TextMeshProUGUI _coinsText;
+        
+        [Header("Bit")]
+        [SerializeField] private TextMeshProUGUI _bitText;
         
         [Header("Energy")]
         [SerializeField] private MPImage _energyLine;
@@ -32,9 +32,10 @@ namespace UI.Views
             
             _globalEventHandler.OnCollectablesChanged += OnCollectablesChanged;
             _globalEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
+            _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
             
             _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
-            _coinsText.SetText(ConvertToCoin(_playerSetting.Coins));
+            _bitText.SetText(ConvertToBits(_playerSetting.Bits));
             _energyLine.fillAmount = 1f;
         }
 
@@ -48,6 +49,11 @@ namespace UI.Views
             _canvasGroup.SetActive(false, 0.5f);
         }
 
+        private void ToMenuButtonClicked()
+        {
+            _globalEventHandler.InvokeOnUiElementClicked();
+        }
+
         private void OnPlayerStartMoving()
         {
             _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
@@ -57,28 +63,28 @@ namespace UI.Views
 
         private void OnCollectablesChanged(int value)
         {
-            _playerSetting.Coins += value;
-            _coinsText.SetText(ConvertToCoin(_playerSetting.Coins));
+            _playerSetting.Bits += value;
+            _bitText.SetText(ConvertToBits(_playerSetting.Bits));
         }
         
-        private  string ConvertToCoin(int rawCoinValue)
+        private  string ConvertToBits(int rawBitValue)
         {
             string result = "";
 
-            switch (rawCoinValue)
+            switch (rawBitValue)
             {
                 case < 1000:
-                    return rawCoinValue.ToString();
+                    return rawBitValue.ToString();
                 case >= 1000 and < 1000000: 
                 {
-                    int k = rawCoinValue / 1000; 
+                    int k = rawBitValue / 1000; 
                     result += $"{k}k";
                 
                     return result.Trim();
                 }
             }
             
-            var v = rawCoinValue / 1000000; 
+            var v = rawBitValue / 1000000; 
             result += $"{v}m";
                 
             return result.Trim(); 

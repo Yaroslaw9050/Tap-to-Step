@@ -21,7 +21,7 @@ namespace UI.Views
             _playerSettingSo = playerSetting;
             _globalEventHandler = globalEventHandler;
             _gameView.Init(_globalEventHandler, playerSetting);
-            _deadView.Init();
+            _deadView.Init(_globalEventHandler);
             
             _tutorialView.ShowView();
             _gameView.ShowView();

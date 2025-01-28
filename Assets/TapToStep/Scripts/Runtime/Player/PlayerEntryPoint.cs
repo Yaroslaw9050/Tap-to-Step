@@ -32,5 +32,12 @@ namespace Runtime.Player
             _screenCaster.Init(this, globalEventHandler);
             _interactionTrigger.Initialize(_playerEventHandler);
         }
+
+        public void Destruct()
+        {
+            _screenCaster.Destruct();
+            _movement.Destruct();
+            _cameraController.Destruct();
+        }
     }
 }

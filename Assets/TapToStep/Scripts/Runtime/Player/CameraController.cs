@@ -22,6 +22,12 @@ namespace Runtime.Player
             _entryPoint.PlayerEventHandler.OnPlayerStartMoving += MoveLikeStep;
             _entryPoint.PlayerEventHandler.OnPlayerDied += MoveToDeadPosition;
         }
+
+        public void Destruct()
+        {
+            _entryPoint.PlayerEventHandler.OnPlayerStartMoving -= MoveLikeStep;
+            _entryPoint.PlayerEventHandler.OnPlayerDied -= MoveToDeadPosition;
+        }
         
         private void MoveLikeStep()
         {

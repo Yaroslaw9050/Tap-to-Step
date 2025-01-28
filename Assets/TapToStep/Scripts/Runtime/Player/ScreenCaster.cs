@@ -22,8 +22,14 @@ namespace Runtime.Player
             _inputAction.GameTouch.Tap.performed += TapPrefer;
             _globalEventHandler.OnPlayerDied += OnPlayerDied;
 
-
             ActivateControl();
+        }
+
+        public void Destruct()
+        {
+            DeactivateControl();
+            _inputAction.GameTouch.Tap.performed -= TapPrefer;
+            _globalEventHandler.OnPlayerDied -= OnPlayerDied;
         }
 
         private void ActivateControl()
