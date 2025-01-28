@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2781eeacaa45d4aa28c887c8ab9e35e8, type: 3}
   m_Name: PlayerDefaultSetup
   m_EditorClassIdentifier: 
-  _coins: 0
-  _stepDistance: 1
-  _stepTime: 1
-  _distance: 0
+  _bits: 290
+  _stepDistance: 2
+  _stepTime: 0.5
+  _distance: 1154

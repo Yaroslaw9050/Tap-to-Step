@@ -16,8 +16,8 @@ namespace Runtime.Audio
         [SerializeField] private AudioMixerGroup _vfxMixer;
         [SerializeField] private AudioMixerGroup _uiMixer;
         [SerializeField] private AudioMixerGroup _musicMixer;
-        
-        [Header("Music")]
+
+        [Header("Music")] 
         [SerializeField] private AudioSource _musicSource;
         [SerializeField] private AudioClip[] _musicClips;
 
