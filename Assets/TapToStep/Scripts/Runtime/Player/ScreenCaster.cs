@@ -11,16 +11,16 @@ namespace Runtime.Player
     {
         private TouchInputAction _inputAction;
         private PlayerEntryPoint _entryPoint;
-        private GlobalEventHandler _globalEventHandler;
+        private GameEventHandler _gameEventHandler;
 
-        public void Init(PlayerEntryPoint entryPoint, GlobalEventHandler globalEventHandler)
+        public void Init(PlayerEntryPoint entryPoint, GameEventHandler gameEventHandler)
         {
             _entryPoint = entryPoint;
-            _globalEventHandler = globalEventHandler;
+            _gameEventHandler = gameEventHandler;
             
             _inputAction = new TouchInputAction();
             _inputAction.GameTouch.Tap.performed += TapPrefer;
-            _globalEventHandler.OnPlayerDied += OnPlayerDied;
+            _gameEventHandler.OnPlayerDied += OnPlayerDied;
 
             ActivateControl();
         }
@@ -29,7 +29,7 @@ namespace Runtime.Player
         {
             DeactivateControl();
             _inputAction.GameTouch.Tap.performed -= TapPrefer;
-            _globalEventHandler.OnPlayerDied -= OnPlayerDied;
+            _gameEventHandler.OnPlayerDied -= OnPlayerDied;
         }
 
         private void ActivateControl()

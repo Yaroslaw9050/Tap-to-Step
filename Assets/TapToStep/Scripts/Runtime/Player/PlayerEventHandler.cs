@@ -10,18 +10,18 @@ namespace Runtime.Player
         public event Action OnPlayerStartMoving;
         public event Action OnPlayerDied;
         
-        private readonly GlobalEventHandler r_globalEventHandler;
+        private readonly GameEventHandler r_gameEventHandler;
         private readonly PlayerEntryPoint r_entryPoint;
         
-        public PlayerEventHandler(PlayerEntryPoint entryPoint, GlobalEventHandler globalEventHandler)
+        public PlayerEventHandler(PlayerEntryPoint entryPoint, GameEventHandler gameEventHandler)
         {
             r_entryPoint = entryPoint;
-            r_globalEventHandler = globalEventHandler;   
+            r_gameEventHandler = gameEventHandler;   
         }
         
         public void InvokeTouchedToCollectables(int value)
         {
-            r_globalEventHandler.InvokeOnCollectablesChanged(value);
+            r_gameEventHandler.InvokeOnCollectablesChanged(value);
         }
 
         public void InvokeMoveButtonTouched(MoveDirection movingDirection)
@@ -32,13 +32,13 @@ namespace Runtime.Player
         public void InvokeStartMoving()
         {
             OnPlayerStartMoving?.Invoke();
-            r_globalEventHandler.InvokeOnPlayerStartMoving();
+            r_gameEventHandler.InvokeOnPlayerStartMoving();
         }
 
         public void InvokeDied()
         {
             OnPlayerDied?.Invoke();
-            r_globalEventHandler.InvokeOnPlayerDied();
+            r_gameEventHandler.InvokeOnPlayerDied();
         }
     }
 }
