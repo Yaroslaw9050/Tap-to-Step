@@ -4,27 +4,36 @@ using Runtime.EntryPoints.EventHandlers;
 using Runtime.Service.LocationGenerator;
 using UI.Views;
 using UnityEngine;
+using Zenject;
 
 namespace TapToStep.Scripts.Runtime.EntryPoints
 {
     public class GameEntryPoint : MonoBehaviour
     {
-        [SerializeField] private PlayerBuilder _playerBuilder;
-        [SerializeField] private LocationBuilder _locationBuilder;
-        [SerializeField] private GameViewController _viewController;
         [SerializeField] private AudioController _audioController;
-
-        private GlobalEventHandler _globalEventHandler;
+        
+        private PlayerBuilder _playerBuilder;
+        private LocationBuilder _locationBuilder;
+        private GameViewController _viewController;
+        
+        
+        [Inject]
+        public void Constructor(PlayerBuilder playerBuilder,
+            LocationBuilder locationBuilder, GameViewController viewController)
+        {
+            _playerBuilder = playerBuilder;
+            _locationBuilder = locationBuilder;
+            _viewController = viewController;
+        }
         
         private async void Start()
         {
             SetupGraphicSetting();
-            _globalEventHandler = new GlobalEventHandler();
             
-            _audioController.Init(_globalEventHandler);
+            _audioController.Init();
             await _locationBuilder.GenerateNewLocationAsync();
-            _playerBuilder.CreatePlayer(Vector3.zero, _globalEventHandler);
-            _viewController.Init(_globalEventHandler, _playerBuilder.PlayerSettingSo);
+            _playerBuilder.CreatePlayer(Vector3.zero);
+            _viewController.Init();
         }
 
         private void OnDestroy()
