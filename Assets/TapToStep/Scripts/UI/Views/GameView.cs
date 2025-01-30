@@ -22,21 +22,29 @@ namespace UI.Views
         [Header("Energy")]
         [SerializeField] private MPImage _energyLine;
 
-        private GlobalEventHandler _globalEventHandler;
+        private GameEventHandler _gameEventHandler;
         private PlayerSettingSO _playerSetting;
 
-        public void Init(GlobalEventHandler eventHandler, PlayerSettingSO playerSetting)
+        public void Init(GameEventHandler eventHandler, PlayerSettingSO playerSetting)
         {
-            _globalEventHandler = eventHandler;
+            _gameEventHandler = eventHandler;
             _playerSetting = playerSetting;
             
-            _globalEventHandler.OnCollectablesChanged += OnCollectablesChanged;
-            _globalEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
+            _gameEventHandler.OnCollectablesChanged += OnCollectablesChanged;
+            _gameEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
             _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
             
             _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
             _bitText.SetText(ConvertToBits(_playerSetting.Bits));
             _energyLine.fillAmount = 1f;
+        }
+
+        public void Destruct()
+        {
+            _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
+            _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
+            _toMenuButton.onClick.RemoveListener(ToMenuButtonClicked);
+            Debug.Log("Game view destroyed!");
         }
 
         public void ShowView()
@@ -51,7 +59,7 @@ namespace UI.Views
 
         private void ToMenuButtonClicked()
         {
-            _globalEventHandler.InvokeOnUiElementClicked();
+            _gameEventHandler.InvokeOnUiElementClicked();
         }
 
         private void OnPlayerStartMoving()

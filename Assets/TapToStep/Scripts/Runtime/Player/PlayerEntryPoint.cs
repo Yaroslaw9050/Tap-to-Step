@@ -22,14 +22,14 @@ namespace Runtime.Player
         public ILocationGenerator LocationGenerator => _locationGenerator;
         public InteractionTriggerHolder InteractionTrigger => _interactionTrigger;
 
-        public void Init(GlobalEventHandler globalEventHandler, PlayerSettingSO playerSetting)
+        public void Init(GameEventHandler gameEventHandler, PlayerSettingSO playerSetting)
         {
             _playerSetting = playerSetting;
-            _playerEventHandler = new PlayerEventHandler(this, globalEventHandler);
+            _playerEventHandler = new PlayerEventHandler(this, gameEventHandler);
             
             _cameraController.Init(this);
             _movement.Init(this);
-            _screenCaster.Init(this, globalEventHandler);
+            _screenCaster.Init(this, gameEventHandler);
             _interactionTrigger.Initialize(_playerEventHandler);
         }
 

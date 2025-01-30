@@ -1,6 +1,7 @@
 using CompositionRoot.SO.Player.Logic;
 using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
+using Zenject;
 
 namespace UI.Views
 {
@@ -13,22 +14,36 @@ namespace UI.Views
         [SerializeField] private TutorialView _tutorialView;
         [SerializeField] private LeaderBoardView _leaderBoardView;
 
-        private GlobalEventHandler _globalEventHandler;
+        private GameEventHandler _gameEventHandler;
         private PlayerSettingSO _playerSettingSo;
         
-        public void Init(GlobalEventHandler globalEventHandler, PlayerSettingSO playerSetting)
+        [Inject]
+        public void Constructor(GameEventHandler gameEventHandler, PlayerBuilder playerBuilder)
         {
-            _playerSettingSo = playerSetting;
-            _globalEventHandler = globalEventHandler;
-            _gameView.Init(_globalEventHandler, playerSetting);
-            _deadView.Init(_globalEventHandler);
+            _gameEventHandler = gameEventHandler;
+            _playerSettingSo = playerBuilder.PlayerSettingSo;
+        }
+        
+        public void Init()
+        {
+            _gameView.Init(_gameEventHandler, _playerSettingSo);
+            _deadView.Init(_gameEventHandler);
             
             _tutorialView.ShowView();
             _gameView.ShowView();
             _deadView.HideView();
             
-            _globalEventHandler.OnPlayerStartMoving += PlayerStartMoving;
-            _globalEventHandler.OnPlayerDied += OnPlayerDied;
+            _gameEventHandler.OnPlayerStartMoving += PlayerStartMoving;
+            _gameEventHandler.OnPlayerDied += OnPlayerDied;
+        }
+
+        public void Destruct()
+        {
+            _gameView.Destruct();
+            _deadView.Destruct();
+            
+            _gameEventHandler.OnPlayerStartMoving -= PlayerStartMoving;
+            _gameEventHandler.OnPlayerDied -= OnPlayerDied;
         }
 
         private void PlayerStartMoving()

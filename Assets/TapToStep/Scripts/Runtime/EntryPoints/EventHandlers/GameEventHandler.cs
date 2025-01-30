@@ -2,7 +2,7 @@ using System;
 
 namespace Runtime.EntryPoints.EventHandlers
 {
-    public class GlobalEventHandler
+    public class GameEventHandler
     {
         public event Action<int> OnCollectablesChanged;
         public event Action OnPlayerStartMoving;
