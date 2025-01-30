@@ -13,17 +13,22 @@ namespace UI.Views
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _continueButton;
 
-        private GlobalEventHandler _globalEventHandler;
+        private GameEventHandler _gameEventHandler;
         
-        public void Init(GlobalEventHandler globalEventHandler)
+        public void Init(GameEventHandler gameEventHandler)
         {
-            _globalEventHandler = globalEventHandler;
+            _gameEventHandler = gameEventHandler;
             
             _restartButton.onClick.AddListener(() =>
             {
-                _globalEventHandler.InvokeOnUiElementClicked();
+                _gameEventHandler.InvokeOnUiElementClicked();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             });
+        }
+
+        public void Destruct()
+        {
+            _restartButton.onClick.RemoveAllListeners();
         }
         
         

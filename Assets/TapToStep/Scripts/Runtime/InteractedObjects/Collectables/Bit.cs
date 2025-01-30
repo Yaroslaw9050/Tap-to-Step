@@ -15,7 +15,7 @@ namespace Runtime.InteractedObjects.Collectables
 
         public void Init()
         {
-            _collectTween = transform.DOScale(0f, 0.5f).SetEase(Ease.InFlash);
+            _collectTween = transform.DOScale(0f, 0.25f).SetEase(Ease.InFlash);
             _collectTween.Pause();
             _collectTween.OnComplete(() =>
             {
