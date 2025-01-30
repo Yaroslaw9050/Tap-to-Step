@@ -9,18 +9,24 @@ namespace Runtime.Service.LocationGenerator
 {
     public class LocationBuilder: MonoBehaviour, ILocationGenerator
     {
+        [Header("LocationLikeChildToPlayer")]
+        [SerializeField] private GameObject _staticBackgroundPrefab;
+        
         [Header("Locations")] 
         [SerializeField] private GameObject _backgroundPrefab;
         [SerializeField] private List<SwitchedLocationSO> _supportedLocationPull;
         [SerializeField] private Transform _locationParent;
-        
-        private readonly List<GameObject> r_locationElementHoldersPull = new();
-        private readonly List<GameObject> r_backgroundElementHoldersPull = new();
+
+        private Transform _staticBackgroundTransform;
         
         private Vector3 _locationGenerationPoint;
         private bool _isFirstGeneration = true;
         private int _backgroundCounter;
-        
+
+        private readonly List<GameObject> r_locationElementHoldersPull = new();
+        private readonly List<GameObject> r_backgroundElementHoldersPull = new();
+        public Transform StaticBackgroundTransform => _staticBackgroundTransform;
+
         private const int BACKGROUND_OFFSET = 1000;
 
         public async UniTask GenerateNewLocationAsync()
@@ -34,6 +40,7 @@ namespace Runtime.Service.LocationGenerator
                 await CreateBackgroundAsync();
                 await CreateLocationAsync(_supportedLocationPull[0], 20);
                 await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], 20);
+                _staticBackgroundTransform = Instantiate(_staticBackgroundPrefab).transform;
             }
             else
             {
