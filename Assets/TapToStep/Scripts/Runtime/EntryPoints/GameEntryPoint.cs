@@ -1,6 +1,5 @@
 using System;
 using Runtime.Audio;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Service.LocationGenerator;
 using UI.Views;
 using UnityEngine;
@@ -10,8 +9,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
 {
     public class GameEntryPoint : MonoBehaviour
     {
-        [SerializeField] private AudioController _audioController;
-        
+        private AudioController _audioController;
         private PlayerBuilder _playerBuilder;
         private LocationBuilder _locationBuilder;
         private GameViewController _viewController;
@@ -19,11 +17,12 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
         
         [Inject]
         public void Constructor(PlayerBuilder playerBuilder,
-            LocationBuilder locationBuilder, GameViewController viewController)
+            LocationBuilder locationBuilder, GameViewController viewController, AudioController audioController)
         {
             _playerBuilder = playerBuilder;
             _locationBuilder = locationBuilder;
             _viewController = viewController;
+            _audioController = audioController;
         }
         
         private async void Start()
@@ -38,7 +37,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
 
         private void OnDestroy()
         {
-            _audioController.Destruct();
+            _viewController.Destruct();
         }
 
         private void SetupGraphicSetting()

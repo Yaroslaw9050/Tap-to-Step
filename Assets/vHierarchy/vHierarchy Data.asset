@@ -20,6 +20,8 @@ MonoBehaviour:
     - 88dd00f6624b58645a2199bf03fccde5
     - 2fc0f90d71e1eef449405bfefdaa53e9
     - 8e0f1c7ccd45ed546afced900dd5de6d
+    - 0dd63c3c374a6419e8ad769421196ef3
+    - 09410d9dc23554bd39a3c2170d8a2c77
     values:
     - goDatas_byGlobalId:
         keys:
@@ -162,3 +164,21 @@ MonoBehaviour:
           iconNameOrGuid: cs Script Icon
         - colorIndex: 0
           iconNameOrGuid: Folder Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-0dd63c3c374a6419e8ad769421196ef3-1024294058-0
+        - globalObjectIdString: GlobalObjectId_V1-2-0dd63c3c374a6419e8ad769421196ef3-63014085-0
+        - globalObjectIdString: GlobalObjectId_V1-2-0dd63c3c374a6419e8ad769421196ef3-966543009791942208-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Favorite
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-09410d9dc23554bd39a3c2170d8a2c77-5183926365145906139-0
+        values:
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon

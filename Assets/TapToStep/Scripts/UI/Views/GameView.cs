@@ -39,6 +39,14 @@ namespace UI.Views
             _energyLine.fillAmount = 1f;
         }
 
+        public void Destruct()
+        {
+            _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
+            _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
+            _toMenuButton.onClick.RemoveListener(ToMenuButtonClicked);
+            Debug.Log("Game view destroyed!");
+        }
+
         public void ShowView()
         {
             _canvasGroup.SetActive(true, 0.5f);

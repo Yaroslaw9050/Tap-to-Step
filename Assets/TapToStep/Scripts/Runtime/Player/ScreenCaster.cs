@@ -23,6 +23,8 @@ namespace Runtime.Player
             _gameEventHandler.OnPlayerDied += OnPlayerDied;
 
             ActivateControl();
+            
+            Debug.Log("Called Init in screen cast system");
         }
 
         public void Destruct()
@@ -30,6 +32,8 @@ namespace Runtime.Player
             DeactivateControl();
             _inputAction.GameTouch.Tap.performed -= TapPrefer;
             _gameEventHandler.OnPlayerDied -= OnPlayerDied;
+            _inputAction = null;
+            Debug.Log("Called Destruct in screen cast system");
         }
 
         private void ActivateControl()

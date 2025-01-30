@@ -28,6 +28,7 @@ namespace Runtime.Audio
         [SerializeField] private AudioClip _playerDiedClip;
         [SerializeField] private AudioClip _uiClickClip;
         
+        private bool _isInitialized;
         private GameEventHandler _gameEventHandler;
         private CancellationTokenSource _cts;
         
@@ -41,20 +42,17 @@ namespace Runtime.Audio
         
         public void Init()
         {
+            if(_isInitialized) return;
+            
             _cts = new CancellationTokenSource();
 
             InitBackgroundMusic();
             InitGlobalAudioSourceSystem();
             
             SubscribeToEvents();
+            _isInitialized = true;
         }
-
-        public void Destruct()
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = null;
-        }
+        
 
         private void SubscribeToEvents()
         {

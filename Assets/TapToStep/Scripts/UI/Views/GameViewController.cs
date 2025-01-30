@@ -37,6 +37,15 @@ namespace UI.Views
             _gameEventHandler.OnPlayerDied += OnPlayerDied;
         }
 
+        public void Destruct()
+        {
+            _gameView.Destruct();
+            _deadView.Destruct();
+            
+            _gameEventHandler.OnPlayerStartMoving -= PlayerStartMoving;
+            _gameEventHandler.OnPlayerDied -= OnPlayerDied;
+        }
+
         private void PlayerStartMoving()
         {
             _tutorialView.HideView();

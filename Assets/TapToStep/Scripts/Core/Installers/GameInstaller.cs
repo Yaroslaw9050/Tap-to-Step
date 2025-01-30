@@ -5,7 +5,7 @@ using UI.Views;
 using UnityEngine;
 using Zenject;
 
-namespace TapToStep.Scripts.Core.Installers
+namespace Core.Installers
 {
     public class GameInstaller : MonoInstaller
     {
@@ -14,17 +14,14 @@ namespace TapToStep.Scripts.Core.Installers
         [SerializeField] private PlayerBuilder _playerBuilder;
         [SerializeField] private GameViewController _gameViewController;
         
-        private GameEventHandler _gameEventHandler;
         
         public override void InstallBindings()
         {
-            _gameEventHandler = new GameEventHandler();
-            
             BindEntryPoint();
             BindLocationBuilder();
             BindPlayerBuilder();
             BindGameViewController();
-            BindGameEventHandler();
+
         }
 
         private void BindEntryPoint()
@@ -45,11 +42,6 @@ namespace TapToStep.Scripts.Core.Installers
         private void BindGameViewController()
         {
             Container.Bind<GameViewController>().FromInstance(_gameViewController).AsSingle().NonLazy();
-        }
-
-        private void BindGameEventHandler()
-        {
-            Container.Bind<GameEventHandler>().FromInstance(_gameEventHandler).AsSingle().NonLazy();
         }
     }
 }

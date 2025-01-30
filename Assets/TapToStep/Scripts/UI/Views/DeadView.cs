@@ -25,6 +25,11 @@ namespace UI.Views
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             });
         }
+
+        public void Destruct()
+        {
+            _restartButton.onClick.RemoveAllListeners();
+        }
         
         
         public void ShowView()
