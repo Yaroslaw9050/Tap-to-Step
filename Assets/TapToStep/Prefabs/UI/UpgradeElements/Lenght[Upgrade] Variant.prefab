@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4133103739495265928
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1497109130905408732, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_text
+      value: Lenght
+      objectReference: {fileID: 0}
+    - target: {fileID: 2090546948979600503, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Name
+      value: Lenght[Upgrade] Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2193992105218583303, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2193992105218583303, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2933290330045235742, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Name
+      value: 'lenghtUpgrade[Button]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 310
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195685127268488685, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1518850160, guid: 33bbf419dc73a4510adbc3626ae5b7c9, type: 3}
+    - target: {fileID: 6729597014758553441, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729597014758553441, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890259545673820193, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Name
+      value: 'LenghtUpgradeStatus[Slider]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 9019547912740714281, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_Name
+      value: 'LenghtTitle[TMP]'
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}

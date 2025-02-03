@@ -1,24 +1,26 @@
-using Core.Extension;
 using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
-namespace UI.Views
+namespace UI.Views.Upgrades
 {
-    public class DeadView : MonoBehaviour
+    public class DeadView : BaseView
     {
-        [SerializeField] private CanvasGroup _canvasGroup;
-
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _continueButton;
 
         private GameEventHandler _gameEventHandler;
         
-        public void Init(GameEventHandler gameEventHandler)
+        [Inject]
+        public void Constructor(GameEventHandler gameEventHandler)
         {
             _gameEventHandler = gameEventHandler;
-            
+        }
+        
+        public void Init()
+        {
             _restartButton.onClick.AddListener(() =>
             {
                 _gameEventHandler.InvokeOnUiElementClicked();
@@ -29,17 +31,6 @@ namespace UI.Views
         public void Destruct()
         {
             _restartButton.onClick.RemoveAllListeners();
-        }
-        
-        
-        public void ShowView()
-        {
-            _canvasGroup.SetActive(true, 0.5f);
-        }
-
-        public void HideView()
-        {
-            _canvasGroup.SetActive(false, 0.5f);
         }
     }
 }

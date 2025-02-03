@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2781eeacaa45d4aa28c887c8ab9e35e8, type: 3}
-  m_Name: PlayerDefaultSetup
+  m_Script: {fileID: 11500000, guid: fcb3ff2de2d84326aa0c781bd2b96805, type: 3}
+  m_Name: StepLenght
   m_EditorClassIdentifier: 
-  _bits: 290
-  _stepDistance: 2
-  _stepTime: 0.5
-  _distance: 1154
+  _upgradeType: 3
+  _costPerOneLevel: 1
+  _startPrice: 2
+  _maxLevel: 20

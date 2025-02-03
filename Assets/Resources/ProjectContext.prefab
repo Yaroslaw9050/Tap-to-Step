@@ -58,6 +58,7 @@ MonoBehaviour:
   _bitCollectedClip: {fileID: 8300000, guid: b8e0ad05099c1a7409f88edf7fe2b049, type: 3}
   _playerDiedClip: {fileID: 8300000, guid: 4c856b3aa279e1f438b510af50ee8232, type: 3}
   _uiClickClip: {fileID: 8300000, guid: ed7fb9a65b8287e4586c6b6414fd55ab, type: 3}
+  _levelUpClip: {fileID: 8300000, guid: cb7263b3cd3b1294d96bf089fb15ef55, type: 3}
 --- !u!82 &5581664461078030143
 AudioSource:
   m_ObjectHideFlags: 0

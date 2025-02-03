@@ -16,7 +16,7 @@ namespace Runtime.Player
         public PlayerEventHandler(PlayerEntryPoint entryPoint, GameEventHandler gameEventHandler)
         {
             r_entryPoint = entryPoint;
-            r_gameEventHandler = gameEventHandler;   
+            r_gameEventHandler = gameEventHandler;
         }
         
         public void InvokeTouchedToCollectables(int value)

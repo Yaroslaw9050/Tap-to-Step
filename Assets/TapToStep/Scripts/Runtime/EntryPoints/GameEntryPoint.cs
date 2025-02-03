@@ -1,7 +1,7 @@
 using System;
 using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
-using UI.Views;
+using UI.Views.Upgrades;
 using UnityEngine;
 using Zenject;
 
@@ -31,12 +31,13 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             
             _audioController.Init();
             await _locationBuilder.GenerateNewLocationAsync();
-            _playerBuilder.CreatePlayer(Vector3.zero);
-            _viewController.Init();
+            _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
+            _viewController.Init(_playerBuilder.PlayerEntryPoint);
         }
 
         private void OnDestroy()
         {
+            _playerBuilder.DestroyPlayer();
             _viewController.Destruct();
         }
 

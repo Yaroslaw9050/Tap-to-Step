@@ -1,4 +1,4 @@
-using System;
+using Cysharp.Threading.Tasks;
 using InputActions;
 using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
@@ -19,36 +19,36 @@ namespace Runtime.Player
             _gameEventHandler = gameEventHandler;
             
             _inputAction = new TouchInputAction();
-            _inputAction.GameTouch.Tap.performed += TapPrefer;
-            _gameEventHandler.OnPlayerDied += OnPlayerDied;
-
-            ActivateControl();
-            
-            Debug.Log("Called Init in screen cast system");
+            _gameEventHandler.OnPlayerScreenCastStatusChanged += ScreenCastStatusChanged;
+            ActivateControlAsync().Forget();
         }
 
         public void Destruct()
         {
             DeactivateControl();
-            _inputAction.GameTouch.Tap.performed -= TapPrefer;
-            _gameEventHandler.OnPlayerDied -= OnPlayerDied;
+            _gameEventHandler.OnPlayerScreenCastStatusChanged -= ScreenCastStatusChanged;
             _inputAction = null;
-            Debug.Log("Called Destruct in screen cast system");
         }
 
-        private void ActivateControl()
+        private void ScreenCastStatusChanged(bool castIsActive)
         {
-            _inputAction.Enable();
+            if (castIsActive)
+                ActivateControlAsync().Forget();
+            else
+                DeactivateControl();
         }
 
         private void DeactivateControl()
         {
-            _inputAction.Disable();
+            _inputAction.GameTouch.Tap.Disable();
+            _inputAction.GameTouch.Tap.performed -= TapPrefer;
         }
 
-        private void OnPlayerDied()
+        private async UniTask ActivateControlAsync()
         {
-            DeactivateControl();
+            _inputAction.GameTouch.Tap.Enable();
+            await UniTask.NextFrame();
+            _inputAction.GameTouch.Tap.performed += TapPrefer;
         }
 
         private void TapPrefer(InputAction.CallbackContext context)
@@ -61,8 +61,8 @@ namespace Runtime.Player
             var upperLimit = screenHeight * 0.75f;
             var bottomLimit = screenHeight * 0.1f;
             
-            var leftBound = screenWidth * 0.25f;
-            var rightBound = screenWidth * 0.75f;
+            var leftBound = screenWidth * 0.3f;
+            var rightBound = screenWidth * 0.7f;
             
             if(screenPosition.y < bottomLimit || screenPosition.y > upperLimit) 
                 return;
