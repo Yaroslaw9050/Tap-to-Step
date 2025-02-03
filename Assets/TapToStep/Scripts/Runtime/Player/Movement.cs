@@ -56,9 +56,9 @@ namespace Runtime.Player
             var stepTime = setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed);
             var stepLenght = setting.StepLenght + _perkSystem.GetPerkValueByType(PerkType.StepLenght);
             
-            Debug.Log($"StepTime: {stepTime}");
-            Debug.Log($"StepLenght: {stepLenght}");
-            Debug.Log($"TurnSpeed: {horizontalSlide}");
+            // Debug.Log($"StepTime: {stepTime}");
+            // Debug.Log($"StepLenght: {stepLenght}");
+            // Debug.Log($"TurnSpeed: {horizontalSlide}");
             
             var newStepPosition = _playerRoot.position.z + stepLenght;
             var newSlidePosition = Math.Clamp(_playerRoot.position.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE) ;

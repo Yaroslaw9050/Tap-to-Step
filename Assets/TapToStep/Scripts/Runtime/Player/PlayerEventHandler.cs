@@ -40,5 +40,10 @@ namespace Runtime.Player
             OnPlayerDied?.Invoke();
             r_gameEventHandler.InvokeOnPlayerDied();
         }
+
+        public void InvokeTouchedToEndOfLocation()
+        {
+            r_gameEventHandler.InvokeOnPlayerTouchedToEndOfLocation();
+        }
     }
 }

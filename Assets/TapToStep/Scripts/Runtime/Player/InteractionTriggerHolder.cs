@@ -11,7 +11,6 @@ namespace Runtime.Player
         public void Initialize(PlayerEventHandler playerEventHandler)
         {
             _playerEventHandler = playerEventHandler;
-            
         }
         
         private void OnTriggerEnter(Collider other)
@@ -35,6 +34,11 @@ namespace Runtime.Player
                             break;
                     }
                 }
+            }
+            else if (other.CompareTag("Finish"))
+            {
+                Debug.Log("Touched to finish!");
+                _playerEventHandler.InvokeTouchedToEndOfLocation();
             }
         }
     }
