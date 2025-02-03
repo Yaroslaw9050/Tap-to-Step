@@ -1,14 +1,17 @@
 using Runtime.EntryPoints.EventHandlers;
+using Runtime.Player.Perks;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Runtime.EntryPoints;
-using UI.Views;
+using UI.Views.Upgrades;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Core.Installers
 {
     public class GameInstaller : MonoInstaller
     {
+        [FormerlySerializedAs("_playerUpgradeSystem")] [SerializeField] private PlayerPerkSystem _playerPerkSystem;
         [SerializeField] private GameEntryPoint _gameEntryPoint;
         [SerializeField] private LocationBuilder _locationBuilder;
         [SerializeField] private PlayerBuilder _playerBuilder;
@@ -21,7 +24,7 @@ namespace Core.Installers
             BindLocationBuilder();
             BindPlayerBuilder();
             BindGameViewController();
-
+            BindPlayerUpdateSystem();
         }
 
         private void BindEntryPoint()
@@ -42,6 +45,11 @@ namespace Core.Installers
         private void BindGameViewController()
         {
             Container.Bind<GameViewController>().FromInstance(_gameViewController).AsSingle().NonLazy();
+        }
+
+        private void BindPlayerUpdateSystem()
+        {
+            Container.Bind<PlayerPerkSystem>().FromInstance(_playerPerkSystem).AsSingle().NonLazy();
         }
     }
 }

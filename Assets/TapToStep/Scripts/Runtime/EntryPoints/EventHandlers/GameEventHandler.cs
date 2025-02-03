@@ -1,4 +1,5 @@
 using System;
+using CompositionRoot.Enums;
 
 namespace Runtime.EntryPoints.EventHandlers
 {
@@ -7,8 +8,10 @@ namespace Runtime.EntryPoints.EventHandlers
         public event Action<int> OnCollectablesChanged;
         public event Action OnPlayerStartMoving;
         public event Action OnPlayerDied;
-
         public event Action OnUiElementClicked;
+        public event Action<bool> OnPlayerScreenCastStatusChanged;
+        public event Action<bool> OnMenuViewStatusChanged;
+        public event Action<PerkType> OnSomeSkillUpgraded;
 
         public void InvokeOnCollectablesChanged(int value)
         {
@@ -23,11 +26,28 @@ namespace Runtime.EntryPoints.EventHandlers
         public void InvokeOnPlayerDied()
         {
             OnPlayerDied?.Invoke();
+            InvokeOnPlayerScreenCastStatus(false);
         }
 
         public void InvokeOnUiElementClicked()
         {
             OnUiElementClicked?.Invoke();
+        }
+
+        public void InvokeOnPlayerScreenCastStatus(bool isActive)
+        {
+            OnPlayerScreenCastStatusChanged?.Invoke(isActive);
+        }
+
+        public void InvokeOnMenuViewStatus(bool isActive)
+        {
+            OnMenuViewStatusChanged?.Invoke(isActive);
+            InvokeOnPlayerScreenCastStatus(!isActive);
+        }
+
+        public void InvokeSomePlayerSkillUpgraded(PerkType upgradeType)
+        {
+            OnSomeSkillUpgraded?.Invoke(upgradeType);
         }
     }
 }

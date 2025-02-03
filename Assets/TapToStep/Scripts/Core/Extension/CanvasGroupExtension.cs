@@ -14,9 +14,18 @@ namespace Core.Extension
         
         public static void SetActive(this CanvasGroup group, bool isActive, float fadeTime)
         {
-            group.DOFade(isActive ? 1 : 0, fadeTime);
-            group.interactable = isActive;
-            group.blocksRaycasts = isActive;
+            if (isActive == false)
+            {
+                group.interactable = false;
+                group.blocksRaycasts = false;
+            }
+            
+            group.DOFade(isActive ? 1 : 0, fadeTime).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                if (isActive == false) return;
+                group.interactable = true;
+                group.blocksRaycasts = true;
+            });
         }
     }
 }

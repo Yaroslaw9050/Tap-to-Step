@@ -237,6 +237,12 @@ MonoBehaviour:
   _movement: {fileID: 7953108650998189919}
   _screenCaster: {fileID: 7749972876994611380}
   _interactionTrigger: {fileID: 9149418625531681130}
+  _playerStatistic:
+    _bits: 0
+    _distance: 0
+    _cooldown: 0
+    _stepTime: 0
+    _stepLenght: 0
 --- !u!114 &9149418625531681130
 MonoBehaviour:
   m_ObjectHideFlags: 0

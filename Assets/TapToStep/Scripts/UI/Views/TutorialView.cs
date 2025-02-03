@@ -1,26 +1,21 @@
-using DG.Tweening;
-using UnityEngine;
-
-namespace UI.Views
+namespace UI.Views.Upgrades
 {
-    public class TutorialView : MonoBehaviour
+    public class TutorialView : BaseView
     {
-        [SerializeField] private CanvasGroup _canvasGroup;
         private bool _isTutorialActive;
         
-        public void ShowView()
+        public override void ShowView(float duration = 0.5f)
         {
+            base.ShowView(duration);
             _isTutorialActive = true;
-            _canvasGroup.alpha = 0;
-            _canvasGroup.DOFade(0.2f,0.5f);
+
         }
 
-        public void HideView()
+        public override void HideView(float duration = 0.5f)
         {
             if(_isTutorialActive == false) return;
-            
+            base.HideView(duration);
             _isTutorialActive = false;
-            _canvasGroup.DOFade(0f, 0.5f);
         }
     }
 }

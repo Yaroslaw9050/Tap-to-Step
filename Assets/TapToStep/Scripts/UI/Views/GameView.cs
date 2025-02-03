@@ -1,18 +1,21 @@
+using System;
+using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
-using Core.Extension;
 using DG.Tweening;
 using MPUIKIT;
 using Runtime.EntryPoints.EventHandlers;
+using Runtime.Player;
+using Runtime.Player.CompositionRoot;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
-namespace UI.Views
+namespace UI.Views.Upgrades
 {
-    public class GameView : MonoBehaviour
+    public class GameView : BaseView
     {
         [Header("Base")]
-        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TextMeshProUGUI _distanceText;
         [SerializeField] private Button _toMenuButton;
         
@@ -23,56 +26,62 @@ namespace UI.Views
         [SerializeField] private MPImage _energyLine;
 
         private GameEventHandler _gameEventHandler;
-        private PlayerSettingSO _playerSetting;
+        private PlayerEntryPoint _playerEntryPoint;
+        
+        public event Action OnToMenuButtonPressed;
 
-        public void Init(GameEventHandler eventHandler, PlayerSettingSO playerSetting)
+        [Inject]
+        public void Constructor(GameEventHandler gameEventHandler)
         {
-            _gameEventHandler = eventHandler;
-            _playerSetting = playerSetting;
+            _gameEventHandler = gameEventHandler;
+        }
+        
+        public void Init(PlayerEntryPoint playerEntryPoint)
+        {
+            _playerEntryPoint = playerEntryPoint;
             
             _gameEventHandler.OnCollectablesChanged += OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
+            _gameEventHandler.OnSomeSkillUpgraded += OnSomeSkillUpgraded;
             _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
             
-            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
-            _bitText.SetText(ConvertToBits(_playerSetting.Bits));
+            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
+            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
             _energyLine.fillAmount = 1f;
         }
 
         public void Destruct()
         {
+            _gameEventHandler.OnSomeSkillUpgraded -= OnSomeSkillUpgraded;
             _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
             _toMenuButton.onClick.RemoveListener(ToMenuButtonClicked);
-            Debug.Log("Game view destroyed!");
-        }
-
-        public void ShowView()
-        {
-            _canvasGroup.SetActive(true, 0.5f);
-        }
-
-        public void HideView()
-        {
-            _canvasGroup.SetActive(false, 0.5f);
         }
 
         private void ToMenuButtonClicked()
         {
+            OnToMenuButtonPressed?.Invoke();
             _gameEventHandler.InvokeOnUiElementClicked();
         }
 
         private void OnPlayerStartMoving()
         {
-            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerSetting.Distance)}");
+            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
             _energyLine.fillAmount = 0f;
-            _energyLine.DOFillAmount(1f, _playerSetting.StepTime).SetEase(Ease.Linear);
+            _energyLine.DOFillAmount(1f, _playerEntryPoint.PlayerSettingSo.StepSpeed).SetEase(Ease.Linear);
+        }
+
+        private void OnSomeSkillUpgraded(PerkType _)
+        {
+            Debug.Log("SomeSkillUpgraded");
+            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
+            Debug.Log($"Player has: {_playerEntryPoint.PlayerStatistic.Bits}");
         }
 
         private void OnCollectablesChanged(int value)
         {
-            _playerSetting.Bits += value;
-            _bitText.SetText(ConvertToBits(_playerSetting.Bits));
+            _playerEntryPoint.PlayerStatistic.AddBits(value);
+            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
         }
         
         private  string ConvertToBits(int rawBitValue)
