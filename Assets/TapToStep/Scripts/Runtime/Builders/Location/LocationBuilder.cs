@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using CompositionRoot.SO.Location.Logic;
 using Cysharp.Threading.Tasks;
 using Runtime.Builders.Location;
+using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Runtime.Service.LocationGenerator
@@ -26,8 +29,30 @@ namespace Runtime.Service.LocationGenerator
         private readonly List<GameObject> r_locationElementHoldersPull = new();
         private readonly List<GameObject> r_backgroundElementHoldersPull = new();
         public Transform StaticBackgroundTransform => _staticBackgroundTransform;
+        private GameEventHandler _gameEventHandler;
 
         private const int BACKGROUND_OFFSET = 1000;
+
+        [Inject]
+        public void Constructor(GameEventHandler gameEventHandler)
+        {
+            _gameEventHandler = gameEventHandler;
+        }
+        
+        private void Start()
+        {
+            _gameEventHandler.OnPlayerTouchedToEndOfLocation += PlayerTouchedToEndOfLocation;
+        }
+
+        private void OnDestroy()
+        {
+            _gameEventHandler.OnPlayerTouchedToEndOfLocation -= PlayerTouchedToEndOfLocation;
+        }
+
+        private void PlayerTouchedToEndOfLocation()
+        {
+            GenerateNewLocationAsync().Forget();
+        }
 
         public async UniTask GenerateNewLocationAsync()
         {

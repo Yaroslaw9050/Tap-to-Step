@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2781eeacaa45d4aa28c887c8ab9e35e8, type: 3}
   m_Name: PlayerDefaultSetup
   m_EditorClassIdentifier: 
-  _turnSpeed: 1
-  _stepLenght: 1
-  _stepSpeed: 1
+  _turnSpeed: 2
+  _stepLenght: 2
+  _stepSpeed: 0.5

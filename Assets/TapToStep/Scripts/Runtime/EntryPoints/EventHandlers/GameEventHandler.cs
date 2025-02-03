@@ -9,6 +9,7 @@ namespace Runtime.EntryPoints.EventHandlers
         public event Action OnPlayerStartMoving;
         public event Action OnPlayerDied;
         public event Action OnUiElementClicked;
+        public event Action OnPlayerTouchedToEndOfLocation;
         public event Action<bool> OnPlayerScreenCastStatusChanged;
         public event Action<bool> OnMenuViewStatusChanged;
         public event Action<PerkType> OnSomeSkillUpgraded;
@@ -48,6 +49,11 @@ namespace Runtime.EntryPoints.EventHandlers
         public void InvokeSomePlayerSkillUpgraded(PerkType upgradeType)
         {
             OnSomeSkillUpgraded?.Invoke(upgradeType);
+        }
+
+        public void InvokeOnPlayerTouchedToEndOfLocation()
+        {
+            OnPlayerTouchedToEndOfLocation?.Invoke();
         }
     }
 }
