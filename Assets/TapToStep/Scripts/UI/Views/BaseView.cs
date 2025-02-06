@@ -5,7 +5,7 @@ namespace UI.Views.Upgrades
 {
     public class BaseView: MonoBehaviour
     {
-        [SerializeField] private CanvasGroup _thisViewCanvasGroup;
+        [SerializeField] protected CanvasGroup _thisViewCanvasGroup;
         
         public virtual void ShowView(float duration = 0.5f)
         {
