@@ -54,7 +54,6 @@ namespace UI.Views.Upgrades
             foreach (var subView in _upgradeSubViews)
             {
                 if(subView.PerkType != perk) continue;
-                Debug.Log($"Foreach. Enter with perk: {perk} | Cost: {cost}");
                 subView.UpdateElementsData(_playerPerkSystem.GetPerkLevel(perk), cost);
             }
         }

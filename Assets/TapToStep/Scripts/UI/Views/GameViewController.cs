@@ -1,6 +1,7 @@
 using CompositionRoot.SO.Player.Logic;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
+using UI.Views.LeaderBoard;
 using UnityEngine;
 using Zenject;
 
@@ -29,18 +30,22 @@ namespace UI.Views.Upgrades
             _playerEntryPoint = entryPoint;
             
             _gameView.Init(_playerEntryPoint);
-            _mainMenuView.Int(_playerEntryPoint);
-            _deadView.Init();
+            _mainMenuView.Init(_playerEntryPoint);
+            _deadView.Init(_playerEntryPoint);
+            _leaderBoardView.Init();
 
-            _tutorialView.ShowView(0f);
             _gameView.ShowView();
-            _deadView.HideView(0f);
-            _mainMenuView.HideView(0f);
-            
+            _deadView.HideView();
+            _mainMenuView.HideView();
+            _leaderBoardView.HideView(0f);
+            _tutorialView.ShowView(0f);
+
             _gameEventHandler.OnPlayerStartMoving += PlayerStartMoving;
             _gameEventHandler.OnPlayerDied += OnPlayerDied;
             _gameView.OnToMenuButtonPressed += ToMenuButtonPressed;
             _mainMenuView.OnBackButtonClicked += MainMenuBackButtonClicked;
+            _mainMenuView.OnToLeaderboardButtonPressed += ToLeaderboardFromMenu;
+            _leaderBoardView.OnBackButtonPressed += LeaderBoardBackButtonPressed;
         }
 
         public void Destruct()
@@ -52,6 +57,7 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnPlayerDied -= OnPlayerDied;
             _gameView.OnToMenuButtonPressed -= ToMenuButtonPressed;
             _mainMenuView.OnBackButtonClicked -= MainMenuBackButtonClicked;
+            _leaderBoardView.OnBackButtonPressed -= LeaderBoardBackButtonPressed;
         }
 
         private void PlayerStartMoving()
@@ -77,6 +83,18 @@ namespace UI.Views.Upgrades
             _mainMenuView.HideView();
             _gameView.ShowView();
             _gameEventHandler.InvokeOnMenuViewStatus(false);
+        }
+
+        private void LeaderBoardBackButtonPressed()
+        {
+            _mainMenuView.ShowView(0f);
+            _leaderBoardView.HideView(0f);
+        }
+
+        private void ToLeaderboardFromMenu()
+        {
+            _mainMenuView.HideView();
+            _leaderBoardView.ShowView(0f);
         }
     }
 }
