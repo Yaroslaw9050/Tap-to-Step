@@ -153,3 +153,10 @@ sysinfo.txt
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity,rider
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_5_0.bundle
+
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_5_0.so
+
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_5_0.bundle.meta
+
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_5_0.so.meta

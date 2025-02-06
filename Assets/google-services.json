@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "747402911407",
+    "firebase_url": "https://taptostep-d19c4-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "taptostep-d19c4",
+    "storage_bucket": "taptostep-d19c4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747402911407:android:9460d0b1e00571014a7e5a",
+        "android_client_info": {
+          "package_name": "com.MaxProGame.TapToStep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbjjG0oh4Njfii4TjoiS49iangra_zFjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

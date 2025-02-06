@@ -1,4 +1,7 @@
+using Core.Service.Leaderboard;
+using Cysharp.Threading.Tasks;
 using Runtime.EntryPoints.EventHandlers;
+using Runtime.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,15 +15,27 @@ namespace UI.Views.Upgrades
         [SerializeField] private Button _continueButton;
 
         private GameEventHandler _gameEventHandler;
+        private LeaderboardService _leaderboardService;
+        private PlayerEntryPoint _playerEntryPoint;
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler)
+        public void Constructor(GameEventHandler gameEventHandler,
+            LeaderboardService leaderboardService)
         {
             _gameEventHandler = gameEventHandler;
+            _leaderboardService = leaderboardService;
         }
-        
-        public void Init()
+
+        public override void ShowView(float duration = 0.5f)
         {
+            base.ShowView(duration);
+            _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
+        }
+
+        public void Init(PlayerEntryPoint playerEntryPoint)
+        {
+            _playerEntryPoint = playerEntryPoint;
+            
             _restartButton.onClick.AddListener(() =>
             {
                 _gameEventHandler.InvokeOnUiElementClicked();
