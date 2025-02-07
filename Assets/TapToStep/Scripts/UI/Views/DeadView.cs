@@ -38,7 +38,9 @@ namespace UI.Views.Upgrades
             
             _restartButton.onClick.AddListener(() =>
             {
+                _playerEntryPoint.PlayerStatistic.ResetDistance();
                 _gameEventHandler.InvokeOnUiElementClicked();
+
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             });
         }

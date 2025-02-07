@@ -11,17 +11,7 @@ namespace Runtime.Player.CompositionRoot
         
         public int Bits => _bits;
 
-        public float Distance
-        {
-            get => _distance;
-            set
-            {
-                if(value > _distance)
-                {
-                    _distance = value;
-                }
-            }
-        }
+        public float Distance => _distance;
 
 
         public void AddBits(int value)
@@ -40,6 +30,17 @@ namespace Runtime.Player.CompositionRoot
             _bits -= value;
             PlayerPrefs.SetInt("Bits", _bits);
             PlayerPrefs.Save();
+        }
+
+        public void ResetDistance()
+        {
+            _distance = 0;
+            SaveAllData();
+        }
+        public void UpdateDistance(float value)
+        {
+            _distance += value;
+            SaveAllData();
         }
 
         public void SaveAllData()

@@ -18,6 +18,7 @@ namespace UI.Views.Upgrades
 
         private GameEventHandler _gameEventHandler;
         private PlayerEntryPoint _playerEntryPoint;
+        private bool _isFirstTap;
         
         [Inject]
         public void Constructor(GameEventHandler gameEventHandler)
@@ -27,14 +28,15 @@ namespace UI.Views.Upgrades
         
         public void Init(PlayerEntryPoint entryPoint)
         {
+            _isFirstTap = false;
             _playerEntryPoint = entryPoint;
             
             _gameView.Init(_playerEntryPoint);
             _mainMenuView.Init(_playerEntryPoint);
             _deadView.Init(_playerEntryPoint);
             _leaderBoardView.Init();
-
-            _gameView.ShowView();
+            
+            _gameView.HideView();
             _deadView.HideView();
             _mainMenuView.HideView();
             _leaderBoardView.HideView(0f);
@@ -62,8 +64,12 @@ namespace UI.Views.Upgrades
 
         private void PlayerStartMoving()
         {
+            if(_isFirstTap) return;
+            
+            _isFirstTap = true;
             _tutorialView.HideView();
-        }
+            _gameView.ShowView();
+        } 
 
         private void OnPlayerDied()
         {

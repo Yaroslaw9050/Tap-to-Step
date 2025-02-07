@@ -59,7 +59,7 @@ namespace UI.Views.LeaderBoard
             var (top100Users, myCard, myRank) = await _leaderboardService.RequestAllLeaderboardAsync();
 
             _userNameText.SetText(myCard.userName);
-            _userRankText.SetText(myRank.ToString());
+            _userRankText.SetText((myRank + 1).ToString());
             _userDistanceText.SetText(ConvertToDistance(myCard.distance));
             
             for (var i = 0; i < top100Users.Count; i++)

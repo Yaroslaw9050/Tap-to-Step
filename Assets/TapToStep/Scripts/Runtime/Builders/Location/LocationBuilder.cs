@@ -73,6 +73,7 @@ namespace Runtime.Service.LocationGenerator
                 RemoveOldLocation();
             }
         }
+        
 
         private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, int millisDelay = 500)
         {
