@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerRoot: {fileID: 4048923128348501346}
+  _playerRigidBody: {fileID: 5993212637148310609}
 --- !u!1 &5278147590244681802
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,9 +241,6 @@ MonoBehaviour:
   _playerStatistic:
     _bits: 0
     _distance: 0
-    _cooldown: 0
-    _stepTime: 0
-    _stepLenght: 0
 --- !u!114 &9149418625531681130
 MonoBehaviour:
   m_ObjectHideFlags: 0

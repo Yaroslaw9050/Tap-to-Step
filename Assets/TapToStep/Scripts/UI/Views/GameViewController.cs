@@ -44,6 +44,8 @@ namespace UI.Views.Upgrades
 
             _gameEventHandler.OnPlayerStartMoving += PlayerStartMoving;
             _gameEventHandler.OnPlayerDied += OnPlayerDied;
+            _gameEventHandler.OnPlayerResumed += OnPlayerResumed;
+            
             _gameView.OnToMenuButtonPressed += ToMenuButtonPressed;
             _mainMenuView.OnBackButtonClicked += MainMenuBackButtonClicked;
             _mainMenuView.OnToLeaderboardButtonPressed += ToLeaderboardFromMenu;
@@ -54,12 +56,16 @@ namespace UI.Views.Upgrades
         {
             _gameView.Destruct();
             _deadView.Destruct();
+            _mainMenuView.Destruct();
             
             _gameEventHandler.OnPlayerStartMoving -= PlayerStartMoving;
             _gameEventHandler.OnPlayerDied -= OnPlayerDied;
+            _gameEventHandler.OnPlayerResumed -= OnPlayerResumed;
+            
             _gameView.OnToMenuButtonPressed -= ToMenuButtonPressed;
             _mainMenuView.OnBackButtonClicked -= MainMenuBackButtonClicked;
             _leaderBoardView.OnBackButtonPressed -= LeaderBoardBackButtonPressed;
+            _mainMenuView.OnToLeaderboardButtonPressed -= ToLeaderboardFromMenu;
         }
 
         private void PlayerStartMoving()
@@ -69,7 +75,7 @@ namespace UI.Views.Upgrades
             _isFirstTap = true;
             _tutorialView.HideView();
             _gameView.ShowView();
-        } 
+        }
 
         private void OnPlayerDied()
         {
@@ -101,6 +107,13 @@ namespace UI.Views.Upgrades
         {
             _mainMenuView.HideView();
             _leaderBoardView.ShowView(0f);
+        }
+
+        private void OnPlayerResumed()
+        {
+            _deadView.HideView();
+            _gameView.ShowView();
+            _gameEventHandler.InvokeOnMenuViewStatus(false);
         }
     }
 }

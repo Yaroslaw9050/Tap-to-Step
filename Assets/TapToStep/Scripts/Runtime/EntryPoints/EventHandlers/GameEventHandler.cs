@@ -13,6 +13,7 @@ namespace Runtime.EntryPoints.EventHandlers
         public event Action<bool> OnPlayerScreenCastStatusChanged;
         public event Action<bool> OnMenuViewStatusChanged;
         public event Action<PerkType> OnSomeSkillUpgraded;
+        public event Action OnPlayerResumed;
 
         public void InvokeOnCollectablesChanged(int value)
         {
@@ -54,6 +55,11 @@ namespace Runtime.EntryPoints.EventHandlers
         public void InvokeOnPlayerTouchedToEndOfLocation()
         {
             OnPlayerTouchedToEndOfLocation?.Invoke();
+        }
+
+        public void InvokeOnGameResumed()
+        {
+            OnPlayerResumed?.Invoke();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using CompositionRoot.Enums;
+using Core.Extension.UI;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
@@ -48,7 +49,7 @@ namespace UI.Views.Upgrades
         {
             if(perk == PerkType.None) return;
             
-            _bitsText.text = _playerEntryPoint.PlayerStatistic.Bits.ToString();
+            _bitsText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
             var cost = _playerPerkSystem.GetPerkPrice(perk);
 
             foreach (var subView in _upgradeSubViews)

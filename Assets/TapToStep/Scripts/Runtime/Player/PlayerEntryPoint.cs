@@ -41,6 +41,8 @@ namespace Runtime.Player
             
             _gameEventHandler.InvokeOnPlayerScreenCastStatus(true);
             _gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
+            _gameEventHandler.OnPlayerResumed += OnPlayerResumed;
+            _playerEventHandler.OnPlayerDied += OnPlayerDied;
         }
 
         public void Destruct()
@@ -51,11 +53,25 @@ namespace Runtime.Player
             _cameraController.Destruct();
             
             _gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
+            _gameEventHandler.OnPlayerResumed -= OnPlayerResumed;
+            _playerEventHandler.OnPlayerDied -= OnPlayerDied;
         }
 
         private void OnMenuView(bool isOpen)
         {
             _playerStatistic.SaveAllData();
+        }
+
+        private void OnPlayerDied()
+        {
+            _movement.OnPlayerDied();
+            _cameraController.MoveToDeadPosition();
+        }
+
+        private void OnPlayerResumed()
+        {
+            _movement.OnPlayerResumed();
+            _cameraController.MoveToPlayerResumePosition();
         }
     }
 }

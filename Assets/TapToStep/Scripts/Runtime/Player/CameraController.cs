@@ -23,14 +23,28 @@ namespace Runtime.Player
             _entryPoint = playerEntryPoint;
             _gameEventHandler = gameEventHandler;
             _entryPoint.PlayerEventHandler.OnPlayerStartMoving += MoveLikeStep;
-            _entryPoint.PlayerEventHandler.OnPlayerDied += MoveToDeadPosition;
             _gameEventHandler.OnMenuViewStatusChanged += MenuViewCalled;
         }
 
         public void Destruct()
         {
             _entryPoint.PlayerEventHandler.OnPlayerStartMoving -= MoveLikeStep;
-            _entryPoint.PlayerEventHandler.OnPlayerDied -= MoveToDeadPosition;
+
+            _cameraTurnTween?.Pause();
+            _cameraTurnTween?.Kill();
+            _cameraTurnTween = null;
+        }
+
+        public void MoveToDeadPosition()
+        {
+            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y - 1.2f, _cameraTransform.position.z);
+            _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
+        }
+
+        public void MoveToPlayerResumePosition()
+        {
+            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y + 1.2f, _cameraTransform.position.z);
+            _cameraTransform.DOMove(camPosition, 0.5f).SetEase(Ease.InOutFlash);
         }
 
         private void MoveLikeStep()
@@ -44,12 +58,6 @@ namespace Runtime.Player
             {
                 _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
             });
-        }
-
-        private void MoveToDeadPosition()
-        {
-            var camPosition = new Vector3(_cameraTransform.position.x, 0.2f, _cameraTransform.position.z);
-            _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
         }
 
         private void MenuViewCalled(bool isActive)

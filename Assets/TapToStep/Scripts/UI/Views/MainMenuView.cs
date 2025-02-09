@@ -47,6 +47,11 @@ namespace UI.Views.Upgrades
             _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);
         }
 
+        public void Destruct()
+        {
+            _gradientAutoRotation.Destruct();
+        }
+
         public override void ShowView(float duration = 0.5f)
         {
             base.ShowView(duration);

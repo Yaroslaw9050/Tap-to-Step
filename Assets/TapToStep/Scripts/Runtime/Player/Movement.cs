@@ -12,13 +12,12 @@ namespace Runtime.Player
     public class Movement : MonoBehaviour
     {
         [SerializeField] private Transform _playerRoot;
+        [SerializeField] private Rigidbody _playerRigidBody;
         
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
         private PlayerPerkSystem _perkSystem;
         private Tween _movementTween;
-
-        private CancellationTokenSource _cts;
         
         private bool _canMove;
 
@@ -29,18 +28,30 @@ namespace Runtime.Player
         public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem)
         {
             _canMove = true;
-            _cts = new CancellationTokenSource();
             
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
             _entryPoint.PlayerEventHandler.OnMoveButtonTouched += MoveAfterTouch;
-            _entryPoint.PlayerEventHandler.OnPlayerDied += OnPlayerDied;
+            
         }
 
         public void Destruct()
         {
             _entryPoint.PlayerEventHandler.OnMoveButtonTouched -= MoveAfterTouch;
-            _entryPoint.PlayerEventHandler.OnPlayerDied -= OnPlayerDied;
+        }
+
+        public void OnPlayerDied()
+        {
+            _playerRigidBody.isKinematic = true;
+            _movementTween?.Pause();
+            _movementTween?.Kill();
+            _canMove = false;
+        }
+
+        public void OnPlayerResumed()
+        {
+            _playerRigidBody.isKinematic = false;
+            _canMove = true;
         }
 
         private void MoveAfterTouch(MoveDirection moveDirection)
@@ -81,14 +92,6 @@ namespace Runtime.Player
                 MoveDirection.None => 0f,
                 _ => 0f
             };
-        }
-
-        private void OnPlayerDied()
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _movementTween?.Kill();
-            _canMove = false;
         }
     }
 }

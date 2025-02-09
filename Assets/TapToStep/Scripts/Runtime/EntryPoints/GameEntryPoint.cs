@@ -42,7 +42,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
             _viewController.Init(_playerBuilder.PlayerEntryPoint);
             await _leaderboardService.InitAsync();
-            _mobileAdsService.LoadAd();
+            _mobileAdsService.LoadBannerAd();
         }
 
         private void OnDestroy()

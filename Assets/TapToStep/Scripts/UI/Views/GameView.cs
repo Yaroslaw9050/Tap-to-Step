@@ -1,6 +1,7 @@
 using System;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
+using Core.Extension.UI;
 using DG.Tweening;
 using MPUIKIT;
 using Runtime.EntryPoints.EventHandlers;
@@ -48,8 +49,8 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnSomeSkillUpgraded += OnSomeSkillUpgraded;
             _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
             
-            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
-            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
+            _distanceText.SetText($"Distance\n{TextMeshProExtension.ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
+            _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
             _energyLine.fillAmount = 1f;
         }
 
@@ -71,77 +72,20 @@ namespace UI.Views.Upgrades
         {
             var stepSpeedDuration = _playerEntryPoint.PlayerSettingSo.StepSpeed - _playerPerkSystem.GetPerkValueByType(PerkType.StepSpeed);
             
-            _distanceText.SetText($"Distance\n{ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
+            _distanceText.SetText($"Distance\n{TextMeshProExtension.ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
             _energyLine.fillAmount = 0f;
             _energyLine.DOFillAmount(1f, stepSpeedDuration).SetEase(Ease.Linear);
         }
 
         private void OnSomeSkillUpgraded(PerkType _)
         {
-            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
+            _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
         }
 
         private void OnCollectablesChanged(int value)
         {
             _playerEntryPoint.PlayerStatistic.AddBits(value);
-            _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
-        }
-        
-        private  string ConvertToBits(int rawBitValue)
-        {
-            string result = "";
-
-            switch (rawBitValue)
-            {
-                case < 1000:
-                    return rawBitValue.ToString();
-                case >= 1000 and < 1000000: 
-                {
-                    int k = rawBitValue / 1000; 
-                    result += $"{k}k";
-                
-                    return result.Trim();
-                }
-            }
-            
-            var v = rawBitValue / 1000000; 
-            result += $"{v}m";
-                
-            return result.Trim(); 
-        }
-        
-        private  string ConvertToDistance(float distance)
-        {
-            var meters = (int)distance;
-            var centimeters = (int)((distance - meters) * 100); 
-            
-            var result = "";
-            
-            if (meters >= 1000)
-            {
-                int kilometers = meters / 1000; 
-                meters = meters % 1000; 
-                result += $"{kilometers}km";
-                
-                if (meters > 0)
-                {
-                    result += $" {meters}m";
-                }
-            }
-            else
-            {
-                if (meters > 0)
-                {
-                    result += $"{meters}m";
-                }
-                
-                if (centimeters > 0)
-                {
-                    result += $" {centimeters}cm";
-                }
-            }
-
-            return result.Trim();
+            _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
         }
     }
 }

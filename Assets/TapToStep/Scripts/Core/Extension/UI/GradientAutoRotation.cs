@@ -35,6 +35,13 @@ namespace Core.Extension.UI
             _rotationTween?.Pause();
         }
 
+        public void Destruct()
+        {
+            _rotationTween?.Pause();
+            _rotationTween?.Kill();
+            _rotationTween = null;
+        }
+
         private void UpdateGradients()
         {
             foreach (var buttonGradient in _buttonGradients)
