@@ -5055,6 +5055,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d1865ee3ce1485283f636395f49e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _welcomeTextPrefab: {fileID: 3716258797424056799, guid: 4448dbf02e1b54f079322cb7b033f6da, type: 3}
   _staticBackgroundPrefab: {fileID: 4573834394719943906, guid: b182d8fb0f6a45f42820e6d5feaa499c, type: 3}
   _backgroundPrefab: {fileID: 2324698557506521146, guid: b3e5111012c7b40d19d3240d2729bf57, type: 3}
   _supportedLocationPull:

@@ -13,6 +13,7 @@ namespace Runtime.Service.LocationGenerator
     public class LocationBuilder: MonoBehaviour, ILocationGenerator
     {
         [Header("LocationLikeChildToPlayer")]
+        [SerializeField] private GameObject _welcomeTextPrefab;
         [SerializeField] private GameObject _staticBackgroundPrefab;
         
         [Header("Locations")] 
@@ -21,6 +22,7 @@ namespace Runtime.Service.LocationGenerator
         [SerializeField] private Transform _locationParent;
 
         private Transform _staticBackgroundTransform;
+        private GameObject _welcomeModel;
         
         private Vector3 _locationGenerationPoint;
         private bool _isFirstGeneration = true;
@@ -70,6 +72,7 @@ namespace Runtime.Service.LocationGenerator
             if (_isFirstGeneration)
             {
                 _isFirstGeneration = !_isFirstGeneration;
+                CreateWelcomeText();
                 await CreateBackgroundAsync();
                 await CreateBackgroundAsync();
                 await CreateLocationAsync(_supportedLocationPull[0], 20);
@@ -80,6 +83,7 @@ namespace Runtime.Service.LocationGenerator
             {
                 await CreateLocationAsync(_supportedLocationPull[randomLocationIndex]);
                 RemoveOldLocation();
+                DestroyWelcomeText();
             }
         }
 
@@ -104,6 +108,19 @@ namespace Runtime.Service.LocationGenerator
             }
             r_locationElementHoldersPull.Add(locationElementsHolder);
             _locationGenerationPoint = startLocationSpawnPosition;
+        }
+
+        private void CreateWelcomeText()
+        {
+            _welcomeModel = Instantiate(_welcomeTextPrefab, new Vector3(0f, 160f, 160f), Quaternion.identity);
+        }
+
+        private void DestroyWelcomeText()
+        {
+            if (_welcomeModel != null)
+            {
+                Destroy(_welcomeModel);
+            }
         }
 
         private void RemoveOldLocation()
