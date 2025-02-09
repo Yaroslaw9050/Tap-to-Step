@@ -10,7 +10,7 @@ namespace TapToStep.Scripts.Core.Service.AdMob
 
 #if UNITY_ANDROID
         private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/7559106027";
-        private const string REWARD_DEAD_ADS = "ca-app-pub-7582758822795295/8275391517";
+        private const string REWARD_CONTINUE_ADS = "ca-app-pub-7582758822795295/8275391517";
         private const string REWARD_RARE_AFTER_DEAD_ADS = "ca-app-pub-7582758822795295/9202332516";
 #elif UNITY_IOS
         private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/2913284002";

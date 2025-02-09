@@ -1,6 +1,8 @@
 using System;
 using CompositionRoot.Enums;
+using Core.Service.Leaderboard;
 using DG.Tweening;
+using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,12 +16,15 @@ namespace UI.Views.Upgrades
         [SerializeField] private TextMeshProUGUI _levelText;
         [SerializeField] private TextMeshProUGUI _costText;
         [SerializeField] private Button _upgradeButton;
+        
+        private LeaderboardService _leaderboardService;
 
         public PerkType PerkType => _perkType;
         public event Action<PerkType> OnUpgradeButtonPressed;
 
-        public void Init()
+        public void Init(LeaderboardService leaderboardService)
         {
+            _leaderboardService = leaderboardService;
             _upgradeButton.onClick.AddListener(() =>  OnUpgradeButtonPressed?.Invoke(_perkType));
         }
 
@@ -27,7 +32,7 @@ namespace UI.Views.Upgrades
         {
             _levelText.text = level.ToString();
             _costText.text = $"upgrade \\n <size=80%>({cost} bits) </size>";
-            _upgradeButton.interactable = true;
+            _upgradeButton.interactable = _leaderboardService.SystemReady;
         }
 
         public void PlayPurchaseAnimation()

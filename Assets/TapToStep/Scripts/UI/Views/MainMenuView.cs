@@ -41,7 +41,7 @@ namespace UI.Views.Upgrades
         public void Init(PlayerEntryPoint playerEntryPoint)
         {
             _playerEntryPoint = playerEntryPoint;
-            _upgradeHolderSubView.Init(_gameEventHandler, _playerPerkSystem, _playerEntryPoint);
+            _upgradeHolderSubView.Init(_gameEventHandler, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
             
             _backButton.onClick.AddListener(BackButtonCLicked);
             _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);

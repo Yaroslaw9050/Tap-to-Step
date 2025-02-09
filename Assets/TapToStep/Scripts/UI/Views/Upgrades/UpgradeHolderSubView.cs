@@ -1,6 +1,7 @@
 using System;
 using CompositionRoot.Enums;
 using Core.Extension.UI;
+using Core.Service.Leaderboard;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
@@ -23,7 +24,7 @@ namespace UI.Views.Upgrades
         private PlayerEntryPoint _playerEntryPoint;
 
         public void Init(GameEventHandler gameEventHandler,
-            PlayerPerkSystem playerPerkSystem, PlayerEntryPoint playerEntryPoint)
+            PlayerPerkSystem playerPerkSystem, PlayerEntryPoint playerEntryPoint, LeaderboardService leaderboardService)
         {
             _gameEventHandler = gameEventHandler;
             _playerPerkSystem = playerPerkSystem;
@@ -31,7 +32,7 @@ namespace UI.Views.Upgrades
 
             foreach (var subView in _upgradeSubViews)
             {
-                subView.Init();
+                subView.Init(leaderboardService);
                 subView.OnUpgradeButtonPressed += ButtonPressed;
             }
             
