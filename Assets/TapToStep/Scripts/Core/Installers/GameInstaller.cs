@@ -1,3 +1,4 @@
+using Runtime.Audio;
 using Runtime.Player.Perks;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
@@ -15,6 +16,7 @@ namespace Core.Installers
         [SerializeField] private LocationBuilder _locationBuilder;
         [SerializeField] private PlayerBuilder _playerBuilder;
         [SerializeField] private GameViewController _gameViewController;
+        [SerializeField] private MusicToMaterialEmmision _musicToMaterialEmision;
         
         
         public override void InstallBindings()
@@ -25,6 +27,12 @@ namespace Core.Installers
             BindGameViewController();
             BindPlayerUpdateSystem();
             BindMobAds();
+            BindMusicToMaterial();
+        }
+
+        private void BindMusicToMaterial()
+        {
+            Container.Bind<MusicToMaterialEmmision>().FromInstance(_musicToMaterialEmision).AsSingle().NonLazy();
         }
 
         private void BindMobAds()

@@ -47,6 +47,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1491214039-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-168719396-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-902690228-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-953246748-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
@@ -86,6 +87,8 @@ MonoBehaviour:
           iconNameOrGuid: cs Script Icon
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon
         - colorIndex: 0

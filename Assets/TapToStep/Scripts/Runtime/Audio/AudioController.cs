@@ -24,15 +24,17 @@ namespace Runtime.Audio
 
         [Header("Audio Clips")] 
         [SerializeField] private AudioClip _stepClip;
+
         [SerializeField] private AudioClip _bitCollectedClip;
         [SerializeField] private AudioClip _playerDiedClip;
         [SerializeField] private AudioClip _uiClickClip;
         [SerializeField] private AudioClip _levelUpClip;
-        
+
         private bool _isInitialized;
         private GameEventHandler _gameEventHandler;
         private CancellationTokenSource _cts;
-        
+
+        public AudioSource MusicSource => _musicSource;
         private readonly List<AudioSource> r_stepsAudioSources = new(10);
 
         [Inject]

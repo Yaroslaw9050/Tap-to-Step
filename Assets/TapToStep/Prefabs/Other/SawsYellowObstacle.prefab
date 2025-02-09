@@ -87,7 +87,7 @@ PrefabInstance:
     - target: {fileID: -7719315677954659535, guid: 1fb68cb5f1c1e425e82a92b8a0c85933, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 15ee59a0e36f54f1abf4ed574e5c08e3, type: 2}
+      objectReference: {fileID: 2100000, guid: 57c9b61b3dd9f8c48a093204e1ebfda5, type: 2}
     - target: {fileID: -4278527724067207316, guid: 1fb68cb5f1c1e425e82a92b8a0c85933, type: 3}
       propertyPath: m_TagString
       value: Interaction
@@ -226,7 +226,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 5
+  MaxDistance: 8
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

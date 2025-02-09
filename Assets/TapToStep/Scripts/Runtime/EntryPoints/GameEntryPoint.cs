@@ -17,12 +17,14 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
         private GameViewController _viewController;
         private LeaderboardService _leaderboardService;
         private IMobileAdsService _mobileAdsService;
-        
+        private MusicToMaterialEmmision _musicToMaterialEmision;
         
         [Inject]
         public void Constructor(PlayerBuilder playerBuilder,
             LocationBuilder locationBuilder, GameViewController viewController,
-            AudioController audioController, LeaderboardService leaderboardService, IMobileAdsService mobileAdsService)
+            AudioController audioController, LeaderboardService leaderboardService,
+            IMobileAdsService mobileAdsService,
+            MusicToMaterialEmmision musicToMaterialEmision)
         {
             _playerBuilder = playerBuilder;
             _locationBuilder = locationBuilder;
@@ -30,6 +32,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _audioController = audioController;
             _leaderboardService = leaderboardService;
             _mobileAdsService = mobileAdsService;
+            _musicToMaterialEmision = musicToMaterialEmision;
         }
         
         private async void Start()
@@ -43,6 +46,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _viewController.Init(_playerBuilder.PlayerEntryPoint);
             await _leaderboardService.InitAsync();
             _mobileAdsService.LoadBannerAd();
+            _musicToMaterialEmision.Init(_audioController.MusicSource);
         }
 
         private void OnDestroy()
