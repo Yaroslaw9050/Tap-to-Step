@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using CompositionRoot.Enums;
 using DG.Tweening;
 using InputActions;
@@ -16,6 +17,8 @@ namespace Runtime.Player
         private TouchInputAction _inputAction;
         private PlayerPerkSystem _perkSystem;
         private Tween _movementTween;
+
+        private CancellationTokenSource _cts;
         
         private bool _canMove;
 
@@ -26,6 +29,7 @@ namespace Runtime.Player
         public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem)
         {
             _canMove = true;
+            _cts = new CancellationTokenSource();
             
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
@@ -49,8 +53,8 @@ namespace Runtime.Player
 
         private void MakeStep(MoveDirection moveDirection)
         {
+            if(moveDirection == MoveDirection.None) return;
             var setting = _entryPoint.PlayerSettingSo;
-            var statistic = _entryPoint.PlayerStatistic;
             
             var horizontalSlide = GetOffsetByDirection(moveDirection);
             var stepTime = setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed);
@@ -81,6 +85,8 @@ namespace Runtime.Player
 
         private void OnPlayerDied()
         {
+            _cts.Cancel();
+            _cts.Dispose();
             _movementTween?.Kill();
             _canMove = false;
         }

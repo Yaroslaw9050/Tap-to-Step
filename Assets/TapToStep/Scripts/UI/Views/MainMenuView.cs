@@ -52,6 +52,7 @@ namespace UI.Views.Upgrades
             base.ShowView(duration);
             _gradientAutoRotation.PlayAnimation();
             _upgradeHolderSubView.DisplayActualValues();
+            _toLeaderboardButton.interactable = _leaderboardService.SystemReady;
             
             TrySaveUserDistanceAsync().Forget();
         }

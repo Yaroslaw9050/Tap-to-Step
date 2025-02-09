@@ -5,8 +5,6 @@ using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using VHierarchy.Libs;
 using Zenject;
 
 
@@ -34,6 +32,8 @@ namespace UI.Views.LeaderBoard
         
         public void CreateBoard(Action onCompleted)
         {
+            if(_leaderboardService.SystemReady == false) return;
+            
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = new CancellationTokenSource();
@@ -46,10 +46,10 @@ namespace UI.Views.LeaderBoard
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = null;
-            
-            foreach (var element in r_boardElements)
+
+            for (var i = 0; i < r_boardElements.Count; i++)
             {
-                element.gameObject.Destroy();
+                Destroy(r_boardElements[i].gameObject);
             }
             r_boardElements.Clear();
         }
@@ -57,9 +57,9 @@ namespace UI.Views.LeaderBoard
         private async UniTask CreateBoardAsync(Action onCompleted)
         {
             var (top100Users, myCard, myRank) = await _leaderboardService.RequestAllLeaderboardAsync();
-
+            
             _userNameText.SetText(myCard.userName);
-            _userRankText.SetText((myRank + 1).ToString());
+            _userRankText.SetText((myRank).ToString());
             _userDistanceText.SetText(ConvertToDistance(myCard.distance));
             
             for (var i = 0; i < top100Users.Count; i++)

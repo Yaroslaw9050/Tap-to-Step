@@ -1,7 +1,10 @@
 using System;
+using Runtime.EntryPoints.EventHandlers;
+using Runtime.Player.Perks;
 using UI.Views.Upgrades;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.Views.LeaderBoard
 {
@@ -10,7 +13,15 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private LeaderBoardBuilder _boardBuilder;
         [SerializeField] private Button _backButton;
 
+        private GameEventHandler _gameEventHandler;
+
         public event Action OnBackButtonPressed;
+        
+        [Inject]
+        public void Constructor(GameEventHandler gameEventHandler)
+        {
+            _gameEventHandler = gameEventHandler;
+        }
         
         public void Init()
         {
@@ -37,6 +48,7 @@ namespace UI.Views.LeaderBoard
 
         private void BackButtonClicked()
         {
+            _gameEventHandler.InvokeOnUiElementClicked();
             OnBackButtonPressed?.Invoke();
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Firebase.Database;
 using UnityEngine;
@@ -98,16 +99,39 @@ namespace Core.Service.Leaderboard
                     Debug.LogError($"Personal user data has some issue: {_userId}" );
                     return false;
                 }
-
+            
                 return true;
             }
-            else
+
+            _userId = await GetUserCardIdByUniqueIdAsync();
+            if (string.IsNullOrEmpty(_userId))
             {
                 _userId = await CreateNewUserAsync();
-                PlayerPrefs.SetString(USER_ID_KEY, _userId);
-                PlayerPrefs.Save();
-                return true;
             }
+            PlayerPrefs.SetString(USER_ID_KEY, _userId);
+            PlayerPrefs.Save();
+
+            return true;
+        }
+
+        private async UniTask<string> GetUserCardIdByUniqueIdAsync()
+        {
+            var snapshot = await _databaseReference.GetValueAsync();
+            if (!snapshot.Exists)
+            {
+                return string.Empty;
+            }
+            foreach (var child in snapshot.Children)
+            {
+                var user = child.Value as Dictionary<string, object>;
+
+                if (user == null) continue;
+                if (user.ContainsKey(USER_UNIQUE_ID_KEY) && Equals(user[USER_UNIQUE_ID_KEY], SystemInfo.deviceUniqueIdentifier))
+                {
+                    return child.Key;
+                }
+            }
+            return string.Empty;
         }
 
         private async UniTask<string> CreateNewUserAsync()

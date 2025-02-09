@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TurnSpeed
   m_EditorClassIdentifier: 
   _upgradeType: 1
-  _costPerOneLevel: 2
-  _startPrice: 3
+  _costPerOneLevel: 40
+  _startPrice: 15
   _maxLevel: 5

@@ -1,17 +1,16 @@
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player.Perks;
 using Runtime.Service.LocationGenerator;
+using TapToStep.Scripts.Core.Service.AdMob;
 using TapToStep.Scripts.Runtime.EntryPoints;
 using UI.Views.Upgrades;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace Core.Installers
 {
     public class GameInstaller : MonoInstaller
     {
-        [FormerlySerializedAs("_playerUpgradeSystem")] [SerializeField] private PlayerPerkSystem _playerPerkSystem;
+        [SerializeField] private PlayerPerkSystem _playerPerkSystem;
         [SerializeField] private GameEntryPoint _gameEntryPoint;
         [SerializeField] private LocationBuilder _locationBuilder;
         [SerializeField] private PlayerBuilder _playerBuilder;
@@ -25,6 +24,12 @@ namespace Core.Installers
             BindPlayerBuilder();
             BindGameViewController();
             BindPlayerUpdateSystem();
+            BindMobAds();
+        }
+
+        private void BindMobAds()
+        {
+            Container.BindInterfacesAndSelfTo<AdMobService>().AsSingle().NonLazy();
         }
 
         private void BindEntryPoint()

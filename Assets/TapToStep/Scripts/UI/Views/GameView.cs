@@ -6,6 +6,7 @@ using MPUIKIT;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
+using Runtime.Player.Perks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,13 +28,15 @@ namespace UI.Views.Upgrades
 
         private GameEventHandler _gameEventHandler;
         private PlayerEntryPoint _playerEntryPoint;
+        private PlayerPerkSystem _playerPerkSystem;
         
         public event Action OnToMenuButtonPressed;
 
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler)
+        public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem)
         {
             _gameEventHandler = gameEventHandler;
+            _playerPerkSystem = playerPerkSystem;
         }
         
         public void Init(PlayerEntryPoint playerEntryPoint)
@@ -66,16 +69,16 @@ namespace UI.Views.Upgrades
 
         private void OnPlayerStartMoving()
         {
+            var stepSpeedDuration = _playerEntryPoint.PlayerSettingSo.StepSpeed - _playerPerkSystem.GetPerkValueByType(PerkType.StepSpeed);
+            
             _distanceText.SetText($"Distance\n{ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
             _energyLine.fillAmount = 0f;
-            _energyLine.DOFillAmount(1f, _playerEntryPoint.PlayerSettingSo.StepSpeed).SetEase(Ease.Linear);
+            _energyLine.DOFillAmount(1f, stepSpeedDuration).SetEase(Ease.Linear);
         }
 
         private void OnSomeSkillUpgraded(PerkType _)
         {
-            Debug.Log("SomeSkillUpgraded");
             _bitText.SetText(ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits));
-            Debug.Log($"Player has: {_playerEntryPoint.PlayerStatistic.Bits}");
         }
 
         private void OnCollectablesChanged(int value)

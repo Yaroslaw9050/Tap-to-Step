@@ -30,13 +30,22 @@ namespace InputActions
             ""id"": ""62324636-b155-4c76-90b3-d5e8ff8f71e0"",
             ""actions"": [
                 {
-                    ""name"": ""Tap"",
+                    ""name"": ""TapPosition"",
                     ""type"": ""Value"",
                     ""id"": ""f09a46e6-1388-466a-8f85-293b337eb632"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Taped"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c95c514-2d48-4fe0-873c-3bac17ad8c61"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -47,7 +56,18 @@ namespace InputActions
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Tap"",
+                    ""action"": ""TapPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01efe0df-ca1a-4c5b-b7f0-72bb7b516d8e"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Taped"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -58,7 +78,8 @@ namespace InputActions
 }");
             // GameTouch
             m_GameTouch = asset.FindActionMap("GameTouch", throwIfNotFound: true);
-            m_GameTouch_Tap = m_GameTouch.FindAction("Tap", throwIfNotFound: true);
+            m_GameTouch_TapPosition = m_GameTouch.FindAction("TapPosition", throwIfNotFound: true);
+            m_GameTouch_Taped = m_GameTouch.FindAction("Taped", throwIfNotFound: true);
         }
 
         ~@TouchInputAction()
@@ -125,12 +146,14 @@ namespace InputActions
         // GameTouch
         private readonly InputActionMap m_GameTouch;
         private List<IGameTouchActions> m_GameTouchActionsCallbackInterfaces = new List<IGameTouchActions>();
-        private readonly InputAction m_GameTouch_Tap;
+        private readonly InputAction m_GameTouch_TapPosition;
+        private readonly InputAction m_GameTouch_Taped;
         public struct GameTouchActions
         {
             private @TouchInputAction m_Wrapper;
             public GameTouchActions(@TouchInputAction wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Tap => m_Wrapper.m_GameTouch_Tap;
+            public InputAction @TapPosition => m_Wrapper.m_GameTouch_TapPosition;
+            public InputAction @Taped => m_Wrapper.m_GameTouch_Taped;
             public InputActionMap Get() { return m_Wrapper.m_GameTouch; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -140,16 +163,22 @@ namespace InputActions
             {
                 if (instance == null || m_Wrapper.m_GameTouchActionsCallbackInterfaces.Contains(instance)) return;
                 m_Wrapper.m_GameTouchActionsCallbackInterfaces.Add(instance);
-                @Tap.started += instance.OnTap;
-                @Tap.performed += instance.OnTap;
-                @Tap.canceled += instance.OnTap;
+                @TapPosition.started += instance.OnTapPosition;
+                @TapPosition.performed += instance.OnTapPosition;
+                @TapPosition.canceled += instance.OnTapPosition;
+                @Taped.started += instance.OnTaped;
+                @Taped.performed += instance.OnTaped;
+                @Taped.canceled += instance.OnTaped;
             }
 
             private void UnregisterCallbacks(IGameTouchActions instance)
             {
-                @Tap.started -= instance.OnTap;
-                @Tap.performed -= instance.OnTap;
-                @Tap.canceled -= instance.OnTap;
+                @TapPosition.started -= instance.OnTapPosition;
+                @TapPosition.performed -= instance.OnTapPosition;
+                @TapPosition.canceled -= instance.OnTapPosition;
+                @Taped.started -= instance.OnTaped;
+                @Taped.performed -= instance.OnTaped;
+                @Taped.canceled -= instance.OnTaped;
             }
 
             public void RemoveCallbacks(IGameTouchActions instance)
@@ -169,7 +198,8 @@ namespace InputActions
         public GameTouchActions @GameTouch => new GameTouchActions(this);
         public interface IGameTouchActions
         {
-            void OnTap(InputAction.CallbackContext context);
+            void OnTapPosition(InputAction.CallbackContext context);
+            void OnTaped(InputAction.CallbackContext context);
         }
     }
 }

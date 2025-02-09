@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: StepLenght
   m_EditorClassIdentifier: 
   _upgradeType: 3
-  _costPerOneLevel: 1
-  _startPrice: 2
-  _maxLevel: 20
+  _costPerOneLevel: 15
+  _startPrice: 5
+  _maxLevel: 15
