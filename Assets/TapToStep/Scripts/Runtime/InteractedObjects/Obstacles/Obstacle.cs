@@ -4,18 +4,21 @@ namespace Runtime.InteractedObjects.Obstacles
 {
     public class Obstacle : MonoBehaviour
     {
-        [SerializeField] private ObstacleType _obstacleType;
+        [SerializeField] protected ObstacleType _obstacleType;
 
         public ObstacleType ObstacleType => _obstacleType;
 
-        public void Init()
+        private void OnEnable()
         {
-            
+            Init();
         }
 
-        public void Collect()
+        public virtual void Collect()
         {
             Destroy(gameObject);
         }
+
+        protected virtual void Init()
+        { }
     }
 }

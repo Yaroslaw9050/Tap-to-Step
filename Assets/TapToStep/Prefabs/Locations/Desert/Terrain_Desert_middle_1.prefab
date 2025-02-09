@@ -89,6 +89,22 @@ PrefabInstance:
       propertyPath: _obstacleSpawnPointHolder
       value: 
       objectReference: {fileID: 1479933394570897810}
+    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+      propertyPath: _obstaclePullPrefab.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+      propertyPath: '_obstaclePullPrefab.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
+    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+      propertyPath: '_obstaclePullPrefab.Array.data[1]'
+      value: 
+      objectReference: {fileID: 4033293931355521997, guid: baa8bf9b2c62c4a0081c11c48b7adbb7, type: 3}
+    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+      propertyPath: '_obstaclePullPrefab.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
     - target: {fileID: 6364218991868894703, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
       propertyPath: m_Name
       value: Logic

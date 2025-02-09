@@ -415,7 +415,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _obstaclePullPrefab:
-  - {fileID: 6910655246503341929, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
+  - {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
+  - {fileID: 4033293931355521997, guid: baa8bf9b2c62c4a0081c11c48b7adbb7, type: 3}
+  - {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
   _obstacleSpawnPointHolder: {fileID: 6949968037567785494}
   _yOffset: 0.3
 --- !u!1 &8722393271922653917

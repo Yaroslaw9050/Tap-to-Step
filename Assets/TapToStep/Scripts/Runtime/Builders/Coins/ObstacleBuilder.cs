@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Runtime.InteractedObjects.Obstacles;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace TapToStep.Scripts.Runtime.Builders.Coins
 {
     public class ObstacleBuilder : MonoBehaviour
     {
-        [SerializeField] private Obstacle[] _obstaclePullPrefab;
+        [SerializeField] private GameObject[] _obstaclePullPrefab;
         [SerializeField] private Transform _obstacleSpawnPointHolder;
         [SerializeField] private float _yOffset;
         
@@ -15,7 +15,7 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
         private void Start()
         {
             Initialise();
-            Generate();
+            GenerateAsync().Forget();
         }
         
         private void Initialise()
@@ -26,7 +26,7 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
             }
         }
 
-        private void Generate()
+        private async UniTaskVoid GenerateAsync()
         {
             var numberOfPoints = Random.Range(2, r_points.Count);
 
@@ -45,8 +45,8 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
                 var newXPoint = Random.Range(-1.9f, 1.9f);
                 point.localPosition = new Vector3(newXPoint, point.localPosition.y + _yOffset, point.localPosition.z);
                 point.localRotation = Quaternion.Euler(0, Random.Range(-30f, 45f), 0);
-                var temp = Instantiate(_obstaclePullPrefab[Random.Range(0, _obstaclePullPrefab.Length)], point);
-                temp.Init();
+                Instantiate(_obstaclePullPrefab[Random.Range(0, _obstaclePullPrefab.Length)], point);
+                await UniTask.Delay(500);
             }
         }
     }
