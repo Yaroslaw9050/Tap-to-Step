@@ -19,6 +19,7 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private TextMeshProUGUI _userRankText;
         [SerializeField] private TextMeshProUGUI _userNameText;
         [SerializeField] private TextMeshProUGUI _userDistanceText;
+        [SerializeField] private TextMeshProUGUI _userUniqIDText;
         
         private readonly List<BoardElement> r_boardElements = new(100);
         private LeaderboardService _leaderboardService;
@@ -61,6 +62,7 @@ namespace UI.Views.LeaderBoard
             _userNameText.SetText(myCard.userName);
             _userRankText.SetText((myRank).ToString());
             _userDistanceText.SetText(ConvertToDistance(myCard.distance));
+            _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             for (var i = 0; i < top100Users.Count; i++)
             {

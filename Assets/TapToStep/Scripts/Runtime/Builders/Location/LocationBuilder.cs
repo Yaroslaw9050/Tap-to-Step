@@ -25,6 +25,7 @@ namespace Runtime.Service.LocationGenerator
         private Vector3 _locationGenerationPoint;
         private bool _isFirstGeneration = true;
         private int _backgroundCounter;
+        private long _nexBackgroundSpawnTriggerDistance;
 
         private readonly List<GameObject> r_locationElementHoldersPull = new();
         private readonly List<GameObject> r_backgroundElementHoldersPull = new();
@@ -32,6 +33,7 @@ namespace Runtime.Service.LocationGenerator
         private GameEventHandler _gameEventHandler;
 
         private const int BACKGROUND_OFFSET = 1000;
+        
 
         [Inject]
         public void Constructor(GameEventHandler gameEventHandler)
@@ -41,6 +43,7 @@ namespace Runtime.Service.LocationGenerator
         
         private void Start()
         {
+            _nexBackgroundSpawnTriggerDistance = BACKGROUND_OFFSET;
             _gameEventHandler.OnPlayerTouchedToEndOfLocation += PlayerTouchedToEndOfLocation;
         }
 
@@ -49,9 +52,15 @@ namespace Runtime.Service.LocationGenerator
             _gameEventHandler.OnPlayerTouchedToEndOfLocation -= PlayerTouchedToEndOfLocation;
         }
 
-        private void PlayerTouchedToEndOfLocation()
+        private void PlayerTouchedToEndOfLocation(float playerZPosition)
         {
             GenerateNewLocationAsync().Forget();
+
+            if (playerZPosition >= _nexBackgroundSpawnTriggerDistance)
+            {
+                _nexBackgroundSpawnTriggerDistance += BACKGROUND_OFFSET;
+                CreateBackgroundAsync().Forget();
+            }
         }
 
         public async UniTask GenerateNewLocationAsync()
@@ -73,7 +82,6 @@ namespace Runtime.Service.LocationGenerator
                 RemoveOldLocation();
             }
         }
-        
 
         private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, int millisDelay = 500)
         {
@@ -108,6 +116,16 @@ namespace Runtime.Service.LocationGenerator
             }
         }
 
+        private void RemoveOldBackground()
+        {
+            if (r_backgroundElementHoldersPull.Count > 2)
+            {
+                var element = r_backgroundElementHoldersPull[0];
+                r_backgroundElementHoldersPull.RemoveAt(0); 
+                Destroy(element);
+            }
+        }
+
         private async UniTask CreateBackgroundAsync()
         {
             var spawnPosition = Vector3.forward * (BACKGROUND_OFFSET * _backgroundCounter);
@@ -116,6 +134,8 @@ namespace Runtime.Service.LocationGenerator
             temp.transform.SetParent(_locationParent);
             r_backgroundElementHoldersPull.Add(temp);
             await UniTask.NextFrame();
+
+            RemoveOldBackground();
         }
     }
 }

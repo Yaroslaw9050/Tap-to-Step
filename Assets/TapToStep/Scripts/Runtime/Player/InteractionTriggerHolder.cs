@@ -37,8 +37,7 @@ namespace Runtime.Player
             }
             else if (other.CompareTag("Finish"))
             {
-                Debug.Log("Touched to finish!");
-                _playerEventHandler.InvokeTouchedToEndOfLocation();
+                _playerEventHandler.InvokeTouchedToEndOfLocation(transform.position.z);
             }
         }
     }
