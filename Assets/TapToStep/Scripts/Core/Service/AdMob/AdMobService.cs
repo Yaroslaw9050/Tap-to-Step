@@ -12,14 +12,18 @@ namespace TapToStep.Scripts.Core.Service.AdMob
         private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/7559106027";
         private const string REWARD_CONTINUE_ADS = "ca-app-pub-7582758822795295/8275391517";
         private const string REWARD_RARE_AFTER_DEAD_ADS = "ca-app-pub-7582758822795295/9202332516";
+        private const string REWARD_EARN_BITS_ADS = "ca-app-pub-7582758822795295/1750685079";
+        
 #elif UNITY_IOS
         private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/2913284002";
         private const string REWARD_CONTINUE_ADS = "ca-app-pub-7582758822795295/4991624763";
         private const string REWARD_RARE_AFTER_DEAD_ADS = "ca-app-pub-7582758822795295/8153200068";
+        private const string REWARD_EARN_BITS_ADS = "ca-app-pub-7582758822795295/2420730920";
 #endif
         private BannerView _loopBanner;
         private InterstitialAd _deadContinueInterstitial;
         private InterstitialAd _afterDeadInterstitial;
+        private RewardedAd _rewardedBitsAd;
         
         public event Action<InterstitialAd> OnShowInterstitialAd;
         public event Action OnContinueAdRecorded;
@@ -47,6 +51,27 @@ namespace TapToStep.Scripts.Core.Service.AdMob
             }
         }
 
+        public void LoadRewardBitsAd(Action onComplete)
+        {
+            if (_rewardedBitsAd != null)
+            {
+                _rewardedBitsAd.Destroy();
+                _rewardedBitsAd = null;
+            }
+
+            var adRequest = new AdRequest();
+            RewardedAd.Load(REWARD_EARN_BITS_ADS, adRequest, (ad, error) =>
+            {
+                if (error != null || ad == null)
+                {
+                    return;
+                }
+                
+                _rewardedBitsAd = ad;
+                onComplete?.Invoke();
+            });
+        }
+        
         public void LoadAndShowDeadAd()
         {
             if (_afterDeadInterstitial != null)
@@ -72,7 +97,6 @@ namespace TapToStep.Scripts.Core.Service.AdMob
             InterstitialAd.Load(REWARD_CONTINUE_ADS, adRequest, ContinueAdLoaded);
         }
         
-        
         public void LoadBannerAd()
         {
             if (_loopBanner == null)
@@ -82,6 +106,17 @@ namespace TapToStep.Scripts.Core.Service.AdMob
             
             var adRequest = new AdRequest();
             _loopBanner?.LoadAd(adRequest);
+        }
+
+        public void ShowRewardedBitsAd(Action<double> onComplete)
+        {
+            if (_rewardedBitsAd != null && _rewardedBitsAd.CanShowAd())
+            {
+                _rewardedBitsAd.Show(reward =>
+                {
+                    onComplete?.Invoke(reward.Amount);
+                } );
+            }
         }
 
         private void AfterDeadAdLoaded(InterstitialAd adRequest, LoadAdError error)

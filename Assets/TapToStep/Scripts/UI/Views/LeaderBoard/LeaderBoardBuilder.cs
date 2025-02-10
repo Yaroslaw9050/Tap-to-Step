@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
-using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using Zenject;
 
 
@@ -14,12 +14,6 @@ namespace UI.Views.LeaderBoard
     {
         [SerializeField] private BoardElement _boardElement;
         [SerializeField] private RectTransform _boardElementsParent;
-
-        [Header("User data")]
-        [SerializeField] private TextMeshProUGUI _userRankText;
-        [SerializeField] private TextMeshProUGUI _userNameText;
-        [SerializeField] private TextMeshProUGUI _userDistanceText;
-        [SerializeField] private TextMeshProUGUI _userUniqIDText;
         
         private readonly List<BoardElement> r_boardElements = new(100);
         private LeaderboardService _leaderboardService;
@@ -30,18 +24,6 @@ namespace UI.Views.LeaderBoard
         {
             _leaderboardService = leaderboardService;
         }
-        
-        public void CreateBoard(Action onCompleted)
-        {
-            if(_leaderboardService.SystemReady == false) return;
-            
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _cts = new CancellationTokenSource();
-            
-            CreateBoardAsync(onCompleted).Forget();
-        }
-
         public void DestroyBoard()
         {
             _cts?.Cancel();
@@ -55,14 +37,13 @@ namespace UI.Views.LeaderBoard
             r_boardElements.Clear();
         }
 
-        private async UniTask CreateBoardAsync(Action onCompleted)
+        public async UniTask CreateBoardAsync(List<LeaderboardUser> top100Users, LeaderboardUser myCard)
         {
-            var (top100Users, myCard, myRank) = await _leaderboardService.RequestAllLeaderboardAsync();
+            if(_leaderboardService.SystemReady == false) return;
             
-            _userNameText.SetText(myCard.userName);
-            _userRankText.SetText((myRank).ToString());
-            _userDistanceText.SetText(ConvertToDistance(myCard.distance));
-            _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
             
             for (var i = 0; i < top100Users.Count; i++)
             {
@@ -70,46 +51,10 @@ namespace UI.Views.LeaderBoard
                
                 var user = top100Users[i];
                 var element = Instantiate(_boardElement, _boardElementsParent);
-                element.Init(i+1, user.userName, user.distance);
+                element.Init(i+1, user.userName, user.distance, string.Equals(user.userUniqueId, myCard.userUniqueId));
                 r_boardElements.Add(element);
                 await UniTask.DelayFrame(1, cancellationToken: _cts.Token);
             }
-            
-            onCompleted?.Invoke();
-        }
-        
-        private  string ConvertToDistance(double distance)
-        {
-            var meters = (int)distance;
-            var centimeters = (int)((distance - meters) * 100); 
-            
-            var result = "";
-            
-            if (meters >= 1000)
-            {
-                int kilometers = meters / 1000; 
-                meters = meters % 1000; 
-                result += $"{kilometers}km";
-                
-                if (meters > 0)
-                {
-                    result += $" {meters}m";
-                }
-            }
-            else
-            {
-                if (meters > 0)
-                {
-                    result += $"{meters}m";
-                }
-                
-                if (centimeters > 0)
-                {
-                    result += $" {centimeters}cm";
-                }
-            }
-
-            return result.Trim();
         }
     }
 }

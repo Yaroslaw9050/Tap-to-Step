@@ -1,4 +1,5 @@
 using CompositionRoot.SO.Player.Logic;
+using Cysharp.Threading.Tasks;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using UI.Views.LeaderBoard;
@@ -10,6 +11,7 @@ namespace UI.Views.Upgrades
     public class GameViewController : MonoBehaviour
     {
         [Header("Views")]
+        [SerializeField] private LoadingView _loadingView;
         [SerializeField] private GameView _gameView;
         [SerializeField] private MainMenuView _mainMenuView;
         [SerializeField] private DeadView _deadView;
@@ -21,15 +23,16 @@ namespace UI.Views.Upgrades
         private bool _isFirstTap;
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler)
+        public void Constructor(GameEventHandler gameEventHandler)  
         {
             _gameEventHandler = gameEventHandler;
         }
         
-        public void Init(PlayerEntryPoint entryPoint)
+        public async UniTask InitAsync(PlayerEntryPoint entryPoint)
         {
             _isFirstTap = false;
             _playerEntryPoint = entryPoint;
+            _loadingView.ShowView(0f);
             
             _gameView.Init(_playerEntryPoint);
             _mainMenuView.Init(_playerEntryPoint);
@@ -50,6 +53,9 @@ namespace UI.Views.Upgrades
             _mainMenuView.OnBackButtonClicked += MainMenuBackButtonClicked;
             _mainMenuView.OnToLeaderboardButtonPressed += ToLeaderboardFromMenu;
             _leaderBoardView.OnBackButtonPressed += LeaderBoardBackButtonPressed;
+
+            await UniTask.Delay(500);
+            _loadingView.HideView(0.5f);
         }
 
         public void Destruct()

@@ -2,12 +2,14 @@ using System;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
 using Core.Extension.UI;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MPUIKIT;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
 using Runtime.Player.Perks;
+using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +22,9 @@ namespace UI.Views.Upgrades
         [Header("Base")]
         [SerializeField] private TextMeshProUGUI _distanceText;
         [SerializeField] private Button _toMenuButton;
+        [SerializeField] private Button _getBitsButton;
+        
+        [SerializeField] private RectTransform _getBitsRect;
         
         [Header("Bit")]
         [SerializeField] private TextMeshProUGUI _bitText;
@@ -30,14 +35,17 @@ namespace UI.Views.Upgrades
         private GameEventHandler _gameEventHandler;
         private PlayerEntryPoint _playerEntryPoint;
         private PlayerPerkSystem _playerPerkSystem;
+        private IMobileAdsService _mobileAdsService;
         
         public event Action OnToMenuButtonPressed;
 
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem)
+        public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem,
+            IMobileAdsService mobileAdsService)
         {
             _gameEventHandler = gameEventHandler;
             _playerPerkSystem = playerPerkSystem;
+            _mobileAdsService = mobileAdsService;
         }
         
         public void Init(PlayerEntryPoint playerEntryPoint)
@@ -48,10 +56,12 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
             _gameEventHandler.OnSomeSkillUpgraded += OnSomeSkillUpgraded;
             _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
+            _getBitsButton.onClick.AddListener(GetBitsButtonClicked);
             
             _distanceText.SetText($"Distance\n{TextMeshProExtension.ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
             _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
             _energyLine.fillAmount = 1f;
+            PreloadBitAdsAsync().Forget();
         }
 
         public void Destruct()
@@ -60,6 +70,32 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
             _toMenuButton.onClick.RemoveListener(ToMenuButtonClicked);
+        }
+
+        private async UniTaskVoid PreloadBitAdsAsync()
+        {
+            _getBitsButton.interactable = false;
+            _getBitsRect.anchoredPosition = new Vector2(-_getBitsRect.rect.width, _getBitsRect.anchoredPosition.y);
+            await UniTask.WaitForSeconds(40);
+            _mobileAdsService.LoadRewardBitsAd(BitAdsLoaded);
+        }
+
+        private void BitAdsLoaded()
+        {
+            _getBitsButton.interactable = true;
+            _getBitsRect.DOMoveX(-20, 1f);
+        }
+
+        private void GetBitsButtonClicked()
+        {
+            _mobileAdsService.ShowRewardedBitsAd(BitAdsShowed);
+        }
+
+        private void BitAdsShowed(double value)
+        {
+            _playerEntryPoint.PlayerStatistic.AddBits((int)value);
+            _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
+            PreloadBitAdsAsync().Forget();
         }
 
         private void ToMenuButtonClicked()

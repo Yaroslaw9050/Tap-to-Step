@@ -7,7 +7,6 @@ dependencies {
 // Android Resolver Dependencies Start
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // Packages/com.google.ads.mobile/GoogleMobileAds/Editor/GoogleMobileAdsDependencies.xml:12
     implementation 'com.google.android.gms:play-services-ads:23.6.0' // Packages/com.google.ads.mobile/GoogleMobileAds/Editor/GoogleMobileAdsDependencies.xml:7
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0' // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:12
     implementation 'com.google.android.gms:play-services-base:18.5.0' // Assets/Firebase/Editor/DatabaseDependencies.xml:17
     implementation 'com.google.android.ump:user-messaging-platform:3.1.0' // Packages/com.google.ads.mobile/GoogleMobileAds/Editor/GoogleUmpDependencies.xml:7
     implementation 'com.google.firebase:firebase-analytics:22.1.2' // Assets/Firebase/Editor/DatabaseDependencies.xml:15
@@ -17,13 +16,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-common:21.0.0' // Assets/Firebase/Editor/AppDependencies.xml:13
     implementation 'com.google.firebase:firebase-database:21.0.0' // Assets/Firebase/Editor/DatabaseDependencies.xml:13
     implementation 'com.google.firebase:firebase-database-unity:12.5.0' // Assets/Firebase/Editor/DatabaseDependencies.xml:22
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.6.1' // Assets/LevelPlay/Editor/IronSourceSDKDependencies.xml:5
 // Android Resolver Dependencies End
 **DEPS**}
 
 // Android Resolver Exclusions Start
 android {
-  packaging {
+  packagingOptions {
       exclude ('/lib/armeabi/*' + '*')
       exclude ('/lib/mips/*' + '*')
       exclude ('/lib/mips64/*' + '*')

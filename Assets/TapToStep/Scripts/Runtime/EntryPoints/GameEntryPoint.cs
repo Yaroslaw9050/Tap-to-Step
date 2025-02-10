@@ -1,5 +1,6 @@
 using System;
 using Core.Service.Leaderboard;
+using Cysharp.Threading.Tasks;
 using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
@@ -43,7 +44,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _audioController.Init();
             await _locationBuilder.GenerateNewLocationAsync();
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
-            _viewController.Init(_playerBuilder.PlayerEntryPoint);
+            await _viewController.InitAsync(_playerBuilder.PlayerEntryPoint);
             await _leaderboardService.InitAsync();
             _mobileAdsService.LoadBannerAd();
             _musicToMaterialEmision.Init(_audioController.MusicSource);

@@ -29,6 +29,7 @@ namespace Runtime.Audio
         [SerializeField] private AudioClip _playerDiedClip;
         [SerializeField] private AudioClip _uiClickClip;
         [SerializeField] private AudioClip _levelUpClip;
+        [SerializeField] private AudioClip _nickNameChangedClip;
 
         private bool _isInitialized;
         private GameEventHandler _gameEventHandler;
@@ -82,6 +83,11 @@ namespace Runtime.Audio
             _gameEventHandler.OnSomeSkillUpgraded += _ =>
             {
                 PlayShortSound(_uiMixer, _levelUpClip);
+            };
+
+            _gameEventHandler.OnNickNamgeChanged += () =>
+            {
+                PlayShortSound(_uiMixer, _nickNameChangedClip);
             };
         }
 
