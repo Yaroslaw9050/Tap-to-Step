@@ -20,12 +20,15 @@ namespace UI.Views.Upgrades
         [Header("Other settings")]
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _toLeaderboardButton;
+        [SerializeField] private Button _toTelegramButton;
         [SerializeField] private GradientAutoRotation _gradientAutoRotation;
 
         private PlayerPerkSystem _playerPerkSystem;
         private GameEventHandler _gameEventHandler;
         private PlayerEntryPoint _playerEntryPoint;
         private LeaderboardService _leaderboardService;
+
+        private const string TELEGRAM_URL = "https://t.me/+LBbm-wqA7uk0MTIy";
         public event Action OnBackButtonClicked;
         public event Action OnToLeaderboardButtonPressed;
         
@@ -45,11 +48,15 @@ namespace UI.Views.Upgrades
             
             _backButton.onClick.AddListener(BackButtonCLicked);
             _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);
+            _toTelegramButton.onClick.AddListener(()=> Application.OpenURL(TELEGRAM_URL));
         }
 
         public void Destruct()
         {
             _gradientAutoRotation.Destruct();
+            _backButton.onClick.RemoveListener(BackButtonCLicked);
+            _toLeaderboardButton.onClick.RemoveListener(ToLeaderboardButtonClicked);
+            _toTelegramButton.onClick.RemoveAllListeners();
         }
 
         public override void ShowView(float duration = 0.5f)

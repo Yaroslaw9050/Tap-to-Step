@@ -75,8 +75,8 @@ namespace Runtime.Service.LocationGenerator
                 CreateWelcomeText();
                 await CreateBackgroundAsync();
                 await CreateBackgroundAsync();
-                await CreateLocationAsync(_supportedLocationPull[0], 20);
-                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], 20);
+                await CreateLocationAsync(_supportedLocationPull[0], 10);
+                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], 10);
                 _staticBackgroundTransform = Instantiate(_staticBackgroundPrefab).transform;
             }
             else
@@ -87,7 +87,7 @@ namespace Runtime.Service.LocationGenerator
             }
         }
 
-        private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, int millisDelay = 500)
+        private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, int millisDelay = 200)
         {
             var elementQueue = locationSo.GetLocations();
             var startLocationSpawnPosition = _locationGenerationPoint;

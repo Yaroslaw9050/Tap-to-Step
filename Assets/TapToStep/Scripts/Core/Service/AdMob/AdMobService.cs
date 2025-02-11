@@ -153,7 +153,7 @@ namespace TapToStep.Scripts.Core.Service.AdMob
             {
                 DestroyBanner(_loopBanner);
             }
-            _loopBanner = new BannerView(BANNER_LOOP_ADS, AdSize.IABBanner, AdPosition.Bottom);
+            _loopBanner = new BannerView(BANNER_LOOP_ADS, AdSize.Banner, AdPosition.Bottom);
         }
 
         private void DestroyBanner(BannerView selectedBanner)
