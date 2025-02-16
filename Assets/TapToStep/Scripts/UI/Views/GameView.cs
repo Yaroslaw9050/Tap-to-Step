@@ -55,6 +55,7 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnCollectablesChanged += OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving += OnPlayerStartMoving;
             _gameEventHandler.OnSomeSkillUpgraded += OnSomeSkillUpgraded;
+            
             _toMenuButton.onClick.AddListener(ToMenuButtonClicked);
             _getBitsButton.onClick.AddListener(GetBitsButtonClicked);
             
@@ -69,6 +70,8 @@ namespace UI.Views.Upgrades
             _gameEventHandler.OnSomeSkillUpgraded -= OnSomeSkillUpgraded;
             _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
+            
+            _getBitsButton.onClick.RemoveListener(GetBitsButtonClicked);
             _toMenuButton.onClick.RemoveListener(ToMenuButtonClicked);
         }
 
@@ -79,6 +82,7 @@ namespace UI.Views.Upgrades
             await UniTask.WaitForSeconds(40);
             _mobileAdsService.LoadRewardBitsAd(BitAdsLoaded);
         }
+        
 
         private void BitAdsLoaded()
         {
@@ -93,8 +97,7 @@ namespace UI.Views.Upgrades
 
         private void BitAdsShowed(double value)
         {
-            _playerEntryPoint.PlayerStatistic.AddBits((int)value);
-            _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
+            _gameEventHandler.InvokeOnCollectablesChanged((int)value);
             PreloadBitAdsAsync().Forget();
         }
 
@@ -120,7 +123,7 @@ namespace UI.Views.Upgrades
 
         private void OnCollectablesChanged(int value)
         {
-            _playerEntryPoint.PlayerStatistic.AddBits(value);
+            _playerEntryPoint.PlayerStatistic.ChangeBits(value);
             _bitText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
         }
     }

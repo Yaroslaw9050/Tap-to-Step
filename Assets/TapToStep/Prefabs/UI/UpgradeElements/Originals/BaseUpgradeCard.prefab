@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c134b898d1743748cdc9cd929a25389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _perkType: 0
   _progressSlider: {fileID: 6926338773125966700}
   _levelText: {fileID: 8688113809836648051}
   _costText: {fileID: 983110251489342841}
@@ -724,6 +725,22 @@ PrefabInstance:
     - target: {fileID: 5627767523408888435, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
       propertyPath: m_Name
       value: 'UpgradeStatus[Slider]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8734982620150355449, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
+      propertyPath: m_text
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8734982620150355449, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
+      propertyPath: m_fontSize
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8734982620150355449, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8734982620150355449, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 9079917836343172403, guid: e364ea26af1a647a3a85847aa5ff7b55, type: 3}
       propertyPath: m_AnchorMax.y

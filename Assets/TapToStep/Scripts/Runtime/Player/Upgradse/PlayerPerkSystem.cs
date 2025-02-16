@@ -12,6 +12,10 @@ namespace Runtime.Player.Perks
         public int GetPerkLevel(PerkType perkType)
         {
             var perk = GetPerkByType(perkType);
+            if (perk.CurrentLevel == perk.MaxLevel)
+            {
+                return -1;
+            }
             return perk.CurrentLevel;
         }
         public int GetPerkPrice(PerkType type)
@@ -58,7 +62,7 @@ namespace Runtime.Player.Perks
         private void SaveToMemory(PerkType type)
         {
             var perk = GetPerkByType(type);
-            var data = new PlayerPerkData(perk.MaxLevel, perk.CurrentLevel, perk.StartPrice, perk.CostPerOneLevel);
+            var data = new PlayerPerkData(perk.CurrentLevel);
             var serializedData = JsonUtility.ToJson(data);
             PlayerPrefs.SetString(type.ToString(), serializedData);
         }

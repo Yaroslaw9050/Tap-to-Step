@@ -58,8 +58,8 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
 
         private void SetupGraphicSetting()
         {
-            Application.targetFrameRate = 60;
-            Screen.sleepTimeout = 2500;
+            Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
         }
     }
 }

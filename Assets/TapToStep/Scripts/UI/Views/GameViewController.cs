@@ -85,7 +85,10 @@ namespace UI.Views.Upgrades
 
         private void OnPlayerDied()
         {
+            _mainMenuView.HideView();
+            _leaderBoardView.HideView();
             _gameView.HideView();
+            
             _deadView.ShowView();
         }
 

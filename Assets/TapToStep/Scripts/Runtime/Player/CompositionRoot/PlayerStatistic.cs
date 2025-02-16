@@ -14,20 +14,10 @@ namespace Runtime.Player.CompositionRoot
         public float Distance => _distance;
 
 
-        public void AddBits(int value)
+        public void ChangeBits(int value)
         {
-            if(value <= 0) return;
             _bits += value;
             
-            PlayerPrefs.SetInt("Bits", _bits);
-            PlayerPrefs.Save();
-        }
-
-        public void RemoveBits(int value)
-        {
-            if(value <= 0) return;
-
-            _bits -= value;
             PlayerPrefs.SetInt("Bits", _bits);
             PlayerPrefs.Save();
         }

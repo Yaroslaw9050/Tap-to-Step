@@ -32,7 +32,7 @@ namespace UI.Views.Upgrades
 
             foreach (var subView in _upgradeSubViews)
             {
-                subView.Init(leaderboardService);
+                subView.Init(leaderboardService, _gameEventHandler);
                 subView.OnUpgradeButtonPressed += ButtonPressed;
             }
             
@@ -68,15 +68,14 @@ namespace UI.Views.Upgrades
             if (_playerEntryPoint.PlayerStatistic.Bits < cost) return;
             if(_playerPerkSystem.TryUpgradePerk(perkType) == false) return;
             
-            _playerEntryPoint.PlayerStatistic.RemoveBits(cost);
+            Debug.Log($"cost is: {cost}");
+            _gameEventHandler.InvokeOnCollectablesChanged(-cost);
 
             foreach (var subView in _upgradeSubViews)
             {
                 if(subView.PerkType != perkType) continue;
                 subView.PlayPurchaseAnimation();
             }
-
-            _gameEventHandler.InvokeSomePlayerSkillUpgraded(perkType);
         }
     }
 }

@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEngine;
 
 namespace Core.Extension.UI
 {
@@ -7,31 +8,39 @@ namespace Core.Extension.UI
         public static string ConvertToDistance(float distance)
         {
             var meters = (int)distance;
-            var centimeters = (int)((distance - meters) * 100); 
-            
+            var centimeters = (distance - meters) * 100;
+    
             var result = "";
             
+            centimeters = Mathf.Round(centimeters * 10) / 10;
+
             if (meters >= 1000)
             {
-                int kilometers = meters / 1000; 
-                meters = meters % 1000; 
-                result += $"{kilometers}km";
-                
-                if (meters > 0)
+                int kilometers = meters / 1000;
+                meters = meters % 1000;
+        
+                if (centimeters > 0)
                 {
-                    result += $" {meters}m";
+                    result += $"{kilometers}km {meters}.{centimeters / 10}m";
+                }
+                else if (meters > 0)
+                {
+                    result += $"{kilometers}km {meters}m";
+                }
+                else
+                {
+                    result += $"{kilometers}km";
                 }
             }
             else
             {
-                if (meters > 0)
-                {
-                    result += $"{meters}m";
-                }
-                
                 if (centimeters > 0)
                 {
-                    result += $" {centimeters}cm";
+                    result += $"{meters}.{centimeters / 10}m";
+                }
+                else if (meters > 0)
+                {
+                    result += $"{meters}m";
                 }
             }
 
@@ -49,17 +58,17 @@ namespace Core.Extension.UI
                     return;
                 case >= 1000 and < 1000000: 
                 {
-                    int k = rawBitValue / 1000; 
-                    result += $"{k}k";
-                
+                    float k = rawBitValue / 1000f;
+                    result += $"{k:F2}k";
+
                     text.SetText(result.Trim());
                     return;
                 }
             }
             
-            var v = rawBitValue / 1000000; 
-            result += $"{v}m";
-            
+            var v = rawBitValue / 1000000f;
+            result += $"{v:F2}m";
+
             text.SetText(result.Trim());
         }
     }

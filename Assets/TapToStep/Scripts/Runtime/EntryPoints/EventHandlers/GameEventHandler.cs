@@ -14,7 +14,7 @@ namespace Runtime.EntryPoints.EventHandlers
         public event Action<bool> OnMenuViewStatusChanged;
         public event Action<PerkType> OnSomeSkillUpgraded;
         public event Action OnPlayerResumed;
-        public event Action OnNickNamgeChanged;
+        public event Action OnNickNameChanged;
 
         public void InvokeOnCollectablesChanged(int value)
         {
@@ -65,7 +65,7 @@ namespace Runtime.EntryPoints.EventHandlers
 
         public void InvokeNickNameChanged()
         {
-            OnNickNamgeChanged?.Invoke();
+            OnNickNameChanged?.Invoke();
         }
     }
 }

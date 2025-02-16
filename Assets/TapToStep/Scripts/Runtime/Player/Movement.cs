@@ -23,11 +23,13 @@ namespace Runtime.Player
 
         private const float MIN_HORIZONTAL_SLIDE = -2f;
         private const float MAX_HORIZONTAL_SLIDE = 2f;
+        private const float MIN_HIGH_POSITION = -50f;
         
 
         public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem)
         {
             _canMove = true;
+            _playerRigidBody.isKinematic = false;
             
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
@@ -76,6 +78,9 @@ namespace Runtime.Player
             
             _movementTween = _playerRoot.DOMoveZ(newStepPosition, stepTime).SetEase(Ease.InOutFlash);
             _playerRoot.DOMoveX(newSlidePosition, stepTime).SetEase(Ease.InOutFlash);
+            
+            CheckHorizontalPosition();
+            CheckVerticalPosition();
 
             _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
             _entryPoint.PlayerEventHandler.InvokeStartMoving();
@@ -92,6 +97,28 @@ namespace Runtime.Player
                 MoveDirection.None => 0f,
                 _ => 0f
             };
+        }
+
+        private void CheckHorizontalPosition()
+        {
+            switch (_playerRoot.position.x)
+            {
+                case > MAX_HORIZONTAL_SLIDE:
+                    _playerRoot.position = new Vector3(MAX_HORIZONTAL_SLIDE, _playerRoot.position.y, _playerRoot.position.z);
+                    return;
+                case < MIN_HORIZONTAL_SLIDE:
+                    _playerRoot.position = new Vector3(MIN_HORIZONTAL_SLIDE, _playerRoot.position.y, _playerRoot.position.z);
+                    return;
+            }
+        }
+
+        private void CheckVerticalPosition()
+        {
+            if (_playerRoot.position.y < MIN_HIGH_POSITION)
+            {
+                _playerRigidBody.linearVelocity = Vector3.zero;
+                _playerRoot.position = new Vector3(_playerRoot.position.x, 5f, _playerRoot.position.z);
+            }
         }
     }
 }

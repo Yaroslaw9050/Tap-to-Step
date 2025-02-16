@@ -4,7 +4,6 @@ using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Runtime.EntryPoints.EventHandlers;
-using Runtime.Player.Perks;
 using TMPro;
 using UI.Views.Upgrades;
 using UnityEngine;
@@ -26,6 +25,7 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private TextMeshProUGUI _userUniqIDText;
 
         [SerializeField] private Button _saveNameButton;
+        [SerializeField] private RectTransform _userContainerRect;
 
         private GameEventHandler _gameEventHandler;
         private LeaderboardService _leaderboardService;
@@ -53,8 +53,27 @@ namespace UI.Views.LeaderBoard
             _saveNameButton.interactable = false;
             _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
 
+            _userNameField.onSelect.AddListener(OnFieldSelected);
+            _userNameField.onDeselect.AddListener(OnDeselected);
+            _userNameField.onSubmit.AddListener(OnDeselected);
+            _userNameField.onEndEdit.AddListener(OnDeselected);
+            
             _userNameField.onValueChanged.AddListener(OnUserNameChanged);
             _saveNameButton.onClick.AddListener(ChangeNameButtonClicked);
+        }
+
+        private void OnDeselected(string data)
+        {
+            _userContainerRect.anchorMin = new Vector2(0f, 0f);
+            _userContainerRect.anchorMax = new Vector2(1f, 0f);
+            _userContainerRect.anchoredPosition = new Vector2(0, -20);
+        }
+
+        private void OnFieldSelected(string data)
+        {
+            _userContainerRect.anchorMin = new Vector2(0f, 1f);
+            _userContainerRect.anchorMax = new Vector2(1f, 1f);
+            _userContainerRect.anchoredPosition = new Vector2(0, 0);
         }
 
         public override void HideView(float duration = 0.5f)
@@ -103,7 +122,7 @@ namespace UI.Views.LeaderBoard
         private async UniTaskVoid ChangeUserNameAsync()
         {
             _gameEventHandler.InvokeNickNameChanged();
-            _playerBuilder.PlayerEntryPoint.PlayerStatistic.RemoveBits(30);
+            _gameEventHandler.InvokeOnCollectablesChanged(-30);
             _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
             _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
             

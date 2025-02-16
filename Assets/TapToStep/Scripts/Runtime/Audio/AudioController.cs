@@ -70,9 +70,17 @@ namespace Runtime.Audio
                 PlayShortSound(_vfxMixer, _playerDiedClip);
             };
 
-            _gameEventHandler.OnCollectablesChanged += _ =>
+            _gameEventHandler.OnCollectablesChanged += value =>
             {
-                PlayShortSound(_vfxMixer, _bitCollectedClip);
+                switch (value)
+                {
+                    case > 0:
+                        PlayShortSound(_vfxMixer, _bitCollectedClip);
+                        break;
+                    case < 0:
+                        PlayShortSound(_uiMixer, _nickNameChangedClip);
+                        break;
+                }
             };
             
             _gameEventHandler.OnUiElementClicked += () =>
@@ -83,11 +91,6 @@ namespace Runtime.Audio
             _gameEventHandler.OnSomeSkillUpgraded += _ =>
             {
                 PlayShortSound(_uiMixer, _levelUpClip);
-            };
-
-            _gameEventHandler.OnNickNamgeChanged += () =>
-            {
-                PlayShortSound(_uiMixer, _nickNameChangedClip);
             };
         }
 

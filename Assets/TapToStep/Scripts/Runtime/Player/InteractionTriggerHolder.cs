@@ -1,3 +1,4 @@
+using CompositionRoot.Constants;
 using Runtime.InteractedObjects.Collectables;
 using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Runtime.Player
         
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Interaction"))
+            if (other.CompareTag(InteractionAssets.INTERACTION_TAG))
             {
                 if (other.TryGetComponent<Bit>(out var coin))
                 {
@@ -35,7 +36,7 @@ namespace Runtime.Player
                     }
                 }
             }
-            else if (other.CompareTag("Finish"))
+            else if (other.CompareTag(InteractionAssets.FINISH_TAG))
             {
                 _playerEventHandler.InvokeTouchedToEndOfLocation(transform.position.z);
             }

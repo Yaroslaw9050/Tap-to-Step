@@ -46,7 +46,7 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
                 point.localPosition = new Vector3(newXPoint, point.localPosition.y + _yOffset, point.localPosition.z);
                 point.localRotation = Quaternion.Euler(0, Random.Range(-30f, 45f), 0);
                 Instantiate(_obstaclePullPrefab[Random.Range(0, _obstaclePullPrefab.Length)], point);
-                await UniTask.Delay(500);
+                await UniTask.NextFrame();
             }
         }
     }

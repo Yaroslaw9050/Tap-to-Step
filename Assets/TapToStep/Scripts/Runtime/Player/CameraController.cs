@@ -13,6 +13,7 @@ namespace Runtime.Player
         private GameEventHandler _gameEventHandler;
         private PlayerEntryPoint _entryPoint;
         private Tween _cameraTurnTween;
+        private Tween _cameraMoveTween;
         
         private float _currentRotationY;
         
@@ -30,6 +31,10 @@ namespace Runtime.Player
         {
             _entryPoint.PlayerEventHandler.OnPlayerStartMoving -= MoveLikeStep;
 
+            _cameraMoveTween?.Pause();
+            _cameraMoveTween?.Kill();
+            _cameraMoveTween = null;
+            
             _cameraTurnTween?.Pause();
             _cameraTurnTween?.Kill();
             _cameraTurnTween = null;
@@ -37,6 +42,10 @@ namespace Runtime.Player
 
         public void MoveToDeadPosition()
         {
+            _cameraMoveTween?.Pause();
+            _cameraMoveTween?.Kill();
+            _cameraMoveTween = null;
+            
             var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y - 1.2f, _cameraTransform.position.z);
             _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
         }
@@ -54,9 +63,9 @@ namespace Runtime.Player
             var secondHalfCamPosition = firstHalfCamPosition - CAMERA_LIFT_AMOUNT;
             var halfStepTime = setting.StepSpeed / 2;
 
-            _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
+            _cameraMoveTween = _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
             {
-                _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
+                _cameraMoveTween = _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
             });
         }
 

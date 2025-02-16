@@ -2,6 +2,7 @@ using System;
 using CompositionRoot.Enums;
 using Core.Service.Leaderboard;
 using DG.Tweening;
+using Runtime.EntryPoints.EventHandlers;
 using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
@@ -18,18 +19,29 @@ namespace UI.Views.Upgrades
         [SerializeField] private Button _upgradeButton;
         
         private LeaderboardService _leaderboardService;
+        private GameEventHandler _gameEventHandler;
 
         public PerkType PerkType => _perkType;
         public event Action<PerkType> OnUpgradeButtonPressed;
 
-        public void Init(LeaderboardService leaderboardService)
+        public void Init(LeaderboardService leaderboardService, GameEventHandler gameEventHandler)
         {
+            _gameEventHandler = gameEventHandler;
             _leaderboardService = leaderboardService;
             _upgradeButton.onClick.AddListener(() =>  OnUpgradeButtonPressed?.Invoke(_perkType));
         }
 
         public void UpdateElementsData(int level, int cost)
         {
+            if (level == -1)
+            {
+                _levelText.SetText("MAX");
+                _costText.SetText("Max level");
+                _upgradeButton.interactable = false;
+                _progressSlider.value = 1f;
+                return;
+            }
+            
             _levelText.text = level.ToString();
             _costText.text = $"upgrade \\n <size=80%>({cost} bits) </size>";
             _upgradeButton.interactable = _leaderboardService.SystemReady;
@@ -39,10 +51,12 @@ namespace UI.Views.Upgrades
         {
             _upgradeButton.interactable = false;
 
-            _progressSlider.DOValue(1f, 1f).SetEase(Ease.Linear).OnComplete(() =>
+            _progressSlider.DOValue(1f, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
             {
                 _upgradeButton.interactable = true;
                 _progressSlider.value = 0f;
+                
+                _gameEventHandler.InvokeSomePlayerSkillUpgraded(_perkType);
             });
         }
     }

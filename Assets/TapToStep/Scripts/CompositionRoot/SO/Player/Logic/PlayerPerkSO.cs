@@ -43,10 +43,7 @@ namespace CompositionRoot.SO.Player.Logic
 
         public void WriteData(PlayerPerkData data)
         {
-            _maxLevel = data.MaxLevel;
             _currentLevel = data.CurrentLevel;
-            _startPrice = data.StartPrice;
-            _costPerOneLevel = data.CostPerOneLevel;
         }
 
         public void Reset()
