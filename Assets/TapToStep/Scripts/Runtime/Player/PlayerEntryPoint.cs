@@ -1,4 +1,5 @@
 using CompositionRoot.SO.Player.Logic;
+using Patterns.Models;
 using Runtime.Builders.Location;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player.CompositionRoot;
@@ -27,7 +28,7 @@ namespace Runtime.Player
         public PlayerSettingSO PlayerSettingSo => _playerSetting;
 
         public void Init(GameEventHandler gameEventHandler, PlayerSettingSO playerSetting,
-            PlayerPerkSystem playerPerkSystem)
+            PlayerPerkSystem playerPerkSystem, PlayerModel playerModel)
         {
             _playerSetting = playerSetting;
             _gameEventHandler = gameEventHandler;
@@ -35,7 +36,7 @@ namespace Runtime.Player
             _playerStatistic.LoadAllDataToVariables();
             
             _cameraController.Init(this, gameEventHandler);
-            _movement.Init(this, playerPerkSystem);
+            _movement.Init(this, playerPerkSystem, playerModel);
             _screenCaster.Init(this, gameEventHandler);
             _interactionTrigger.Initialize(_playerEventHandler);
             

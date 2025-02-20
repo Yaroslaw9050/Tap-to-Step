@@ -1,6 +1,7 @@
 using Core.Service.Leaderboard;
 using Runtime.Audio;
 using Runtime.EntryPoints.EventHandlers;
+using TapToStep.Scripts.Core.Service.ViewStorage;
 using UnityEngine;
 using Zenject;
 
@@ -19,6 +20,7 @@ namespace Core.Installers
             BindAudioController();
             BindGameEventHandler();
             BindLeaderboardService();
+            
         }
 
         private void BindAudioController()

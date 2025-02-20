@@ -1,18 +1,17 @@
-using TMPro;
 using UnityEngine;
 
 namespace Core.Extension.UI
 {
-    public static class TextMeshProExtension
+    public static class ValueConvertor
     {
-        public static string ConvertToDistance(float distance)
+        public static string ToDistance(double distance)
         {
             var meters = (int)distance;
             var centimeters = (distance - meters) * 100;
     
             var result = "";
             
-            centimeters = Mathf.Round(centimeters * 10) / 10;
+            centimeters = Mathf.Round((float)centimeters * 10) / 10;
 
             if (meters >= 1000)
             {
@@ -47,29 +46,27 @@ namespace Core.Extension.UI
             return result.Trim();
         }
         
-        public static void ConvertToBits(this TextMeshProUGUI text, int rawBitValue)
+        public static string ToBits(ulong rawBitValue)
         {
             string result = "";
 
             switch (rawBitValue)
             {
                 case < 1000:
-                    text.SetText(rawBitValue.ToString());
-                    return;
+                    return rawBitValue.ToString();
                 case >= 1000 and < 1000000: 
                 {
                     float k = rawBitValue / 1000f;
                     result += $"{k:F2}k";
 
-                    text.SetText(result.Trim());
-                    return;
+                    return result.Trim();
                 }
             }
             
             var v = rawBitValue / 1000000f;
             result += $"{v:F2}m";
 
-            text.SetText(result.Trim());
+            return result.Trim();
         }
     }
 }

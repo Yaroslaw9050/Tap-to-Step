@@ -50,7 +50,7 @@ namespace UI.Views.Upgrades
         {
             if(perk == PerkType.None) return;
             
-            _bitsText.ConvertToBits(_playerEntryPoint.PlayerStatistic.Bits);
+            _bitsText.SetText(ValueConvertor.ToBits(_playerEntryPoint.PlayerStatistic.Bits));
             var cost = _playerPerkSystem.GetPerkPrice(perk);
 
             foreach (var subView in _upgradeSubViews)
@@ -65,7 +65,7 @@ namespace UI.Views.Upgrades
             var cost = _playerPerkSystem.GetPerkPrice(perkType);
 
             _gameEventHandler.InvokeOnUiElementClicked();
-            if (_playerEntryPoint.PlayerStatistic.Bits < cost) return;
+            if ((int)_playerEntryPoint.PlayerStatistic.Bits < cost) return;
             if(_playerPerkSystem.TryUpgradePerk(perkType) == false) return;
             
             Debug.Log($"cost is: {cost}");

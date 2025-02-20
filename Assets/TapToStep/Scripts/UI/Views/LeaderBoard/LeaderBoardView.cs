@@ -45,7 +45,17 @@ namespace UI.Views.LeaderBoard
         {
             _backButton.onClick.AddListener(BackButtonClicked);
         }
-        
+
+        protected override void SubscribeToEvents()
+        {
+            
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            
+        }
+
         public override void ShowView(float duration = 0.5f)
         {
             base.ShowView(duration);
@@ -113,7 +123,7 @@ namespace UI.Views.LeaderBoard
             await _boardBuilder.CreateBoardAsync(top100Users, myCard);
             _userNameField.SetTextWithoutNotify(myCard.userName);
             _userRankText.SetText(myRank.ToString());
-            _userDistanceText.SetText(TextMeshProExtension.ConvertToDistance((float)myCard.distance));
+            _userDistanceText.SetText(ValueConvertor.ToDistance((float)myCard.distance));
             _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             _thisViewCanvasGroup.interactable = true;

@@ -5,6 +5,7 @@ using TapToStep.Scripts.Core.Service.AdMob;
 using TapToStep.Scripts.Runtime.EntryPoints;
 using UI.Views.Upgrades;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Core.Installers
@@ -15,7 +16,7 @@ namespace Core.Installers
         [SerializeField] private GameEntryPoint _gameEntryPoint;
         [SerializeField] private LocationBuilder _locationBuilder;
         [SerializeField] private PlayerBuilder _playerBuilder;
-        [SerializeField] private GameViewController _gameViewController;
+        [FormerlySerializedAs("_gameViewController")] [SerializeField] private ViewController _viewController;
         [SerializeField] private MusicToMaterialEmmision _musicToMaterialEmision;
         
         
@@ -57,7 +58,7 @@ namespace Core.Installers
 
         private void BindGameViewController()
         {
-            Container.Bind<GameViewController>().FromInstance(_gameViewController).AsSingle().NonLazy();
+            Container.Bind<ViewController>().FromInstance(_viewController).AsSingle().NonLazy();
         }
 
         private void BindPlayerUpdateSystem()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using CompositionRoot.SO.Location.Logic;
 using Cysharp.Threading.Tasks;
 using Runtime.Builders.Location;
@@ -33,6 +34,7 @@ namespace Runtime.Service.LocationGenerator
         private readonly List<GameObject> r_backgroundElementHoldersPull = new();
         public Transform StaticBackgroundTransform => _staticBackgroundTransform;
         private GameEventHandler _gameEventHandler;
+        private CancellationToken _token;
 
         private const int BACKGROUND_OFFSET = 1000;
         
@@ -56,38 +58,39 @@ namespace Runtime.Service.LocationGenerator
 
         private void PlayerTouchedToEndOfLocation(float playerZPosition)
         {
-            GenerateNewLocationAsync().Forget();
+            GenerateNewLocationAsync(_token).Forget();
 
             if (playerZPosition >= _nexBackgroundSpawnTriggerDistance)
             {
                 _nexBackgroundSpawnTriggerDistance += BACKGROUND_OFFSET;
-                CreateBackgroundAsync().Forget();
+                CreateBackground();
             }
         }
 
-        public async UniTask GenerateNewLocationAsync()
+        public async UniTask GenerateNewLocationAsync(CancellationToken token)
         {
+            _token = token;
             var randomLocationIndex = Random.Range(0, _supportedLocationPull.Count);
             
             if (_isFirstGeneration)
             {
                 _isFirstGeneration = !_isFirstGeneration;
                 CreateWelcomeText();
-                await CreateBackgroundAsync();
-                await CreateBackgroundAsync();
-                await CreateLocationAsync(_supportedLocationPull[0]);
-                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex]);
+                CreateBackground();
+                CreateBackground();
+                await CreateLocationAsync(_supportedLocationPull[0], token);
+                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], token);
                 _staticBackgroundTransform = Instantiate(_staticBackgroundPrefab).transform;
             }
             else
             {
-                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex]);
+                await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], token);
                 RemoveOldLocation();
                 DestroyWelcomeText();
             }
         }
 
-        private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo)
+        private async UniTask CreateLocationAsync(SwitchedLocationSO locationSo, CancellationToken token)
         {
             var elementQueue = locationSo.GetLocations();
             var startLocationSpawnPosition = _locationGenerationPoint;
@@ -96,6 +99,9 @@ namespace Runtime.Service.LocationGenerator
             
             while (elementQueue.Count > 0)
             {
+                if (token.IsCancellationRequested) break;
+                
+                await UniTask.Delay(100, cancellationToken: token); // TODO: Remove after test
                 var temp = Instantiate(elementQueue.Dequeue(), startLocationSpawnPosition, Quaternion.identity);
                 temp.transform.SetParent(locationElementsHolder.transform);
                 await UniTask.NextFrame();
@@ -143,14 +149,13 @@ namespace Runtime.Service.LocationGenerator
             }
         }
 
-        private async UniTask CreateBackgroundAsync()
+        private void CreateBackground()
         {
             var spawnPosition = Vector3.forward * (BACKGROUND_OFFSET * _backgroundCounter);
             _backgroundCounter++;
             var temp = Instantiate(_backgroundPrefab, spawnPosition, Quaternion.identity);
             temp.transform.SetParent(_locationParent);
             r_backgroundElementHoldersPull.Add(temp);
-            await UniTask.NextFrame();
 
             RemoveOldBackground();
         }

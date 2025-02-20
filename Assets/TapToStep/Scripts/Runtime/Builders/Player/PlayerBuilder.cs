@@ -1,5 +1,6 @@
 using System;
 using CompositionRoot.SO.Player.Logic;
+using Patterns.Models;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.Perks;
@@ -14,14 +15,16 @@ public class PlayerBuilder : MonoBehaviour
     private PlayerPerkSystem _playerPerkSystem;
     private PlayerEntryPoint _playerEntryPoint;
     private GameEventHandler _gameEventHandler;
+    private PlayerModel _playerModel;
     public PlayerSettingSO PlayerSettingSo => _playerSettingSo;
     public PlayerEntryPoint PlayerEntryPoint => _playerEntryPoint;
 
     [Inject]
-    public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem)
+    public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem, PlayerModel playerModel)
     {
         _gameEventHandler  = gameEventHandler;
         _playerPerkSystem = playerPerkSystem;
+        _playerModel = playerModel;
     }
     
     public void CreatePlayer(Vector3 position, Transform backgroundTransform)
@@ -31,7 +34,7 @@ public class PlayerBuilder : MonoBehaviour
         position = new Vector3(position.x, position.y + yOffset, position.z);
         
         _playerEntryPoint = Instantiate(_playerPrefab, position, Quaternion.identity).GetComponent<PlayerEntryPoint>();
-        _playerEntryPoint.Init(_gameEventHandler, _playerSettingSo, _playerPerkSystem);
+        _playerEntryPoint.Init(_gameEventHandler, _playerSettingSo, _playerPerkSystem, _playerModel);
         backgroundTransform.SetParent(_playerEntryPoint.transform);
     }
 

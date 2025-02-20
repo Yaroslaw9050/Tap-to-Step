@@ -59,6 +59,16 @@ namespace UI.Views.Upgrades
             _toTelegramButton.onClick.RemoveAllListeners();
         }
 
+        protected override void SubscribeToEvents()
+        {
+            
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            
+        }
+
         public override void ShowView(float duration = 0.5f)
         {
             base.ShowView(duration);

@@ -3,6 +3,7 @@ using System.Threading;
 using CompositionRoot.Enums;
 using DG.Tweening;
 using InputActions;
+using Patterns.Models;
 using Runtime.Player.Perks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,6 +18,7 @@ namespace Runtime.Player
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
         private PlayerPerkSystem _perkSystem;
+        private PlayerModel _playerModel;
         private Tween _movementTween;
         
         private bool _canMove;
@@ -26,11 +28,12 @@ namespace Runtime.Player
         private const float MIN_HIGH_POSITION = -50f;
         
 
-        public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem)
+        public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem, PlayerModel playerModel)
         {
             _canMove = true;
             _playerRigidBody.isKinematic = false;
-            
+
+            _playerModel = playerModel;
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
             _entryPoint.PlayerEventHandler.OnMoveButtonTouched += MoveAfterTouch;
@@ -82,6 +85,7 @@ namespace Runtime.Player
             CheckHorizontalPosition();
             CheckVerticalPosition();
 
+            _playerModel.CurrentDistance += stepLenght;
             _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
             _entryPoint.PlayerEventHandler.InvokeStartMoving();
         }

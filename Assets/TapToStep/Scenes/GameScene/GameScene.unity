@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 60510696}
   - component: {fileID: 60510698}
   m_Layer: 0
-  m_Name: 'GetMore[Button]'
+  m_Name: 'GetReward[Button]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 80544504}
   - component: {fileID: 80544503}
   m_Layer: 0
-  m_Name: ContinueByAds
+  m_Name: 'ContinueByAds[Button]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1754,6 +1754,7 @@ GameObject:
   - component: {fileID: 296039473}
   - component: {fileID: 296039472}
   - component: {fileID: 296039474}
+  - component: {fileID: 296039475}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -1776,6 +1777,7 @@ MonoBehaviour:
   _scriptableObjectInstallers: []
   _monoInstallers:
   - {fileID: 296039474}
+  - {fileID: 296039475}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -1831,8 +1833,24 @@ MonoBehaviour:
   _gameEntryPoint: {fileID: 1734320280}
   _locationBuilder: {fileID: 1149702570}
   _playerBuilder: {fileID: 1579732902}
-  _gameViewController: {fileID: 1869589378}
+  _viewController: {fileID: 1869589378}
   _musicToMaterialEmision: {fileID: 953246750}
+--- !u!114 &296039475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296039471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bc5b38ebd9f42e282b5dacfa24d015b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerModel:
+    <Bits>k__BackingField: 0
+    <BestDistance>k__BackingField: 0
+    <CurrentDistance>k__BackingField: 0
 --- !u!1 &349532906
 GameObject:
   m_ObjectHideFlags: 0
@@ -3338,7 +3356,7 @@ GameObject:
   - component: {fileID: 672660639}
   - component: {fileID: 672660638}
   m_Layer: 0
-  m_Name: 'Distance[TMP]'
+  m_Name: 'CurrentDistance[TMP]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3472,8 +3490,8 @@ GameObject:
   m_Component:
   - component: {fileID: 724621149}
   - component: {fileID: 724621151}
-  - component: {fileID: 724621153}
   - component: {fileID: 724621152}
+  - component: {fileID: 724621155}
   - component: {fileID: 724621154}
   m_Layer: 0
   m_Name: LoadingScreenView
@@ -3519,23 +3537,10 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 724621148}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &724621153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 724621148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7147131b56b64e84b8533a435cb6568d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _thisViewCanvasGroup: {fileID: 724621152}
 --- !u!114 &724621154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3586,6 +3591,19 @@ MonoBehaviour:
   m_NStarPolygonSideCount: 3
   m_NStarPolygonInset: 2
   m_NStarPolygonCornerRadius: 0
+--- !u!114 &724621155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724621148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7147131b56b64e84b8533a435cb6568d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _thisViewCanvasGroup: {fileID: 724621152}
 --- !u!1 &730525074
 GameObject:
   m_ObjectHideFlags: 0
@@ -3750,7 +3768,7 @@ GameObject:
   - component: {fileID: 734728762}
   - component: {fileID: 734728761}
   m_Layer: 0
-  m_Name: RestartButton
+  m_Name: 'Restart[Button]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5425,13 +5443,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 897158546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d486f0ae957d4d60a386a937741527ba, type: 3}
+  m_Script: {fileID: 11500000, guid: dc7b3055ecad4fd4b1bc884daec9c154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _thisViewCanvasGroup: {fileID: 897158548}
   _restartButton: {fileID: 734728761}
-  _continueButton: {fileID: 80544503}
-  _distanceText: {fileID: 672660638}
+  _continueByAdButton: {fileID: 80544503}
+  _currentDistanceText: {fileID: 672660638}
 --- !u!1 &902690228
 GameObject:
   m_ObjectHideFlags: 0
@@ -7907,16 +7925,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1322196253}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff95655e796f4777a3012843ac5c0ee6, type: 3}
+  m_Script: {fileID: 11500000, guid: 287c642d280246c48c317b16b0acdd53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _thisViewCanvasGroup: {fileID: 1322196255}
-  _distanceText: {fileID: 1130280211}
   _toMenuButton: {fileID: 876041478}
-  _getBitsButton: {fileID: 60510698}
-  _getBitsRect: {fileID: 60510695}
-  _bitText: {fileID: 1847680843}
-  _energyLine: {fileID: 1754334481}
+  _getRewardButton: {fileID: 60510698}
+  _distanceText: {fileID: 1130280211}
+  _bitsText: {fileID: 1847680843}
+  _characterEnergyImage: {fileID: 1754334481}
 --- !u!1 &1336791784 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2619026442259831551, guid: 945714c51b426401082d01cbc160b2ab, type: 3}
@@ -9762,7 +9779,7 @@ GameObject:
   - component: {fileID: 1847680844}
   - component: {fileID: 1847680843}
   m_Layer: 0
-  m_Name: 'Bit[TMP]'
+  m_Name: 'Bits[TMP]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9935,12 +9952,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d7b5a1c41a426f957601c955b77b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadingView: {fileID: 724621153}
-  _gameView: {fileID: 1322196256}
-  _mainMenuView: {fileID: 940035001}
-  _deadView: {fileID: 897158549}
-  _tutorialView: {fileID: 1247992061}
-  _leaderBoardView: {fileID: 349532909}
 --- !u!1 &1888472092
 GameObject:
   m_ObjectHideFlags: 0
@@ -11089,6 +11100,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2193992105218583303, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2964425875685710656, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11171,6 +11186,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6729597014758553441, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729597014758553441, guid: 3ea8a0d3ce0b64242b38e0d2a8954dba, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

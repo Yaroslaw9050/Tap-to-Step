@@ -36,11 +36,21 @@ namespace UI.Views.Upgrades
             _leaderboardService = leaderboardService;
         }
 
+        protected override void SubscribeToEvents()
+        {
+            
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            
+        }
+
         public override void ShowView(float duration = 0.5f)
         {
             UpdateDeadCounter();
             base.ShowView(duration);
-            _distanceText.SetText($"Distance: {TextMeshProExtension.ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
+            _distanceText.SetText($"Distance: {ValueConvertor.ToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
             _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
             _continueButton.interactable = false;
             _mobileAdsService.LoadContinueAd();
