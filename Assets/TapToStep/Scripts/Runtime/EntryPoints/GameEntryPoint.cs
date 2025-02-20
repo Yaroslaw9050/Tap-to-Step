@@ -45,7 +45,7 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             await _locationBuilder.GenerateNewLocationAsync();
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
             await _viewController.InitAsync(_playerBuilder.PlayerEntryPoint);
-            await _leaderboardService.InitAsync();
+            await _leaderboardService.InitAsync(_playerBuilder.PlayerEntryPoint.PlayerStatistic);
             _mobileAdsService.LoadBannerAd();
             _musicToMaterialEmision.Init(_audioController.MusicSource);
         }

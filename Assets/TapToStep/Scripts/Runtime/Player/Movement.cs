@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using CompositionRoot.Enums;
+using Core.Service.Leaderboard;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using InputActions;
 using Runtime.Player.Perks;
@@ -17,7 +19,10 @@ namespace Runtime.Player
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
         private PlayerPerkSystem _perkSystem;
+        private LeaderboardService _leaderboardService;
         private Tween _movementTween;
+
+        private short _stepCounter;
         
         private bool _canMove;
 
@@ -26,11 +31,12 @@ namespace Runtime.Player
         private const float MIN_HIGH_POSITION = -50f;
         
 
-        public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem)
+        public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem, LeaderboardService leaderboardService)
         {
             _canMove = true;
             _playerRigidBody.isKinematic = false;
             
+            _leaderboardService = leaderboardService;
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
             _entryPoint.PlayerEventHandler.OnMoveButtonTouched += MoveAfterTouch;
@@ -40,6 +46,8 @@ namespace Runtime.Player
         public void Destruct()
         {
             _entryPoint.PlayerEventHandler.OnMoveButtonTouched -= MoveAfterTouch;
+            _movementTween.Kill();
+            _movementTween = null;
         }
 
         public void OnPlayerDied()
@@ -47,6 +55,7 @@ namespace Runtime.Player
             _playerRigidBody.isKinematic = true;
             _movementTween?.Pause();
             _movementTween?.Kill();
+            _movementTween = null;
             _canMove = false;
         }
 
@@ -58,15 +67,16 @@ namespace Runtime.Player
 
         private void MoveAfterTouch(MoveDirection moveDirection)
         {
-            if (_movementTween != null && _movementTween.IsActive() && !_movementTween.IsComplete()) return;
-            if(_canMove == false) return;
-            
-            MakeStep(moveDirection);
+            MakeStepAsync(moveDirection).Forget();
         }
 
-        private void MakeStep(MoveDirection moveDirection)
+        private async UniTask MakeStepAsync(MoveDirection moveDirection)
         {
+            if (_movementTween != null && _movementTween.IsActive() && !_movementTween.IsComplete()) return;
+            if(_canMove == false) return;
             if(moveDirection == MoveDirection.None) return;
+            
+            await UniTask.NextFrame();
             var setting = _entryPoint.PlayerSettingSo;
             
             var horizontalSlide = GetOffsetByDirection(moveDirection);
@@ -84,6 +94,8 @@ namespace Runtime.Player
 
             _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
             _entryPoint.PlayerEventHandler.InvokeStartMoving();
+
+            CalculateSteps();
         }
 
         private float GetOffsetByDirection(MoveDirection moveDirection)
@@ -118,6 +130,17 @@ namespace Runtime.Player
             {
                 _playerRigidBody.linearVelocity = Vector3.zero;
                 _playerRoot.position = new Vector3(_playerRoot.position.x, 5f, _playerRoot.position.z);
+            }
+        }
+
+        private void CalculateSteps()
+        {
+            _stepCounter++;
+
+            if (_stepCounter >= 5)
+            {
+                _stepCounter = 0;
+                _leaderboardService.UpdateCurrentDistanceAsync(_entryPoint.PlayerStatistic.Distance).Forget();
             }
         }
     }

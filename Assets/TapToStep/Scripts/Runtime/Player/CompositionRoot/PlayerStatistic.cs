@@ -33,17 +33,20 @@ namespace Runtime.Player.CompositionRoot
             SaveAllData();
         }
 
+        public void SetDistance(float currentDistance)
+        {
+            _distance = currentDistance;
+        }
+
         public void SaveAllData()
         {
             PlayerPrefs.SetInt("Bits", _bits);
-            PlayerPrefs.SetFloat("Distance", _distance);
             PlayerPrefs.Save();
         }
 
         public void LoadAllDataToVariables()
         {
             _bits = PlayerPrefs.GetInt("Bits", 0);
-            _distance = PlayerPrefs.GetFloat("Distance", 0);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using CompositionRoot.SO.Player.Logic;
+using Core.Service.Leaderboard;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.Perks;
@@ -14,12 +15,14 @@ public class PlayerBuilder : MonoBehaviour
     private PlayerPerkSystem _playerPerkSystem;
     private PlayerEntryPoint _playerEntryPoint;
     private GameEventHandler _gameEventHandler;
+    private LeaderboardService _leaderboardService;
     public PlayerSettingSO PlayerSettingSo => _playerSettingSo;
     public PlayerEntryPoint PlayerEntryPoint => _playerEntryPoint;
 
     [Inject]
-    public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem)
+    public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem, LeaderboardService leaderboardService)
     {
+        _leaderboardService = leaderboardService;
         _gameEventHandler  = gameEventHandler;
         _playerPerkSystem = playerPerkSystem;
     }
@@ -31,7 +34,7 @@ public class PlayerBuilder : MonoBehaviour
         position = new Vector3(position.x, position.y + yOffset, position.z);
         
         _playerEntryPoint = Instantiate(_playerPrefab, position, Quaternion.identity).GetComponent<PlayerEntryPoint>();
-        _playerEntryPoint.Init(_gameEventHandler, _playerSettingSo, _playerPerkSystem);
+        _playerEntryPoint.Init(_gameEventHandler, _playerSettingSo, _playerPerkSystem, _leaderboardService);
         backgroundTransform.SetParent(_playerEntryPoint.transform);
     }
 

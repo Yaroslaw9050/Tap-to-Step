@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
 using Core.Extension.UI;
@@ -36,6 +37,8 @@ namespace UI.Views.Upgrades
         private PlayerEntryPoint _playerEntryPoint;
         private PlayerPerkSystem _playerPerkSystem;
         private IMobileAdsService _mobileAdsService;
+
+        private CancellationTokenSource _cts;
         
         public event Action OnToMenuButtonPressed;
 
@@ -50,6 +53,7 @@ namespace UI.Views.Upgrades
         
         public void Init(PlayerEntryPoint playerEntryPoint)
         {
+            _cts = new CancellationTokenSource();
             _playerEntryPoint = playerEntryPoint;
             
             _gameEventHandler.OnCollectablesChanged += OnCollectablesChanged;
@@ -67,6 +71,9 @@ namespace UI.Views.Upgrades
 
         public void Destruct()
         {
+            _cts?.Cancel();
+            _cts?.Dispose();
+            
             _gameEventHandler.OnSomeSkillUpgraded -= OnSomeSkillUpgraded;
             _gameEventHandler.OnCollectablesChanged -= OnCollectablesChanged;
             _gameEventHandler.OnPlayerStartMoving -= OnPlayerStartMoving;
@@ -79,7 +86,7 @@ namespace UI.Views.Upgrades
         {
             _getBitsButton.interactable = false;
             _getBitsRect.anchoredPosition = new Vector2(-_getBitsRect.rect.width, _getBitsRect.anchoredPosition.y);
-            await UniTask.WaitForSeconds(40);
+            await UniTask.WaitForSeconds(40, cancellationToken: _cts.Token);
             _mobileAdsService.LoadRewardBitsAd(BitAdsLoaded);
         }
         

@@ -51,7 +51,7 @@ namespace UI.Views.LeaderBoard
                
                 var user = top100Users[i];
                 var element = Instantiate(_boardElement, _boardElementsParent);
-                element.Init(i+1, user.userName, user.distance, string.Equals(user.userUniqueId, myCard.userUniqueId));
+                element.Init(i+1, user.userName, user.bestDistance, string.Equals(user.userUniqueId, myCard.userUniqueId));
                 r_boardElements.Add(element);
                 await UniTask.DelayFrame(1, cancellationToken: _cts.Token);
             }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Firebase.Database;
+using Runtime.Player.CompositionRoot;
 using UnityEngine;
 
 namespace Core.Service.Leaderboard
@@ -20,13 +20,14 @@ namespace Core.Service.Leaderboard
 
         private const string USER_ID_KEY = "User_";
         private const string USER_NAME_KEY = "userName";
-        private const string USER_DISTANCE_KEY = "distance";
+        private const string USER_BEST_DISTANCE_KEY = "bestDistance";
+        private const string USER_CURRENT_DISTANCE_KEY = "currentDistance";
         private const string USER_UNIQUE_ID_KEY = "uniqueId";
         
         private const string DATABASE_KEY = "Leaderboard";
         
         
-        public async UniTask InitAsync()
+        public async UniTask InitAsync(PlayerStatistic playerStatistic)
         {
             if(_systemReady) return;
            
@@ -38,6 +39,8 @@ namespace Core.Service.Leaderboard
                 return;
             }
             _systemReady = await TryReadOrCreateUserAsync();
+            var user = await RequestPersonalDataAsync(_userId);
+            playerStatistic.SetDistance((float)user.currentDistance);
             if(_systemReady == false) return;
             Debug.Log("Leaderboard Initialized!");
         }
@@ -48,15 +51,22 @@ namespace Core.Service.Leaderboard
             await _databaseReference.Child(_userId).Child(USER_NAME_KEY).SetValueAsync(newUserName);
         }
 
-        public async UniTask UpdateUserDistanceAsync(double currentUserDistance)
+        public async UniTask UpdateBestUserDistanceAsync(double currentUserDistance)
         {
             if(_systemReady == false) return;
             var tempUser = await RequestPersonalDataAsync(_userId);
 
-            if (currentUserDistance > tempUser.distance)
+            if (currentUserDistance > tempUser.bestDistance)
             {
-                await _databaseReference.Child(_userId).Child(USER_DISTANCE_KEY).SetValueAsync(currentUserDistance);
+                await _databaseReference.Child(_userId).Child(USER_BEST_DISTANCE_KEY).SetValueAsync(currentUserDistance);
             }
+        }
+        
+        public async UniTask UpdateCurrentDistanceAsync(double currentUserDistance)
+        {
+            if(_systemReady == false) return;
+            
+            await _databaseReference.Child(_userId).Child(USER_CURRENT_DISTANCE_KEY).SetValueAsync(currentUserDistance);
         }
 
         public async UniTask<(List<LeaderboardUser>, LeaderboardUser,  int)> RequestAllLeaderboardAsync()
@@ -69,13 +79,6 @@ namespace Core.Service.Leaderboard
             var myRank = GetUserRank(allUsers);
             
             return (top100Users, myUser, myRank);
-        }
-
-        public async UniTask<double> RequestUserDistanceFromLeaderboardAsync()
-        {
-            if(_systemReady == false) return -1;
-            var user = await RequestPersonalDataAsync(_userId);
-            return user.distance;
         }
         
 
@@ -96,13 +99,18 @@ namespace Core.Service.Leaderboard
                
                 if (_leaderboardUser == null)
                 {
-                    Debug.LogError($"Personal user data has some issue: {_userId}" );
-                    return false;
+                    await CreateUserID();
+                    return true;
                 }
-            
                 return true;
             }
 
+            await CreateUserID();
+            return true;
+        }
+
+        private async UniTask CreateUserID()
+        {
             _userId = await GetUserCardIdByUniqueIdAsync();
             if (string.IsNullOrEmpty(_userId))
             {
@@ -110,8 +118,6 @@ namespace Core.Service.Leaderboard
             }
             PlayerPrefs.SetString(USER_ID_KEY, _userId);
             PlayerPrefs.Save();
-
-            return true;
         }
 
         private async UniTask<string> GetUserCardIdByUniqueIdAsync()
@@ -137,11 +143,12 @@ namespace Core.Service.Leaderboard
         private async UniTask<string> CreateNewUserAsync()
         {
             var uniqId = SystemInfo.deviceUniqueIdentifier;
-            _leaderboardUser = new LeaderboardUser($"Player_{_totalUsers}", 0.0, uniqId);
+            _leaderboardUser = new LeaderboardUser($"Player_{_totalUsers}", 0.0,0.0, uniqId);
             var newUserID = $"{USER_ID_KEY}{_totalUsers}";
             
             await _databaseReference.Child(newUserID).Child(USER_NAME_KEY).SetValueAsync(_leaderboardUser.userName);
-            await _databaseReference.Child(newUserID).Child(USER_DISTANCE_KEY).SetValueAsync(_leaderboardUser.distance);
+            await _databaseReference.Child(newUserID).Child(USER_BEST_DISTANCE_KEY).SetValueAsync(_leaderboardUser.bestDistance);
+            await _databaseReference.Child(newUserID).Child(USER_CURRENT_DISTANCE_KEY).SetValueAsync(_leaderboardUser.currentDistance);
             await _databaseReference.Child(newUserID).Child(USER_UNIQUE_ID_KEY).SetValueAsync(_leaderboardUser.userUniqueId);
             
             return newUserID;
@@ -166,9 +173,10 @@ namespace Core.Service.Leaderboard
                 if (snapshot != null && snapshot.HasChildren)
                 {
                     var userName = snapshot.Child(USER_NAME_KEY).Value.ToString();
-                    var distance = double.Parse(snapshot.Child(USER_DISTANCE_KEY).Value.ToString());
+                    var besDistance = double.Parse(snapshot.Child(USER_BEST_DISTANCE_KEY).Value.ToString());
+                    var currentDistance = double.Parse(snapshot.Child(USER_CURRENT_DISTANCE_KEY).Value.ToString());
                     var userUniqId = snapshot.Child(USER_UNIQUE_ID_KEY).Value.ToString();
-                    return new LeaderboardUser(userName, distance, userUniqId);
+                    return new LeaderboardUser(userName, currentDistance, besDistance, userUniqId);
                 }
 
                 Debug.LogError("User Not Found!");
@@ -178,14 +186,14 @@ namespace Core.Service.Leaderboard
 
         private async UniTask<long> GetTotalUserCountAsync()
         {
-            var snapshot = await _databaseReference.OrderByChild(USER_DISTANCE_KEY).GetValueAsync();
+            var snapshot = await _databaseReference.OrderByChild(USER_BEST_DISTANCE_KEY).GetValueAsync();
             if (snapshot.Exists == false) return -1;
 
             return snapshot.Children.Count();
         }
         private async UniTask<List<LeaderboardUser>> GetAllUsersSortedByDistanceAsync()
         {
-            var snapshot = await _databaseReference.OrderByChild(USER_DISTANCE_KEY).GetValueAsync();
+            var snapshot = await _databaseReference.OrderByChild(USER_BEST_DISTANCE_KEY).GetValueAsync();
             if (snapshot.Exists == false) return null;
             
             var users = new List<LeaderboardUser>();
@@ -196,15 +204,14 @@ namespace Core.Service.Leaderboard
                 {
                     var newElement = new LeaderboardUser(
                         user.ContainsKey(USER_NAME_KEY) ? user[USER_NAME_KEY].ToString() : "Unknown",
-                        user.ContainsKey(USER_DISTANCE_KEY)
-                            ? double.Parse(user[USER_DISTANCE_KEY].ToString())
-                            : 0,
+                        user.ContainsKey(USER_CURRENT_DISTANCE_KEY) ? double.Parse(user[USER_CURRENT_DISTANCE_KEY].ToString()) : 0,
+                        user.ContainsKey(USER_BEST_DISTANCE_KEY) ? double.Parse(user[USER_BEST_DISTANCE_KEY].ToString()) : 0,
                         user.ContainsKey(USER_UNIQUE_ID_KEY) ? user[USER_UNIQUE_ID_KEY].ToString() : string.Empty
                     );
                     users.Add(newElement);
                 }
             }
-            return users.OrderByDescending(u => u.distance).ToList();
+            return users.OrderByDescending(u => u.bestDistance).ToList();
         }
     }
 }

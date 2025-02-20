@@ -8,7 +8,7 @@ namespace Runtime.InteractedObjects.Obstacles
 
         public override void Collect()
         {
-            Destroy(_parent);
+            Destroy(_parent.gameObject);
         }
     }
 }

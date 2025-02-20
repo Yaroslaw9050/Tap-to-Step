@@ -89,7 +89,8 @@ namespace UI.Views.Upgrades
 
         private async UniTaskVoid TrySaveUserDistanceAsync()
         {
-            await _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance);
+            await _leaderboardService.UpdateBestUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance);
+            await _leaderboardService.UpdateCurrentDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance);
         }
     }
 }

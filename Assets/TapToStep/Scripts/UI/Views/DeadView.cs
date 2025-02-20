@@ -41,7 +41,8 @@ namespace UI.Views.Upgrades
             UpdateDeadCounter();
             base.ShowView(duration);
             _distanceText.SetText($"Distance: {TextMeshProExtension.ConvertToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
-            _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
+            _leaderboardService.UpdateBestUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
+            _leaderboardService.UpdateCurrentDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
             _continueButton.interactable = false;
             _mobileAdsService.LoadContinueAd();
         }

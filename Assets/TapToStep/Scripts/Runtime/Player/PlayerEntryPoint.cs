@@ -1,4 +1,5 @@
 using CompositionRoot.SO.Player.Logic;
+using Core.Service.Leaderboard;
 using Runtime.Builders.Location;
 using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player.CompositionRoot;
@@ -27,15 +28,15 @@ namespace Runtime.Player
         public PlayerSettingSO PlayerSettingSo => _playerSetting;
 
         public void Init(GameEventHandler gameEventHandler, PlayerSettingSO playerSetting,
-            PlayerPerkSystem playerPerkSystem)
+            PlayerPerkSystem playerPerkSystem, LeaderboardService leaderboardService)
         {
             _playerSetting = playerSetting;
             _gameEventHandler = gameEventHandler;
             _playerEventHandler = new PlayerEventHandler(this, gameEventHandler);
             _playerStatistic.LoadAllDataToVariables();
             
-            _cameraController.Init(this, gameEventHandler);
-            _movement.Init(this, playerPerkSystem);
+            _cameraController.Init(this, gameEventHandler, playerPerkSystem);
+            _movement.Init(this, playerPerkSystem, leaderboardService);
             _screenCaster.Init(this, gameEventHandler);
             _interactionTrigger.Initialize(_playerEventHandler);
             
@@ -70,8 +71,7 @@ namespace Runtime.Player
 
         private void OnPlayerResumed()
         {
-            _movement.OnPlayerResumed();
-            _cameraController.MoveToPlayerResumePosition();
+            _cameraController.MoveToPlayerResumePosition(()=> _movement.OnPlayerResumed());
         }
     }
 }

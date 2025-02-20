@@ -6,15 +6,17 @@ namespace Core.Service.Leaderboard
     public class LeaderboardUser
     {
         public string userName;
-        public double distance;
+        public double currentDistance;
+        public double bestDistance;
         public string userUniqueId;
 
 
-        public LeaderboardUser(string userName, double distance, string userUniqueId)
+        public LeaderboardUser(string userName, double currentDistance, double bestDistance, string userUniqueId)
         {
             this.userName = userName;
-            this.distance = distance;
+            this.currentDistance = currentDistance;
             this.userUniqueId = userUniqueId;
+            this.bestDistance = bestDistance;
         }
     }
 }

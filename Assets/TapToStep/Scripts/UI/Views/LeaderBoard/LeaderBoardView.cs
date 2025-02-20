@@ -113,7 +113,7 @@ namespace UI.Views.LeaderBoard
             await _boardBuilder.CreateBoardAsync(top100Users, myCard);
             _userNameField.SetTextWithoutNotify(myCard.userName);
             _userRankText.SetText(myRank.ToString());
-            _userDistanceText.SetText(TextMeshProExtension.ConvertToDistance((float)myCard.distance));
+            _userDistanceText.SetText(TextMeshProExtension.ConvertToDistance((float)myCard.bestDistance));
             _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             _thisViewCanvasGroup.interactable = true;
@@ -121,16 +121,15 @@ namespace UI.Views.LeaderBoard
 
         private async UniTaskVoid ChangeUserNameAsync()
         {
-            _gameEventHandler.InvokeNickNameChanged();
             _gameEventHandler.InvokeOnCollectablesChanged(-30);
             _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
             _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
             
             _thisViewCanvasGroup.interactable = false;
-           await _leaderboardService.RenameUserAsync(_userNameField.text);
-           _boardBuilder.DestroyBoard();
-           await DisplayLeaderboardAsync();
-           _thisViewCanvasGroup.interactable = true;
+            await _leaderboardService.RenameUserAsync(_userNameField.text);
+            _boardBuilder.DestroyBoard();
+            await DisplayLeaderboardAsync();
+            _thisViewCanvasGroup.interactable = true;
 
         }
     }
