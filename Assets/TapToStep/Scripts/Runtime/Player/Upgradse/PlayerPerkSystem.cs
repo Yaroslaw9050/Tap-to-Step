@@ -1,13 +1,24 @@
+using System;
 using System.Linq;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
 using UnityEngine;
 
-namespace Runtime.Player.Perks
+namespace Runtime.Player.Upgrade
 {
     public class PlayerPerkSystem : MonoBehaviour
     {
         [SerializeField] private PlayerPerkSO[] _supportedUpgrades;
+        
+        public void Start()
+        {
+            LoadAllPerks();
+        }
+        
+        public void OnDestroy()
+        {
+            SaveAllPerks();
+        }
 
         public int GetPerkLevel(PerkType perkType)
         {
@@ -56,7 +67,9 @@ namespace Runtime.Player.Perks
         public float GetPerkValueByType(PerkType type)
         {
             var perk = GetPerkByType(type);
-            return perk.CurrentLevel / 10f;
+            var raw = perk.CurrentLevel / 20f;
+            var rounded = (float)Math.Round(raw, 1);
+            return rounded;
         }
 
         private void SaveToMemory(PerkType type)

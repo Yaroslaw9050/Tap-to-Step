@@ -5,7 +5,7 @@ using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using Runtime.Audio;
 using Runtime.Player;
-using Runtime.Player.Perks;
+using Runtime.Player.Upgrade;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -44,7 +44,7 @@ namespace UI.Views.Upgrades
         public void Init(PlayerEntryPoint playerEntryPoint)
         {
             _playerEntryPoint = playerEntryPoint;
-            _upgradeHolderSubView.Init(_globalEventsHolder, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
+            //_upgradeHolderSubView.Init(_globalEventsHolder, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
             
             _backButton.onClick.AddListener(BackButtonCLicked);
             _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);

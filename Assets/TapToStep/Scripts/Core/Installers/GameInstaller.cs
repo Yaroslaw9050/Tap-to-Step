@@ -1,8 +1,8 @@
+using Core.Service.LocalUser;
 using Runtime.Audio;
-using Runtime.Player.Perks;
+using Runtime.Player.Upgrade;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
-using TapToStep.Scripts.Core.Service.LocalUser;
 using TapToStep.Scripts.Runtime.EntryPoints;
 using UI.Views;
 using UI.Views.Upgrades;
@@ -14,14 +14,13 @@ namespace Core.Installers
 {
     public class GameInstaller : MonoInstaller
     {
+        [SerializeField] private LocalPlayerService _localPlayerService;
         [SerializeField] private PlayerPerkSystem _playerPerkSystem;
         [SerializeField] private GameEntryPoint _gameEntryPoint;
         [SerializeField] private LocationBuilder _locationBuilder;
         [SerializeField] private PlayerBuilder _playerBuilder;
-        [FormerlySerializedAs("_gameViewController")] [SerializeField] private ViewController _viewController;
         [SerializeField] private MusicToMaterialEmmision _musicToMaterialEmision;
-        
-        
+
         public override void InstallBindings()
         {
             BindEntryPoint();
@@ -36,7 +35,7 @@ namespace Core.Installers
 
         private void BindPlayerLocalService()
         {
-            Container.Bind<LocalPlayerService>().AsSingle().NonLazy();
+            Container.Bind<LocalPlayerService>().FromInstance(_localPlayerService).AsSingle().NonLazy();
         }
 
         private void BindMusicToMaterial()
@@ -66,7 +65,7 @@ namespace Core.Installers
 
         private void BindGameViewController()
         {
-            Container.Bind<ViewController>().FromInstance(_viewController).AsSingle().NonLazy();
+            Container.Bind<ViewController>().AsSingle().NonLazy();
         }
 
         private void BindPlayerUpdateSystem()

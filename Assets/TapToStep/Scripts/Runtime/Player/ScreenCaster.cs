@@ -55,7 +55,7 @@ namespace Runtime.Player
         {
             _inputAction.GameTouch.TapPosition.Enable();
             _inputAction.GameTouch.Taped.Enable();
-            await UniTask.NextFrame();
+            await UniTask.DelayFrame(60);
             _inputAction.GameTouch.TapPosition.performed += ReadTapPosition;
             _inputAction.GameTouch.Taped.started += TapStatusChanged;
             _inputAction.GameTouch.Taped.canceled += TapStatusChanged;

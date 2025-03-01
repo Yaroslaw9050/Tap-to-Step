@@ -1,9 +1,13 @@
 using CompositionRoot.Constants;
 using Core.Extension.UI;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using MPUIKIT;
+using Patterns.MVVM.ViewModels;
 using Patterns.ViewModels;
 using TMPro;
 using UI.Views.Upgrades;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -23,23 +27,31 @@ namespace Patterns.Views
         [Header("Images:")]
         [SerializeField] private MPImage _characterEnergyImage;
         
-        private GameViewModel _gameViewModel;
+        private GameViewModel _viewModel;
+        private Tween _energyAnimationTween;
         
         [Inject]
         public void Constructor(GameViewModel gameViewModel)
         {
-            _gameViewModel = gameViewModel;
+            _viewModel = gameViewModel;
         }
-        
+
+        public override void ShowView(float duration = 0.5f)
+        {
+            base.ShowView(duration);
+            _characterEnergyImage.fillAmount = 1f;
+        }
+
         protected override void SubscribeToEvents()
         {
-            _toMenuButton.onClick.AddListener(_gameViewModel.ToMenuCommand.Execute);
-            _getRewardButton.onClick.AddListener(_gameViewModel.GetRewardCommand.Execute);
+            _toMenuButton.onClick.AddListener(() => _viewModel.OpenMainMenuCommand.Execute());
+            _getRewardButton.onClick.AddListener(() => _viewModel.GetRewardCommand.Execute());
             
-            _gameViewModel.OnViewActivityStatusChanged += OnViewStatusChangedHandler;
-            _gameViewModel.OnDistanceUpdated += DistanceUpdateHandler;
+            _viewModel.OnViewActivityStatusChanged += OnViewStatusChangedHandler;
             
-            _gameViewModel.OnBitsUpdated += OnBitsUpdated;
+            _viewModel.PlayerStartMoveCommand.Subscribe(ReactPlayEnergyAnimation).AddTo(_disposable);
+            _viewModel.Distance.Subscribe(ReactDistanceUpdateHandler).AddTo(_disposable);
+            _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
@@ -47,26 +59,30 @@ namespace Patterns.Views
             _toMenuButton.onClick.RemoveAllListeners();
             _getRewardButton.onClick.RemoveAllListeners();
             
-            _gameViewModel.OnViewActivityStatusChanged -= OnViewStatusChangedHandler;
-            _gameViewModel.OnDistanceUpdated -= DistanceUpdateHandler;
-            
-            _gameViewModel.OnBitsUpdated -= OnBitsUpdated;
+            _viewModel.OnViewActivityStatusChanged -= OnViewStatusChangedHandler;
         }
 
         private void OnViewStatusChangedHandler(bool isActive)
         {
             if (isActive) ShowView(ViewAnimationAssets.BASE);
-            else HideView(ViewAnimationAssets.BASE);
+            else HideView(ViewAnimationAssets.FAST);
         }
 
-        private void OnBitsUpdated(ulong newValue)
+        private void ReactBitsUpdated(ulong newValue)
         {
             _bitsText.SetText(ValueConvertor.ToBits(newValue));
         }
 
-        private void DistanceUpdateHandler(double distance)
+        private void ReactDistanceUpdateHandler(double distance)
         {
             _distanceText.SetText($"Distance\n{ValueConvertor.ToDistance(distance)}");
+        }
+        
+        private void ReactPlayEnergyAnimation(float duration)
+        {
+            _energyAnimationTween?.Kill();
+            _characterEnergyImage.fillAmount = 0f;
+            _energyAnimationTween = _characterEnergyImage.DOFillAmount(1f, duration).SetEase(Ease.Linear);
         }
     }
 }

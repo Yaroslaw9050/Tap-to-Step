@@ -1,10 +1,7 @@
-using CompositionRoot.SO.Player.Logic;
 using Core.Service.GlobalEvents;
-using Patterns.Models;
+using Core.Service.LocalUser;
 using Runtime.Builders.Location;
 using Runtime.Player.CompositionRoot;
-using Runtime.Player.Perks;
-using TapToStep.Scripts.Core.Service.LocalUser;
 using UnityEngine;
 
 namespace Runtime.Player
@@ -21,23 +18,19 @@ namespace Runtime.Player
         private ScreenCaster _screenCaster;
         private GlobalEventsHolder _globalEventsHolder;
         private ILocationGenerator _locationGenerator;
-        private PlayerSettingSO _playerSetting;
 
         public GlobalEventsHolder GlobalEventsHolder => _globalEventsHolder;
         public PlayerStatistic PlayerStatistic => _playerStatistic;
-        public PlayerSettingSO PlayerSettingSo => _playerSetting;
 
-        public void Init(GlobalEventsHolder globalEventsHolder, PlayerSettingSO playerSetting,
-            PlayerPerkSystem playerPerkSystem, LocalPlayerService localPlayerService)
+        public void Init(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService)
         {
-            _playerSetting = playerSetting;
             _globalEventsHolder = globalEventsHolder;
             _playerStatistic.LoadAllDataToVariables();
 
             _screenCaster = new ScreenCaster(this, _globalEventsHolder);
-            _cameraController.Initialise(this, _globalEventsHolder);
+            _cameraController.Initialise(this, _globalEventsHolder, localPlayerService);
             _interactionTrigger.Initialise(_globalEventsHolder, localPlayerService);
-            _movement.Initialise(this, playerPerkSystem, localPlayerService, _screenCaster);
+            _movement.Initialise(this, localPlayerService, _screenCaster);
 
             SubscribeToEvents();
         }

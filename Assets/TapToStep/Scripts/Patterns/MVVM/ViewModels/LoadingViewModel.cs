@@ -1,3 +1,5 @@
+using Patterns.MVVM.ViewModels;
+
 namespace Patterns.ViewModels
 {
     public sealed class LoadingViewModel: ViewModel

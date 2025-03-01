@@ -1,6 +1,6 @@
 namespace CompositionRoot.Constants
 {
-    public class ViewAnimationAssets
+    public static class ViewAnimationAssets
     {
         public const float INSTANTLY = 0f;
         public const float FAST = 0.25f;

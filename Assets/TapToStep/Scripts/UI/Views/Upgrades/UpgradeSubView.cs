@@ -44,7 +44,7 @@ namespace UI.Views.Upgrades
             
             _levelText.text = level.ToString();
             _costText.text = $"upgrade \\n <size=80%>({cost} bits) </size>";
-            _upgradeButton.interactable = _leaderboardService.SystemReady;
+            //_upgradeButton.interactable = _leaderboardService.SystemReady;
         }
 
         public void PlayPurchaseAnimation()

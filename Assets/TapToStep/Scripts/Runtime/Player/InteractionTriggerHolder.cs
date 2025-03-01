@@ -1,8 +1,8 @@
 using CompositionRoot.Constants;
 using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Runtime.InteractedObjects.Collectables;
 using Runtime.InteractedObjects.Obstacles;
-using TapToStep.Scripts.Core.Service.LocalUser;
 using UnityEngine;
 
 namespace Runtime.Player

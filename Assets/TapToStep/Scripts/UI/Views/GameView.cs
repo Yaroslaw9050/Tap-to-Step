@@ -5,10 +5,10 @@ using Core.Extension.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MPUIKIT;
+using Patterns.MVVM.ViewModels;
 using Patterns.ViewModels;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
-using Runtime.Player.Perks;
 using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
@@ -55,7 +55,7 @@ namespace UI.Views.Upgrades
 
         private void OnToMenuButtonPressed()
         {
-            _gameViewModel.ToMenuCommand.Execute();
+            _gameViewModel.OpenMainMenuCommand.Execute();
         }
 
         private void OnGetBitsButtonPressed()

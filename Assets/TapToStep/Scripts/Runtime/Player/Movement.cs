@@ -1,9 +1,8 @@
 using System;
 using Cysharp.Threading.Tasks;
 using CompositionRoot.Enums;
+using Core.Service.LocalUser;
 using InputActions;
-using Runtime.Player.Perks;
-using TapToStep.Scripts.Core.Service.LocalUser;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,7 +16,6 @@ namespace Runtime.Player
         private ScreenCaster _screenCaster;
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
-        private PlayerPerkSystem _perkSystem;
         private LocalPlayerService _localPlayerService;
         
         private bool _canMove;
@@ -28,7 +26,7 @@ namespace Runtime.Player
 
         private const float MIN_HORIZONTAL_SLIDE = -2f;
         private const float MAX_HORIZONTAL_SLIDE = 2f;
-        private const float GROUND_CHECK_DISTANCE = 0.3f;
+        private const float GROUND_CHECK_DISTANCE = 0.35f;
         private const int SURFACE_CHECK_INTERVAL = 5;
 
         private void FixedUpdate()
@@ -40,7 +38,7 @@ namespace Runtime.Player
             }
         }
 
-        public void Initialise(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem,
+        public void Initialise(PlayerEntryPoint entryPoint,
             LocalPlayerService localPlayerService, ScreenCaster screenCaster)
         {
             _canMove = true;
@@ -48,7 +46,6 @@ namespace Runtime.Player
             _playerRigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
             _localPlayerService = localPlayerService;
-            _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
             _screenCaster = screenCaster;
 
@@ -91,9 +88,9 @@ namespace Runtime.Player
         {
             return moveDirection switch
             {
-                MoveDirection.Left => -0.3f - _perkSystem.GetPerkValueByType(PerkType.TurnSpeed),
+                MoveDirection.Left => -0.3f - _localPlayerService.GetTurnSpeed(),
                 MoveDirection.Up => 0f,
-                MoveDirection.Right => 0.3f + _perkSystem.GetPerkValueByType(PerkType.TurnSpeed),
+                MoveDirection.Right => 0.3f + _localPlayerService.GetTurnSpeed(),
                 MoveDirection.Down => 0f,
                 MoveDirection.None => 0f,
                 _ => 0f
@@ -103,28 +100,34 @@ namespace Runtime.Player
         private async UniTaskVoid MakeStepAsync(MoveDirection moveDirection)
         {
             if (moveDirection == MoveDirection.None) return;
-
-            var setting = _entryPoint.PlayerSettingSo;
+            
             var horizontalSlide = GetOffsetByDirection(moveDirection);
-            var stepLenght = setting.StepLenght + _perkSystem.GetPerkValueByType(PerkType.StepLenght);
-            var stepTime = setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed);
-
-            _movementDirection = new Vector3(
-                Mathf.Clamp(_playerRoot.position.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE) - _playerRoot.position.x,
-                0,
-                stepLenght
+            var stepLength = _localPlayerService.GetStepLenght();
+            var stepTime = _localPlayerService.GetStepTime();
+            
+            Vector3 startPosition = _playerRoot.position;
+            Vector3 endPosition = new Vector3(
+                Mathf.Clamp(startPosition.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE),
+                startPosition.y,
+                startPosition.z + stepLength
             );
             
-            _movementDirection = Vector3.ProjectOnPlane(_movementDirection, _groundNormal).normalized;
-
             _isMoving = true;
             _entryPoint.GlobalEventsHolder.PlayerEvents.InvokeStartMoving();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(stepTime));
-
-            _localPlayerService.AddDistance(stepLenght);
-            _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
-
+            
+            float elapsedTime = 0f;
+            while (elapsedTime < stepTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = elapsedTime / stepTime;
+                _playerRigidBody.MovePosition(Vector3.Lerp(startPosition, endPosition, t));
+                await UniTask.Yield();
+            }
+            
+            _playerRigidBody.MovePosition(endPosition);
+            _localPlayerService.AddDistance(stepLength);
+            _entryPoint.PlayerStatistic.UpdateDistance(stepLength);
+            
             _isMoving = false;
         }
 

@@ -1,43 +1,79 @@
 using System;
 using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Patterns.Commands;
-using Patterns.Models;
+using UI.Views;
+using UniRx;
 using UnityEngine;
 
-namespace Patterns.ViewModels
+namespace Patterns.MVVM.ViewModels
 {
     public sealed class GameViewModel : ViewModel
     {
-        private GlobalEventsHolder _globalEventsHolder;
-        public ICommand ToMenuCommand { get; }
-        public ICommand GetRewardCommand { get; }
-        public ICommand<ulong> BitUpdatedCommand { get; }
-        public ICommand<double> DistanceUpdatedCommand { get; }
+        private readonly LocalPlayerService r_localPlayerService;
+        private readonly GlobalEventsHolder r_globalEventsHolder;
+        public ReactiveCommand OpenMainMenuCommand { get; } = new();
+        public ReactiveCommand GetRewardCommand { get; } = new();
+        public ReactiveProperty<double> Distance { get; } = new(0.0);
+        public ReactiveProperty<ulong> Bits { get; } = new(0);
 
-        public event Action OnMenuButtonClicked;
-        public event Action OnGetRewardsButtonClicked;
-        public event Action<double> OnDistanceUpdated;
-        public event Action<ulong> OnBitsUpdated; 
+        public ReactiveCommand<float> PlayerStartMoveCommand { get; } = new();
         
-        public GameViewModel(GlobalEventsHolder globalEventsHolder, IViewModelStorageService viewModelStorageService)
+        public GameViewModel(LocalPlayerService localPlayerService, GlobalEventsHolder globalEventsHolder,
+            IViewModelStorageService viewModelStorageService, ViewController viewController)
             : base(viewModelStorageService)
         {
-            _globalEventsHolder = globalEventsHolder;
-            ToMenuCommand = new Command(()=> OnMenuButtonClicked?.Invoke());
-            GetRewardCommand = new Command(() =>  OnGetRewardsButtonClicked?.Invoke());
+            r_localPlayerService = localPlayerService;
+            r_globalEventsHolder = globalEventsHolder;
             
-            DistanceUpdatedCommand = new Command<double>(UpdateDistanceHandler);
-            BitUpdatedCommand = new Command<ulong>(UpdateBitsHandler);
-        }
-        
-        private void UpdateDistanceHandler(double distance)
-        {
-            OnDistanceUpdated?.Invoke(distance);
+            SubscribeReactive(localPlayerService, viewController);
         }
 
-        private void UpdateBitsHandler(ulong bits)
+        private void SubscribeReactive(LocalPlayerService localPlayerService, ViewController viewController)
         {
-            OnBitsUpdated?.Invoke(bits);
+            OpenMainMenuCommand.Subscribe(OnMenuCommandExecuted(viewController)).AddTo(r_disposables);
+            GetRewardCommand.Subscribe(OnGetRewardCommandExecuted());
+
+            localPlayerService.PlayerModel.Bits
+                .Subscribe(BitValueChanged())
+                .AddTo(r_disposables);
+            
+            localPlayerService.PlayerModel.CurrentDistance
+                .Subscribe(DistanceValueChanged())
+                .AddTo(r_disposables);
+            
+            r_globalEventsHolder.PlayerEvents.OnStartMoving += OnPlayerStartMoving;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            r_globalEventsHolder.PlayerEvents.OnStartMoving -= OnPlayerStartMoving;
+        }
+
+        private Action<double> DistanceValueChanged()
+        {
+            return newValue => Distance.Value = newValue;
+        }
+
+        private Action<ulong> BitValueChanged()
+        {
+            return newValue => Bits.Value = newValue;
+        }
+
+        private Action<Unit> OnGetRewardCommandExecuted()
+        {
+            return _ => r_localPlayerService.AddBits(5000);
+        }
+
+        private Action<Unit> OnMenuCommandExecuted(ViewController viewController)
+        {
+            return _ => viewController.ShowMenuView();
+        }
+
+        private void OnPlayerStartMoving()
+        {
+            PlayerStartMoveCommand.Execute(r_localPlayerService.GetStepTime());
         }
     }
 }

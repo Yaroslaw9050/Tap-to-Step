@@ -15,4 +15,5 @@ MonoBehaviour:
   _upgradeType: 3
   _costPerOneLevel: 15
   _startPrice: 5
-  _maxLevel: 25
+  _maxLevel: 50
+  _currentLevel: 50

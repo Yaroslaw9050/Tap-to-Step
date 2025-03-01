@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Patterns.MVVM.ViewModels;
 using Patterns.ViewModels;
 using UnityEngine;
 
@@ -59,6 +60,7 @@ namespace TapToStep.Scripts.Core.Service.ViewStorage
         public void ClearAllViewModels()
         {
             CloseAllViewModels();
+            DisposeAllViewModels();
             r_viewModelsDictionary.Clear();
         }
 
@@ -67,6 +69,14 @@ namespace TapToStep.Scripts.Core.Service.ViewStorage
             foreach (var key in r_viewModelsDictionary.Keys)
             {
                 r_viewModelsDictionary[key].CloseView();
+            }
+        }
+
+        private void DisposeAllViewModels()
+        {
+            foreach (var key in r_viewModelsDictionary.Keys)
+            {
+                r_viewModelsDictionary[key].Dispose();
             }
         }
     }

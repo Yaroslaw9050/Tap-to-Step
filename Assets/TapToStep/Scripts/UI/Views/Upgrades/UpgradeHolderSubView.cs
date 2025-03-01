@@ -1,34 +1,29 @@
 using System;
 using CompositionRoot.Enums;
-using Core.Extension.UI;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
-using Runtime.Player;
-using Runtime.Player.CompositionRoot;
-using Runtime.Player.Perks;
-using TMPro;
+using Core.Service.LocalUser;
+using Runtime.Player.Upgrade;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UI.Views.Upgrades
 {
     [Serializable]
     public class UpgradeHolderSubView
     {
-        [SerializeField] private TextMeshProUGUI _bitsText;
-        
         [SerializeField] private UpgradeSubView[] _upgradeSubViews;
         
         private GlobalEventsHolder _globalEventsHolder;
         private PlayerPerkSystem _playerPerkSystem;
-        private PlayerEntryPoint _playerEntryPoint;
+        private LocalPlayerService _localPlayerService;
 
         public void Init(GlobalEventsHolder globalEventsHolder,
-            PlayerPerkSystem playerPerkSystem, PlayerEntryPoint playerEntryPoint, LeaderboardService leaderboardService)
+            PlayerPerkSystem playerPerkSystem, LocalPlayerService localPlayerService,
+            LeaderboardService leaderboardService)
         {
             _globalEventsHolder = globalEventsHolder;
             _playerPerkSystem = playerPerkSystem;
-            _playerEntryPoint = playerEntryPoint;
+            _localPlayerService = localPlayerService;
 
             foreach (var subView in _upgradeSubViews)
             {
@@ -50,7 +45,6 @@ namespace UI.Views.Upgrades
         {
             if(perk == PerkType.None) return;
             
-            _bitsText.SetText(ValueConvertor.ToBits(_playerEntryPoint.PlayerStatistic.Bits));
             var cost = _playerPerkSystem.GetPerkPrice(perk);
 
             foreach (var subView in _upgradeSubViews)
@@ -65,12 +59,12 @@ namespace UI.Views.Upgrades
             var cost = _playerPerkSystem.GetPerkPrice(perkType);
 
             _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements();
-            if ((int)_playerEntryPoint.PlayerStatistic.Bits < cost) return;
+            if (_localPlayerService.PlayerModel.Bits.Value < (ulong)cost) return;
             if(_playerPerkSystem.TryUpgradePerk(perkType) == false) return;
             
-            Debug.Log($"cost is: {cost}");
-            //TODO: Fix on collectable changed!
-            //_gameEventHandler.InvokeOnCollectablesChanged(-cost);
+            _localPlayerService.RemoveBits((uint)cost);
+            
+            _globalEventsHolder.InvokeOnCollectablesChanged();
 
             foreach (var subView in _upgradeSubViews)
             {

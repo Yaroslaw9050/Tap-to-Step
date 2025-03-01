@@ -10,16 +10,12 @@ namespace Core.Installers
     {
         [SerializeField] private AudioController _audioController;
         [SerializeField] private LeaderboardService _leaderboardService;
-        private GlobalEventsHolder _globalEventsHolder;
-
+        
         public override void InstallBindings()
         {
-            _globalEventsHolder = new GlobalEventsHolder();
-            
             BindAudioController();
             BindGameEventHandler();
             BindLeaderboardService();
-            
         }
 
         private void BindAudioController()
@@ -29,7 +25,7 @@ namespace Core.Installers
 
         private void BindGameEventHandler()
         {
-            Container.Bind<GlobalEventsHolder>().FromInstance(_globalEventsHolder).AsSingle().NonLazy();
+            Container.Bind<GlobalEventsHolder>().AsSingle().NonLazy();
         }
 
         private void BindLeaderboardService()

@@ -1,5 +1,7 @@
 using System;
 using Core.Extension;
+using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +12,7 @@ namespace UI.Views.Upgrades
         [SerializeField] protected CanvasGroup _thisViewCanvasGroup;
         
         protected IViewModelStorageService IViewModelStorageService;
+        protected CompositeDisposable _disposable;
 
         [Inject]
         public void Constructor(IViewModelStorageService iViewModelStorageService)
@@ -17,9 +20,18 @@ namespace UI.Views.Upgrades
             IViewModelStorageService = iViewModelStorageService;
         }
         
-        private void OnEnable() => SubscribeToEvents();
+        private void OnEnable()
+        {
+            _disposable = new CompositeDisposable();
+            SubscribeToEvents();
+        }
 
-        private void OnDisable() => UnSubscribeFromEvents();
+        private void OnDisable()
+        {
+            UnSubscribeFromEvents();
+            _disposable.Dispose();
+            _thisViewCanvasGroup.DOKill();
+        }
 
         private void OnDestroy()
         {

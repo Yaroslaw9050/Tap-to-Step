@@ -15,7 +15,7 @@ namespace CompositionRoot.SO.Player.Logic
         [Range(1, 100)]
         [SerializeField] private int _maxLevel;
         
-        private int _currentLevel;
+        [SerializeField] private int _currentLevel;
 
         public int StartPrice => _startPrice;
         public PerkType UpgradeType => _upgradeType;

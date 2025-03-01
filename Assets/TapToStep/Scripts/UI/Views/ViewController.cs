@@ -1,15 +1,11 @@
 using Core.Service.GlobalEvents;
 using Patterns.MVVM.ViewModels;
 using Patterns.ViewModels;
-using Runtime.Player;
-using TapToStep.Scripts.Core.Service.LocalUser;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-using Zenject;
 
 namespace UI.Views
 {
-    public class ViewController : MonoBehaviour
+    public sealed class ViewController
     {
         private LoadingViewModel _loadingViewModel;
         private TutorialViewModel _tutorialViewModel;
@@ -17,38 +13,34 @@ namespace UI.Views
         private DeadViewModel _deadViewModel;
         private MainMenuViewModel _mainMenuViewModel;
 
-        private GlobalEventsHolder _globalEventsHolder;
-        private PlayerEntryPoint _playerEntryPoint;
-        private LocalPlayerService _localPlayerService;
-        private IViewModelStorageService _viewModelStorage;
+        private readonly GlobalEventsHolder r_globalEventsHolder;
+        private readonly IViewModelStorageService r_viewModelStorage;
         
         private bool _isFirstTap;
-        
-        [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService, 
-            IViewModelStorageService viewModelStorage)  
+
+        public ViewController(GlobalEventsHolder globalEventsHolder, 
+            IViewModelStorageService viewModelStorage)
         {
-            _globalEventsHolder = globalEventsHolder;
-            _viewModelStorage = viewModelStorage;
-            _localPlayerService = localPlayerService;
+            r_globalEventsHolder = globalEventsHolder;
+            r_viewModelStorage = viewModelStorage;
         }
 
         public void Initialize()
         {
             _isFirstTap = true;
             
-            _loadingViewModel = _viewModelStorage.GetViewMode<LoadingViewModel>();
-            _tutorialViewModel = _viewModelStorage.GetViewMode<TutorialViewModel>();
-            _gameViewModel = _viewModelStorage.GetViewMode<GameViewModel>();
-            _deadViewModel = _viewModelStorage.GetViewMode<DeadViewModel>();
-            _mainMenuViewModel = _viewModelStorage.GetViewMode<MainMenuViewModel>();
+            _loadingViewModel = r_viewModelStorage.GetViewMode<LoadingViewModel>();
+            _tutorialViewModel = r_viewModelStorage.GetViewMode<TutorialViewModel>();
+            _gameViewModel = r_viewModelStorage.GetViewMode<GameViewModel>();
+            _deadViewModel = r_viewModelStorage.GetViewMode<DeadViewModel>();
+            _mainMenuViewModel = r_viewModelStorage.GetViewMode<MainMenuViewModel>();
             
             SubscribeToEvents();
         }
 
         public void Destruct()
         {
-            _viewModelStorage.ClearAllViewModels();
+            r_viewModelStorage.ClearAllViewModels();
             UnsubscribeFromEvents();
         }
 
@@ -61,36 +53,39 @@ namespace UI.Views
         public void DisplayGameLoopViews()
         {
             _loadingViewModel.CloseView();
-            _globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(true);
+            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(true);
         }
         
         private void SubscribeToEvents()
         {
-            _globalEventsHolder.PlayerEvents.OnStartMoving += PlayerStartMovingHandler;
-            _globalEventsHolder.OnCollectablesChanged += OnCollectablesChangedHolder;
-            _globalEventsHolder.PlayerEvents.OnDied += OnPlayerDiedHandler;
-
-            _gameViewModel.OnMenuButtonClicked += OnMenuClickedHandler;
-            _gameViewModel.OnGetRewardsButtonClicked += OnGetRewardButtonClichedHandler;
-            
-            _deadViewModel.OnRestartButtonClicked += OnRestartButtonClicked;
+            r_globalEventsHolder.PlayerEvents.OnStartMoving += PlayerStartMovingHandler;
+            r_globalEventsHolder.PlayerEvents.OnDied += OnPlayerDiedHandler;
         }
 
         private void UnsubscribeFromEvents()
         {
-            _globalEventsHolder.PlayerEvents.OnStartMoving -= PlayerStartMovingHandler;
-            _globalEventsHolder.OnCollectablesChanged -= OnCollectablesChangedHolder;
-            _globalEventsHolder.PlayerEvents.OnDied -= OnPlayerDiedHandler;
-            
-            _gameViewModel.OnMenuButtonClicked -= OnMenuClickedHandler;
-            _gameViewModel.OnGetRewardsButtonClicked -= OnGetRewardButtonClichedHandler;
-            
-            _deadViewModel.OnRestartButtonClicked -= OnRestartButtonClicked;
+            r_globalEventsHolder.PlayerEvents.OnStartMoving -= PlayerStartMovingHandler;
+            r_globalEventsHolder.PlayerEvents.OnDied -= OnPlayerDiedHandler;
+        }
+
+        public void ShowGameView()
+        {
+            r_globalEventsHolder.UIEvents.InvokeOnMainMenuIsOpen(false);
+            r_viewModelStorage.CloseAllViewModels();
+            _gameViewModel.OpenView();
+            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(true);
+        }
+
+        public void ShowMenuView()
+        {
+            r_globalEventsHolder.UIEvents.InvokeOnMainMenuIsOpen(true);
+            r_viewModelStorage.CloseAllViewModels();
+            _mainMenuViewModel.OpenView();
+            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
         }
 
         private void PlayerStartMovingHandler()
         {
-            _gameViewModel.DistanceUpdatedCommand.Execute(_localPlayerService.PlayerModel.CurrentDistance);
             CheckIsFirstTap();
         }
 
@@ -104,25 +99,13 @@ namespace UI.Views
             }
         }
 
-        private void OnCollectablesChangedHolder()
-        {
-            _gameViewModel.BitUpdatedCommand.Execute(_localPlayerService.PlayerModel.Bits);
-        }
-
         private void OnPlayerDiedHandler()
         {
             //TODO: If user enter to ded view and exit - reset current distance
             
-            _viewModelStorage.CloseAllViewModels();
-            _globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
-            _deadViewModel.DisplayCurrentDistance.Execute(_localPlayerService.PlayerModel.CurrentDistance);
+            r_viewModelStorage.CloseAllViewModels();
+            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
             _deadViewModel.OpenView();
-        }
-
-        private void OnMenuClickedHandler()
-        {
-            _mainMenuViewModel.OpenView();
-            _globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
         }
 
         private void OnGetRewardButtonClichedHandler()

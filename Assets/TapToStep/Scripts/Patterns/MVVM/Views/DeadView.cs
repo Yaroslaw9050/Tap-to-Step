@@ -1,7 +1,9 @@
 using Core.Extension.UI;
+using Patterns.MVVM.ViewModels;
 using Patterns.ViewModels;
 using TMPro;
 using UI.Views.Upgrades;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -27,11 +29,11 @@ namespace Patterns.Views
         
         protected override void SubscribeToEvents()
         {
-            _restartButton.onClick.AddListener(_deadViewModel.RestartButtonClicked.Execute);
-            _continueByAdButton.onClick.AddListener(_deadViewModel.ContinueByAdButtonClicked.Execute);
+            _restartButton.onClick.AddListener(() => _deadViewModel.RestartCommand.Execute());
+            _continueByAdButton.onClick.AddListener(() => _deadViewModel.ContinueByAdCommand.Execute());
             
             _deadViewModel.OnViewActivityStatusChanged += OnViewStatusChanged;
-            _deadViewModel.OnCurrentDistanceUpdated += OnCurrentDistanceUpdated;
+            _deadViewModel.Distance.Subscribe(ReactCurrentDistanceUpdated).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
@@ -40,7 +42,6 @@ namespace Patterns.Views
             _continueByAdButton.onClick.RemoveAllListeners();
             
             _deadViewModel.OnViewActivityStatusChanged -= OnViewStatusChanged;
-            _deadViewModel.OnCurrentDistanceUpdated -= OnCurrentDistanceUpdated;
         }
 
         private void OnViewStatusChanged(bool isActive)
@@ -49,7 +50,7 @@ namespace Patterns.Views
             else HideView();
         }
 
-        private void OnCurrentDistanceUpdated(double currentDistance)
+        private void ReactCurrentDistanceUpdated(double currentDistance)
         {
             _currentDistanceText.SetText($"Distance: {ValueConvertor.ToDistance(currentDistance)}");
         }

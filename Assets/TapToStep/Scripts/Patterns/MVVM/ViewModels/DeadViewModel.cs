@@ -1,42 +1,51 @@
 using System;
+using Core.Service.LocalUser;
 using Patterns.Commands;
+using UniRx;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Patterns.ViewModels
+namespace Patterns.MVVM.ViewModels
 {
     public sealed class DeadViewModel: ViewModel
     {
-        public ICommand RestartButtonClicked;
-        public ICommand ContinueByAdButtonClicked;
+        private readonly LocalPlayerService r_localPlayerService;
         
-        public ICommand<double> DisplayCurrentDistance;
-
-        public event Action OnRestartButtonClicked;
-        public event Action OnContinueByAdButtonClicked;
-        public event Action<double> OnCurrentDistanceUpdated; 
+        public readonly ReactiveCommand RestartCommand = new();
+        public readonly ReactiveCommand ContinueByAdCommand = new();
         
+        public readonly ReactiveProperty<double> Distance = new(0);
         
-        public DeadViewModel(IViewModelStorageService viewModelStorageService): base(viewModelStorageService)
+        public DeadViewModel(LocalPlayerService localPlayerService,
+            IViewModelStorageService viewModelStorageService): base
+            (viewModelStorageService)
         {
-            RestartButtonClicked = new Command(OnRestartButtonClickedHandler);
-            ContinueByAdButtonClicked = new Command(OnContinueByAdButtonClickedHandler);
+            r_localPlayerService = localPlayerService;
+            RestartCommand.Subscribe(RestartCommandExecuted()).AddTo(r_disposables);
+            ContinueByAdCommand.Subscribe(ContinueByAdCommandExecuted()).AddTo(r_disposables);
 
-            DisplayCurrentDistance = new Command<double>(OnCurrentDistanceUpdatedHandler);
+            localPlayerService.PlayerModel.CurrentDistance
+                .Subscribe(newValue => Distance.Value = newValue)
+                .AddTo(r_disposables);
         }
 
-        private void OnCurrentDistanceUpdatedHandler(double currentDistance)
+        private Action<Unit> ContinueByAdCommandExecuted()
         {
-            OnCurrentDistanceUpdated?.Invoke(currentDistance);
+            return _ =>
+            {
+                Debug.Log("Watching reward ad!");
+            };
         }
 
-        private void OnRestartButtonClickedHandler()
+        private Action<Unit> RestartCommandExecuted()
         {
-            OnRestartButtonClicked?.Invoke();
+            return _ =>
+            {
+                r_localPlayerService.SetCurrentDistance(0);
+                var scene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene(scene.name);
+            };
         }
-
-        private void OnContinueByAdButtonClickedHandler()
-        {
-            OnContinueByAdButtonClicked?.Invoke();
-        }
+        
     }
 }

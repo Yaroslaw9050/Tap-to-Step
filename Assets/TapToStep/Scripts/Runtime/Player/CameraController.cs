@@ -1,5 +1,6 @@
 using System;
 using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using DG.Tweening;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace Runtime.Player
         [SerializeField] private Camera _camera;
 
         private GlobalEventsHolder _globalEventsHolder;
+        private LocalPlayerService _localPlayerService;
         private PlayerEntryPoint _entryPoint;
         private Tween _cameraTurnTween;
         private Tween _cameraMoveTween;
@@ -19,25 +21,22 @@ namespace Runtime.Player
         
         private const float CAMERA_LIFT_AMOUNT = 0.05f;
 
-        public void Initialise(PlayerEntryPoint playerEntryPoint, GlobalEventsHolder globalEventsHolder)
+        public void Initialise(PlayerEntryPoint playerEntryPoint, GlobalEventsHolder globalEventsHolder,
+            LocalPlayerService localPlayerService)
         {
             _entryPoint = playerEntryPoint;
             _globalEventsHolder = globalEventsHolder;
+            _localPlayerService = localPlayerService;
             _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving += MoveLikeStep;
-            //_gameEventHandler.OnMenuViewStatusChanged += MenuViewCalled;
+            _entryPoint.GlobalEventsHolder.UIEvents.OnMainMenuOpening += OnMeinMenuIs;
         }
 
         public void Destruct()
         {
             _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving -= MoveLikeStep;
-
-            _cameraMoveTween?.Pause();
             _cameraMoveTween?.Kill();
-            _cameraMoveTween = null;
-            
-            _cameraTurnTween?.Pause();
             _cameraTurnTween?.Kill();
-            _cameraTurnTween = null;
+            _cameraTransform.DOKill();
         }
 
         public void MoveToDeadPosition()
@@ -58,10 +57,9 @@ namespace Runtime.Player
 
         private void MoveLikeStep()
         {
-            var setting = _entryPoint.PlayerSettingSo;
             var firstHalfCamPosition = _cameraTransform.localPosition.z + CAMERA_LIFT_AMOUNT;
             var secondHalfCamPosition = firstHalfCamPosition - CAMERA_LIFT_AMOUNT;
-            var halfStepTime = setting.StepSpeed / 2;
+            var halfStepTime = _localPlayerService.GetStepTime() / 2;
 
             _cameraMoveTween = _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
             {
@@ -69,11 +67,11 @@ namespace Runtime.Player
             });
         }
 
-        private void MenuViewCalled(bool isActive)
+        private void OnMeinMenuIs(bool isOpening)
         {
-            LookAt(isActive ? CameraTargetType.Up : CameraTargetType.Forward, 0.5f);
+            LookAt(isOpening ? CameraTargetType.Up : CameraTargetType.Forward, 0.5f);
         }
-
+        
         private void LookAt(CameraTargetType cameraTargetType, float animTime = 0, Action onCompleted = null)
         {
             if (_cameraTurnTween != null && _cameraTurnTween.IsActive() && !_cameraTurnTween.IsComplete()) return;

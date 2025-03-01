@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine;
 
 namespace Patterns.Models
@@ -6,8 +7,8 @@ namespace Patterns.Models
     [Serializable]
     public class PlayerModel
     {
-        [field: SerializeField] public ulong Bits { get; set; }
-        [field: SerializeField] public double BestDistance { get; set; }
-        [field: SerializeField] public double CurrentDistance { get; set; }
+        [field: SerializeField] public ReactiveProperty<ulong> Bits { get; } = new(0);
+        [field: SerializeField] public ReactiveProperty<double> BestDistance { get; } = new(0);
+        [field: SerializeField] public ReactiveProperty<double> CurrentDistance { get; } = new(0);
     }
 }
