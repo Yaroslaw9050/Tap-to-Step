@@ -1,8 +1,8 @@
 using System;
 using CompositionRoot.Enums;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using DG.Tweening;
-using Runtime.EntryPoints.EventHandlers;
 using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
@@ -19,14 +19,14 @@ namespace UI.Views.Upgrades
         [SerializeField] private Button _upgradeButton;
         
         private LeaderboardService _leaderboardService;
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
 
         public PerkType PerkType => _perkType;
         public event Action<PerkType> OnUpgradeButtonPressed;
 
-        public void Init(LeaderboardService leaderboardService, GameEventHandler gameEventHandler)
+        public void Init(LeaderboardService leaderboardService, GlobalEventsHolder globalEventsHolder)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _leaderboardService = leaderboardService;
             _upgradeButton.onClick.AddListener(() =>  OnUpgradeButtonPressed?.Invoke(_perkType));
         }
@@ -56,7 +56,7 @@ namespace UI.Views.Upgrades
                 _upgradeButton.interactable = true;
                 _progressSlider.value = 0f;
                 
-                _gameEventHandler.InvokeSomePlayerSkillUpgraded(_perkType);
+                _globalEventsHolder.InvokeSomePlayerSkillUpgraded(_perkType);
             });
         }
     }

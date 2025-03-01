@@ -2,10 +2,8 @@ namespace Patterns.ViewModels
 {
     public sealed class TutorialViewModel : ViewModel
     {
-        public TutorialViewModel(IViewModelStorageService viewModelStorageService)
+        public TutorialViewModel(IViewModelStorageService viewModelStorageService): base(viewModelStorageService)
         {
-            viewModelStorageService.TryRegisterNewViewModel(this);
         }
-        
     }
 }

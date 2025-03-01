@@ -1,8 +1,8 @@
 using System;
 using CompositionRoot.Enums;
 using Core.Extension.UI;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
 using Runtime.Player.Perks;
@@ -19,24 +19,24 @@ namespace UI.Views.Upgrades
         
         [SerializeField] private UpgradeSubView[] _upgradeSubViews;
         
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private PlayerPerkSystem _playerPerkSystem;
         private PlayerEntryPoint _playerEntryPoint;
 
-        public void Init(GameEventHandler gameEventHandler,
+        public void Init(GlobalEventsHolder globalEventsHolder,
             PlayerPerkSystem playerPerkSystem, PlayerEntryPoint playerEntryPoint, LeaderboardService leaderboardService)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _playerPerkSystem = playerPerkSystem;
             _playerEntryPoint = playerEntryPoint;
 
             foreach (var subView in _upgradeSubViews)
             {
-                subView.Init(leaderboardService, _gameEventHandler);
+                subView.Init(leaderboardService, _globalEventsHolder);
                 subView.OnUpgradeButtonPressed += ButtonPressed;
             }
             
-            _gameEventHandler.OnSomeSkillUpgraded += DisplayActualValues;
+            _globalEventsHolder.OnSomeSkillUpgraded += DisplayActualValues;
         }
 
         public void DisplayActualValues()
@@ -64,12 +64,13 @@ namespace UI.Views.Upgrades
         {
             var cost = _playerPerkSystem.GetPerkPrice(perkType);
 
-            _gameEventHandler.InvokeOnUiElementClicked();
+            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements();
             if ((int)_playerEntryPoint.PlayerStatistic.Bits < cost) return;
             if(_playerPerkSystem.TryUpgradePerk(perkType) == false) return;
             
             Debug.Log($"cost is: {cost}");
-            _gameEventHandler.InvokeOnCollectablesChanged(-cost);
+            //TODO: Fix on collectable changed!
+            //_gameEventHandler.InvokeOnCollectablesChanged(-cost);
 
             foreach (var subView in _upgradeSubViews)
             {

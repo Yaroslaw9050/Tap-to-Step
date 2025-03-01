@@ -37,18 +37,28 @@ namespace Patterns.Views
             _getRewardButton.onClick.AddListener(_gameViewModel.GetRewardCommand.Execute);
             _gameViewModel.OnViewActivityStatusChanged += OnViewStatusChangedHandler;
             _gameViewModel.OnDistanceUpdated += DistanceUpdateHandler;
+            
+            _gameViewModel.OnBitsUpdated += OnBitsUpdated;
         }
 
         protected override void UnSubscribeFromEvents()
         {
             _toMenuButton.onClick.RemoveAllListeners();
             _getRewardButton.onClick.RemoveAllListeners();
+            
+            _gameViewModel.OnViewActivityStatusChanged -= OnViewStatusChangedHandler;
+            _gameViewModel.OnDistanceUpdated -= DistanceUpdateHandler;
         }
 
         private void OnViewStatusChangedHandler(bool isActive)
         {
             if (isActive) ShowView(ViewAnimationAssets.BASE);
             else HideView(ViewAnimationAssets.BASE);
+        }
+
+        private void OnBitsUpdated(ulong newValue)
+        {
+            _bitsText.SetText(ValueConvertor.ToBits(newValue));
         }
 
         private void DistanceUpdateHandler(double distance)

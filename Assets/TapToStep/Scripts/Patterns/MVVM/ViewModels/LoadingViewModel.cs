@@ -2,9 +2,8 @@ namespace Patterns.ViewModels
 {
     public sealed class LoadingViewModel: ViewModel
     {
-        public LoadingViewModel(IViewModelStorageService viewModelStorageService)
+        public LoadingViewModel(IViewModelStorageService viewModelStorageService): base(viewModelStorageService)
         {
-            viewModelStorageService.TryRegisterNewViewModel(this);
         }
     }
 }

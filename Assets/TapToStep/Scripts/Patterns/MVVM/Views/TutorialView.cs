@@ -1,3 +1,4 @@
+using CompositionRoot.Constants;
 using Patterns.ViewModels;
 using UI.Views.Upgrades;
 using Zenject;
@@ -26,8 +27,8 @@ namespace Patterns.Views
 
         private void OnViewActivityStatusChanged(bool isActive)
         {
-            if(isActive) ShowView();
-            else HideView();
+            if(isActive) ShowView(ViewAnimationAssets.INSTANTLY);
+            else HideView(ViewAnimationAssets.FAST);
         }
     }
 }

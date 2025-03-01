@@ -1,3 +1,4 @@
+using Core.Extension.UI;
 using Patterns.ViewModels;
 using TMPro;
 using UI.Views.Upgrades;
@@ -7,7 +8,7 @@ using Zenject;
 
 namespace Patterns.Views
 {
-    public class DeadView: BaseView
+    public sealed class DeadView: BaseView
     {
         [Header("Buttons:")]
         [SerializeField] private Button _restartButton;
@@ -30,6 +31,7 @@ namespace Patterns.Views
             _continueByAdButton.onClick.AddListener(_deadViewModel.ContinueByAdButtonClicked.Execute);
             
             _deadViewModel.OnViewActivityStatusChanged += OnViewStatusChanged;
+            _deadViewModel.OnCurrentDistanceUpdated += OnCurrentDistanceUpdated;
         }
 
         protected override void UnSubscribeFromEvents()
@@ -38,12 +40,18 @@ namespace Patterns.Views
             _continueByAdButton.onClick.RemoveAllListeners();
             
             _deadViewModel.OnViewActivityStatusChanged -= OnViewStatusChanged;
+            _deadViewModel.OnCurrentDistanceUpdated -= OnCurrentDistanceUpdated;
         }
 
         private void OnViewStatusChanged(bool isActive)
         {
             if(isActive) ShowView();
             else HideView();
+        }
+
+        private void OnCurrentDistanceUpdated(double currentDistance)
+        {
+            _currentDistanceText.SetText($"Distance: {ValueConvertor.ToDistance(currentDistance)}");
         }
     }
 }

@@ -1,9 +1,9 @@
 using System;
 using Core.Extension.UI;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using Runtime.Audio;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.Perks;
 using UnityEngine;
@@ -24,7 +24,7 @@ namespace UI.Views.Upgrades
         [SerializeField] private GradientAutoRotation _gradientAutoRotation;
 
         private PlayerPerkSystem _playerPerkSystem;
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private PlayerEntryPoint _playerEntryPoint;
         private LeaderboardService _leaderboardService;
 
@@ -33,18 +33,18 @@ namespace UI.Views.Upgrades
         public event Action OnToLeaderboardButtonPressed;
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem,
+        public void Constructor(GlobalEventsHolder globalEventsHolder, PlayerPerkSystem playerPerkSystem,
             AudioController audioController, LeaderboardService leaderboardService)
         {
             _leaderboardService = leaderboardService;
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _playerPerkSystem = playerPerkSystem;
         }
         
         public void Init(PlayerEntryPoint playerEntryPoint)
         {
             _playerEntryPoint = playerEntryPoint;
-            _upgradeHolderSubView.Init(_gameEventHandler, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
+            _upgradeHolderSubView.Init(_globalEventsHolder, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
             
             _backButton.onClick.AddListener(BackButtonCLicked);
             _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);
@@ -87,14 +87,14 @@ namespace UI.Views.Upgrades
 
         private void BackButtonCLicked()
         {
-            _gameEventHandler.InvokeOnUiElementClicked();
+            //_globalEventsHolder.InvokeOnUiElementClicked();
             OnBackButtonClicked?.Invoke();
         }
 
         private void ToLeaderboardButtonClicked()
         {
             OnToLeaderboardButtonPressed?.Invoke();
-            _gameEventHandler.InvokeOnUiElementClicked();
+            //_globalEventsHolder.InvokeOnUiElementClicked();
         }
 
         private async UniTaskVoid TrySaveUserDistanceAsync()

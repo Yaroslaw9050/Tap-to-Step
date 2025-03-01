@@ -1,9 +1,9 @@
 using System;
 using Core.Extension.UI;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Runtime.EntryPoints.EventHandlers;
 using TMPro;
 using UI.Views.Upgrades;
 using UnityEngine;
@@ -27,16 +27,16 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private Button _saveNameButton;
         [SerializeField] private RectTransform _userContainerRect;
 
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private LeaderboardService _leaderboardService;
         private PlayerBuilder _playerBuilder;
 
         public event Action OnBackButtonPressed;
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler, LeaderboardService leaderboardService, PlayerBuilder playerBuilder)
+        public void Constructor(GlobalEventsHolder globalEventsHolder, LeaderboardService leaderboardService, PlayerBuilder playerBuilder)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _leaderboardService = leaderboardService;
             _playerBuilder = playerBuilder;
         }
@@ -110,7 +110,7 @@ namespace UI.Views.LeaderBoard
 
         private void BackButtonClicked()
         {
-            _gameEventHandler.InvokeOnUiElementClicked();
+            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements();
             OnBackButtonPressed?.Invoke();
         }
 
@@ -131,8 +131,8 @@ namespace UI.Views.LeaderBoard
 
         private async UniTaskVoid ChangeUserNameAsync()
         {
-            _gameEventHandler.InvokeNickNameChanged();
-            _gameEventHandler.InvokeOnCollectablesChanged(-30);
+            _globalEventsHolder.InvokeNickNameChanged();
+            // TODO: Fix on collectable changed!
             _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
             _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
             

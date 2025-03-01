@@ -1,11 +1,15 @@
 using System;
-using UnityEngine;
 
 namespace Patterns.ViewModels
 {
     public class ViewModel
     {
         public event Action<bool> OnViewActivityStatusChanged;
+
+        protected ViewModel(IViewModelStorageService viewModelStorageService)
+        {
+            viewModelStorageService.TryRegisterNewViewModel(this);
+        }
         
         public virtual void OpenView()
         {

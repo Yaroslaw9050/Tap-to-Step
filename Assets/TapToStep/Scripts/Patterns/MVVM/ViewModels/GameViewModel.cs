@@ -1,14 +1,14 @@
 using System;
+using Core.Service.GlobalEvents;
 using Patterns.Commands;
 using Patterns.Models;
-using Runtime.EntryPoints.EventHandlers;
+using UnityEngine;
 
 namespace Patterns.ViewModels
 {
     public sealed class GameViewModel : ViewModel
     {
-        private GameEventHandler _gameEventHandler;
-        private readonly PlayerModel r_playerModel;
+        private GlobalEventsHolder _globalEventsHolder;
         public ICommand ToMenuCommand { get; }
         public ICommand GetRewardCommand { get; }
         public ICommand<ulong> BitUpdatedCommand { get; }
@@ -19,14 +19,10 @@ namespace Patterns.ViewModels
         public event Action<double> OnDistanceUpdated;
         public event Action<ulong> OnBitsUpdated; 
         
-        public GameViewModel(PlayerModel playerModel, GameEventHandler gameEventHandler,
-            IViewModelStorageService viewModelStorageService)
+        public GameViewModel(GlobalEventsHolder globalEventsHolder, IViewModelStorageService viewModelStorageService)
+            : base(viewModelStorageService)
         {
-            viewModelStorageService.TryRegisterNewViewModel(this);
-            
-            r_playerModel = playerModel;
-            _gameEventHandler = gameEventHandler;
-
+            _globalEventsHolder = globalEventsHolder;
             ToMenuCommand = new Command(()=> OnMenuButtonClicked?.Invoke());
             GetRewardCommand = new Command(() =>  OnGetRewardsButtonClicked?.Invoke());
             

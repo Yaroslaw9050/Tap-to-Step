@@ -14,12 +14,10 @@ namespace Patterns.ViewModels
         public event Action OnRestartButtonClicked;
         public event Action OnContinueByAdButtonClicked;
         public event Action<double> OnCurrentDistanceUpdated; 
-
-
-        public DeadViewModel(IViewModelStorageService viewModelStorageService)
+        
+        
+        public DeadViewModel(IViewModelStorageService viewModelStorageService): base(viewModelStorageService)
         {
-            viewModelStorageService.TryRegisterNewViewModel(this);
-            
             RestartButtonClicked = new Command(OnRestartButtonClickedHandler);
             ContinueByAdButtonClicked = new Command(OnContinueByAdButtonClickedHandler);
 
@@ -34,8 +32,6 @@ namespace Patterns.ViewModels
         private void OnRestartButtonClickedHandler()
         {
             OnRestartButtonClicked?.Invoke();
-            var scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(scene.name);
         }
 
         private void OnContinueByAdButtonClickedHandler()

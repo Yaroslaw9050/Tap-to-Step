@@ -1,3 +1,4 @@
+using System;
 using Core.Extension;
 using UnityEngine;
 using Zenject;
@@ -19,6 +20,11 @@ namespace UI.Views.Upgrades
         private void OnEnable() => SubscribeToEvents();
 
         private void OnDisable() => UnSubscribeFromEvents();
+
+        private void OnDestroy()
+        {
+            _thisViewCanvasGroup = null;
+        }
 
         protected abstract void SubscribeToEvents();
         protected abstract void UnSubscribeFromEvents();

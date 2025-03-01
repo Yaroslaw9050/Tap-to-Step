@@ -1,8 +1,8 @@
 using Core.Extension.UI;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using GoogleMobileAds.Api;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
@@ -20,7 +20,7 @@ namespace UI.Views.Upgrades
 
         [SerializeField] private TextMeshProUGUI _distanceText;
 
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private LeaderboardService _leaderboardService;
         private PlayerEntryPoint _playerEntryPoint;
         private IMobileAdsService _mobileAdsService;
@@ -28,11 +28,11 @@ namespace UI.Views.Upgrades
         private const string DEAD_KEY = "DeadCount";
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler,
+        public void Constructor(GlobalEventsHolder globalEventsHolder,
             LeaderboardService leaderboardService, IMobileAdsService mobileAdsService)
         {
             _mobileAdsService = mobileAdsService;
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _leaderboardService = leaderboardService;
         }
 
@@ -63,7 +63,7 @@ namespace UI.Views.Upgrades
             _restartButton.onClick.AddListener(() =>
             {
                 _playerEntryPoint.PlayerStatistic.ResetDistance();
-                _gameEventHandler.InvokeOnUiElementClicked();
+                //_globalEventsHolder.InvokeOnUiElementClicked();
 
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             });
@@ -94,7 +94,7 @@ namespace UI.Views.Upgrades
 
         private void OnDeadAdRecorded()
         {
-            _gameEventHandler.InvokeOnGameResumed();
+            //_globalEventsHolder.InvokeOnGameResumed();
         }
 
         private void UpdateDeadCounter()

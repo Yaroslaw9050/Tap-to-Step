@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MPUIKIT;
 using Patterns.ViewModels;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player;
 using Runtime.Player.CompositionRoot;
 using Runtime.Player.Perks;

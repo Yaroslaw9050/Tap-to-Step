@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Patterns.ViewModels;
-using UI.Views.Upgrades;
 using UnityEngine;
 
 namespace TapToStep.Scripts.Core.Service.ViewStorage
@@ -12,7 +11,7 @@ namespace TapToStep.Scripts.Core.Service.ViewStorage
         
         public bool TryRegisterNewViewModel<T>(T regView) where T : ViewModel
         {
-            if(r_viewModelsDictionary.TryAdd(typeof(T), regView))
+            if(r_viewModelsDictionary.TryAdd(regView.GetType(), regView))
             {
                 regView.CloseView();
                 return true;
@@ -24,7 +23,7 @@ namespace TapToStep.Scripts.Core.Service.ViewStorage
 
         public bool TryRemoveViewModel<T>(T rmvView) where T : ViewModel
         {
-            if (r_viewModelsDictionary.TryGetValue(typeof(T), out var regView))
+            if (r_viewModelsDictionary.TryGetValue(rmvView.GetType(), out var regView))
             {
                 r_viewModelsDictionary.Remove(regView.GetType());
                 return true;
