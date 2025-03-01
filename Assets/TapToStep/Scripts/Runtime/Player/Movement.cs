@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using CompositionRoot.Enums;
 using Core.Service.LocalUser;
@@ -17,6 +18,7 @@ namespace Runtime.Player
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
         private LocalPlayerService _localPlayerService;
+        private CancellationTokenSource _groundCheckCts;
         
         private bool _canMove;
         private bool _isMoving;
@@ -42,6 +44,7 @@ namespace Runtime.Player
             LocalPlayerService localPlayerService, ScreenCaster screenCaster)
         {
             _canMove = true;
+            _groundCheckCts = new CancellationTokenSource();
             _playerRigidBody.isKinematic = false;
             _playerRigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
@@ -55,6 +58,8 @@ namespace Runtime.Player
 
         public void Destruct()
         {
+            _groundCheckCts.Cancel();
+            _groundCheckCts.Dispose();
             _screenCaster.OnTouchedToScreenWithDirection -= MoveAfterTouch;
         }
 
@@ -105,8 +110,8 @@ namespace Runtime.Player
             var stepLength = _localPlayerService.GetStepLenght();
             var stepTime = _localPlayerService.GetStepTime();
             
-            Vector3 startPosition = _playerRoot.position;
-            Vector3 endPosition = new Vector3(
+            var startPosition = _playerRoot.position;
+            var endPosition = new Vector3(
                 Mathf.Clamp(startPosition.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE),
                 startPosition.y,
                 startPosition.z + stepLength
@@ -115,11 +120,11 @@ namespace Runtime.Player
             _isMoving = true;
             _entryPoint.GlobalEventsHolder.PlayerEvents.InvokeStartMoving();
             
-            float elapsedTime = 0f;
+            var elapsedTime = 0f;
             while (elapsedTime < stepTime)
             {
                 elapsedTime += Time.deltaTime;
-                float t = elapsedTime / stepTime;
+                var t = elapsedTime / stepTime;
                 _playerRigidBody.MovePosition(Vector3.Lerp(startPosition, endPosition, t));
                 await UniTask.Yield();
             }
@@ -133,9 +138,9 @@ namespace Runtime.Player
 
         private async UniTaskVoid CheckGroundSurfaceAsync()
         {
-            while (true)
+            while (_groundCheckCts.IsCancellationRequested == false)
             {
-                await UniTask.DelayFrame(SURFACE_CHECK_INTERVAL);
+                await UniTask.DelayFrame(SURFACE_CHECK_INTERVAL, cancellationToken: _groundCheckCts.Token);
 
                 if (Physics.Raycast(_playerRoot.position + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 2f))
                 {
