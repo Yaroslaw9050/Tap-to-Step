@@ -35,6 +35,7 @@ namespace Patterns.Views
         {
             _toMenuButton.onClick.AddListener(_gameViewModel.ToMenuCommand.Execute);
             _getRewardButton.onClick.AddListener(_gameViewModel.GetRewardCommand.Execute);
+            
             _gameViewModel.OnViewActivityStatusChanged += OnViewStatusChangedHandler;
             _gameViewModel.OnDistanceUpdated += DistanceUpdateHandler;
             
@@ -48,6 +49,8 @@ namespace Patterns.Views
             
             _gameViewModel.OnViewActivityStatusChanged -= OnViewStatusChangedHandler;
             _gameViewModel.OnDistanceUpdated -= DistanceUpdateHandler;
+            
+            _gameViewModel.OnBitsUpdated -= OnBitsUpdated;
         }
 
         private void OnViewStatusChangedHandler(bool isActive)

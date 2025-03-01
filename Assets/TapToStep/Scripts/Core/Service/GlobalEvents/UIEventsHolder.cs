@@ -2,7 +2,7 @@ using System;
 
 namespace Core.Service.GlobalEvents
 {
-    public class UIEventsHolder
+    public sealed class UIEventsHolder
     {
         public event Action OnClickedOnAnyElements;
         

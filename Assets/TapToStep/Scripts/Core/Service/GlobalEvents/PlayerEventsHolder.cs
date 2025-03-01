@@ -2,7 +2,7 @@ using System;
 
 namespace Core.Service.GlobalEvents
 {
-    public class PlayerEventsHolder
+    public sealed class PlayerEventsHolder
     {
         public event Action<float> OnTouchedToEndOfLocation;
         public event Action<bool> OnScreenInputStatusChanged;
@@ -20,7 +20,7 @@ namespace Core.Service.GlobalEvents
             OnTouchedToEndOfLocation?.Invoke(playerZPosition);
         }
         
-        public void InvokeOnStartMoving()
+        public void InvokeStartMoving()
         {
             OnStartMoving?.Invoke();
         }

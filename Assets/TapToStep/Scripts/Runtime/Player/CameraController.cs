@@ -1,6 +1,6 @@
 using System;
+using Core.Service.GlobalEvents;
 using DG.Tweening;
-using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 
 namespace Runtime.Player
@@ -10,7 +10,7 @@ namespace Runtime.Player
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private Camera _camera;
 
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private PlayerEntryPoint _entryPoint;
         private Tween _cameraTurnTween;
         private Tween _cameraMoveTween;
@@ -19,17 +19,17 @@ namespace Runtime.Player
         
         private const float CAMERA_LIFT_AMOUNT = 0.05f;
 
-        public void Init(PlayerEntryPoint playerEntryPoint, GameEventHandler gameEventHandler)
+        public void Initialise(PlayerEntryPoint playerEntryPoint, GlobalEventsHolder globalEventsHolder)
         {
             _entryPoint = playerEntryPoint;
-            _gameEventHandler = gameEventHandler;
-            _entryPoint.PlayerEventHandler.OnPlayerStartMoving += MoveLikeStep;
-            _gameEventHandler.OnMenuViewStatusChanged += MenuViewCalled;
+            _globalEventsHolder = globalEventsHolder;
+            _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving += MoveLikeStep;
+            //_gameEventHandler.OnMenuViewStatusChanged += MenuViewCalled;
         }
 
         public void Destruct()
         {
-            _entryPoint.PlayerEventHandler.OnPlayerStartMoving -= MoveLikeStep;
+            _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving -= MoveLikeStep;
 
             _cameraMoveTween?.Pause();
             _cameraMoveTween?.Kill();

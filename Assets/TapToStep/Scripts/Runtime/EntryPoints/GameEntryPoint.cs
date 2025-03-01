@@ -6,6 +6,7 @@ using Patterns.Models;
 using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
+using UI.Views;
 using UI.Views.Upgrades;
 using UnityEngine;
 using Zenject;
@@ -45,13 +46,13 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
         private async void Start()
         {
             SetupGraphicSetting();
-            _viewController.SetLoadingFadeTo(true);
+            _viewController.Initialize();
+            _viewController.DisplayPreparingViews();
             
             await _locationBuilder.GenerateNewLocationAsync(_cts.Token);
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
             
-            _viewController.SetLoadingFadeTo(false);
-            _viewController.StartGameLoop();
+            _viewController.DisplayGameLoopViews();
             //
             // _mobileAdsService.Init();
             // _audioController.Init();

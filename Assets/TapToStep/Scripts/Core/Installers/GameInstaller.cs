@@ -2,7 +2,9 @@ using Runtime.Audio;
 using Runtime.Player.Perks;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
+using TapToStep.Scripts.Core.Service.LocalUser;
 using TapToStep.Scripts.Runtime.EntryPoints;
+using UI.Views;
 using UI.Views.Upgrades;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -29,6 +31,12 @@ namespace Core.Installers
             BindPlayerUpdateSystem();
             BindMobAds();
             BindMusicToMaterial();
+            BindPlayerLocalService();
+        }
+
+        private void BindPlayerLocalService()
+        {
+            Container.Bind<LocalPlayerService>().AsSingle().NonLazy();
         }
 
         private void BindMusicToMaterial()

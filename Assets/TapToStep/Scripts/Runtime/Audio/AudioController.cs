@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Service.GlobalEvents;
 using Cysharp.Threading.Tasks;
-using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
@@ -32,16 +32,16 @@ namespace Runtime.Audio
         [SerializeField] private AudioClip _nickNameChangedClip;
 
         private bool _isInitialized;
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private CancellationTokenSource _cts;
 
         public AudioSource MusicSource => _musicSource;
         private readonly List<AudioSource> r_stepsAudioSources = new(10);
 
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler)
+        public void Constructor(GlobalEventsHolder globalEventsHolder)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
         }
         
         public void Init()
@@ -60,35 +60,27 @@ namespace Runtime.Audio
 
         private void SubscribeToEvents()
         {
-            _gameEventHandler.OnPlayerStartMoving += () =>
+            _globalEventsHolder.PlayerEvents.OnStartMoving += () =>
             {
                 PlayShortSound(_stepMixer, _stepClip, Random.Range(0.9f, 1.1f));
             };
 
-            _gameEventHandler.OnPlayerDied += () =>
+            _globalEventsHolder.PlayerEvents.OnDied += () =>
             {
                 PlayShortSound(_vfxMixer, _playerDiedClip);
             };
 
-            _gameEventHandler.OnCollectablesChanged += value =>
+            _globalEventsHolder.OnCollectablesChanged += () =>
             {
-                switch (value)
-                {
-                    case > 0:
-                        PlayShortSound(_vfxMixer, _bitCollectedClip);
-                        break;
-                    case < 0:
-                        PlayShortSound(_uiMixer, _nickNameChangedClip);
-                        break;
-                }
+                PlayShortSound(_vfxMixer, _bitCollectedClip);
             };
             
-            _gameEventHandler.OnUiElementClicked += () =>
+            _globalEventsHolder.UIEvents.OnClickedOnAnyElements += () =>
             {
                 PlayShortSound(_uiMixer, _uiClickClip);
             };
 
-            _gameEventHandler.OnSomeSkillUpgraded += _ =>
+            _globalEventsHolder.OnSomeSkillUpgraded += _ =>
             {
                 PlayShortSound(_uiMixer, _levelUpClip);
             };

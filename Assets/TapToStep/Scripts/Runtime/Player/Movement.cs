@@ -1,10 +1,9 @@
 using System;
-using System.Threading;
+using Cysharp.Threading.Tasks;
 using CompositionRoot.Enums;
-using DG.Tweening;
 using InputActions;
-using Patterns.Models;
 using Runtime.Player.Perks;
+using TapToStep.Scripts.Core.Service.LocalUser;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,43 +13,59 @@ namespace Runtime.Player
     {
         [SerializeField] private Transform _playerRoot;
         [SerializeField] private Rigidbody _playerRigidBody;
-        
+
+        private ScreenCaster _screenCaster;
         private PlayerEntryPoint _entryPoint;
         private TouchInputAction _inputAction;
         private PlayerPerkSystem _perkSystem;
-        private PlayerModel _playerModel;
-        private Tween _movementTween;
+        private LocalPlayerService _localPlayerService;
         
         private bool _canMove;
+        private bool _isMoving;
+        private Vector3 _targetPosition;
+        private Vector3 _movementDirection;
+        private Vector3 _groundNormal = Vector3.up;
 
         private const float MIN_HORIZONTAL_SLIDE = -2f;
         private const float MAX_HORIZONTAL_SLIDE = 2f;
-        private const float MIN_HIGH_POSITION = -50f;
-        
+        private const float GROUND_CHECK_DISTANCE = 0.3f;
+        private const int SURFACE_CHECK_INTERVAL = 5;
 
-        public void Init(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem, PlayerModel playerModel)
+        private void FixedUpdate()
+        {
+            if (_isMoving)
+            {
+                Vector3 movePosition = _playerRigidBody.position + _movementDirection * (Time.fixedDeltaTime * 5f);
+                _playerRigidBody.MovePosition(movePosition);
+            }
+        }
+
+        public void Initialise(PlayerEntryPoint entryPoint, PlayerPerkSystem playerPerkSystem,
+            LocalPlayerService localPlayerService, ScreenCaster screenCaster)
         {
             _canMove = true;
             _playerRigidBody.isKinematic = false;
+            _playerRigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
-            _playerModel = playerModel;
+            _localPlayerService = localPlayerService;
             _perkSystem = playerPerkSystem;
             _entryPoint = entryPoint;
-            _entryPoint.PlayerEventHandler.OnMoveButtonTouched += MoveAfterTouch;
-            
+            _screenCaster = screenCaster;
+
+            _screenCaster.OnTouchedToScreenWithDirection += MoveAfterTouch;
+            CheckGroundSurfaceAsync().Forget();
         }
 
         public void Destruct()
         {
-            _entryPoint.PlayerEventHandler.OnMoveButtonTouched -= MoveAfterTouch;
+            _screenCaster.OnTouchedToScreenWithDirection -= MoveAfterTouch;
         }
 
         public void OnPlayerDied()
         {
             _playerRigidBody.isKinematic = true;
-            _movementTween?.Pause();
-            _movementTween?.Kill();
             _canMove = false;
+            _isMoving = false;
         }
 
         public void OnPlayerResumed()
@@ -61,33 +76,15 @@ namespace Runtime.Player
 
         private void MoveAfterTouch(MoveDirection moveDirection)
         {
-            if (_movementTween != null && _movementTween.IsActive() && !_movementTween.IsComplete()) return;
-            if(_canMove == false) return;
-            
-            MakeStep(moveDirection);
+            if (!_canMove || _isMoving || !IsGrounded()) return;
+            MakeStepAsync(moveDirection).Forget();
         }
 
-        private void MakeStep(MoveDirection moveDirection)
+        private bool IsGrounded()
         {
-            if(moveDirection == MoveDirection.None) return;
-            var setting = _entryPoint.PlayerSettingSo;
-            
-            var horizontalSlide = GetOffsetByDirection(moveDirection);
-            var stepTime = setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed);
-            var stepLenght = setting.StepLenght + _perkSystem.GetPerkValueByType(PerkType.StepLenght);
-            
-            var newStepPosition = _playerRoot.position.z + stepLenght;
-            var newSlidePosition = Math.Clamp(_playerRoot.position.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE) ;
-            
-            _movementTween = _playerRoot.DOMoveZ(newStepPosition, stepTime).SetEase(Ease.InOutFlash);
-            _playerRoot.DOMoveX(newSlidePosition, stepTime).SetEase(Ease.InOutFlash);
-            
-            CheckHorizontalPosition();
-            CheckVerticalPosition();
-
-            _playerModel.CurrentDistance += stepLenght;
-            _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
-            _entryPoint.PlayerEventHandler.InvokeStartMoving();
+            var rayStart = _playerRoot.position + Vector3.down * 1.5f;
+            var grounded = Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, GROUND_CHECK_DISTANCE);
+            return grounded;
         }
 
         private float GetOffsetByDirection(MoveDirection moveDirection)
@@ -103,25 +100,44 @@ namespace Runtime.Player
             };
         }
 
-        private void CheckHorizontalPosition()
+        private async UniTaskVoid MakeStepAsync(MoveDirection moveDirection)
         {
-            switch (_playerRoot.position.x)
-            {
-                case > MAX_HORIZONTAL_SLIDE:
-                    _playerRoot.position = new Vector3(MAX_HORIZONTAL_SLIDE, _playerRoot.position.y, _playerRoot.position.z);
-                    return;
-                case < MIN_HORIZONTAL_SLIDE:
-                    _playerRoot.position = new Vector3(MIN_HORIZONTAL_SLIDE, _playerRoot.position.y, _playerRoot.position.z);
-                    return;
-            }
+            if (moveDirection == MoveDirection.None) return;
+
+            var setting = _entryPoint.PlayerSettingSo;
+            var horizontalSlide = GetOffsetByDirection(moveDirection);
+            var stepLenght = setting.StepLenght + _perkSystem.GetPerkValueByType(PerkType.StepLenght);
+            var stepTime = setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed);
+
+            _movementDirection = new Vector3(
+                Mathf.Clamp(_playerRoot.position.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE) - _playerRoot.position.x,
+                0,
+                stepLenght
+            );
+            
+            _movementDirection = Vector3.ProjectOnPlane(_movementDirection, _groundNormal).normalized;
+
+            _isMoving = true;
+            _entryPoint.GlobalEventsHolder.PlayerEvents.InvokeStartMoving();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(stepTime));
+
+            _localPlayerService.AddDistance(stepLenght);
+            _entryPoint.PlayerStatistic.UpdateDistance(stepLenght);
+
+            _isMoving = false;
         }
 
-        private void CheckVerticalPosition()
+        private async UniTaskVoid CheckGroundSurfaceAsync()
         {
-            if (_playerRoot.position.y < MIN_HIGH_POSITION)
+            while (true)
             {
-                _playerRigidBody.linearVelocity = Vector3.zero;
-                _playerRoot.position = new Vector3(_playerRoot.position.x, 5f, _playerRoot.position.z);
+                await UniTask.DelayFrame(SURFACE_CHECK_INTERVAL);
+
+                if (Physics.Raycast(_playerRoot.position + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 2f))
+                {
+                    _groundNormal = hit.normal;
+                }
             }
         }
     }

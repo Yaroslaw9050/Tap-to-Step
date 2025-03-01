@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CompositionRoot.SO.Location.Logic;
+using Core.Service.GlobalEvents;
 using Cysharp.Threading.Tasks;
 using Runtime.Builders.Location;
-using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -33,27 +33,27 @@ namespace Runtime.Service.LocationGenerator
         private readonly List<GameObject> r_locationElementHoldersPull = new();
         private readonly List<GameObject> r_backgroundElementHoldersPull = new();
         public Transform StaticBackgroundTransform => _staticBackgroundTransform;
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private CancellationToken _token;
 
         private const int BACKGROUND_OFFSET = 1000;
         
 
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler)
+        public void Constructor(GlobalEventsHolder globalEventsHolder)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
         }
         
         private void Start()
         {
             _nexBackgroundSpawnTriggerDistance = BACKGROUND_OFFSET;
-            _gameEventHandler.OnPlayerTouchedToEndOfLocation += PlayerTouchedToEndOfLocation;
+            _globalEventsHolder.PlayerEvents.OnTouchedToEndOfLocation += PlayerTouchedToEndOfLocation;
         }
 
         private void OnDestroy()
         {
-            _gameEventHandler.OnPlayerTouchedToEndOfLocation -= PlayerTouchedToEndOfLocation;
+            _globalEventsHolder.PlayerEvents.OnTouchedToEndOfLocation -= PlayerTouchedToEndOfLocation;
         }
 
         private void PlayerTouchedToEndOfLocation(float playerZPosition)
@@ -85,8 +85,8 @@ namespace Runtime.Service.LocationGenerator
             else
             {
                 await CreateLocationAsync(_supportedLocationPull[randomLocationIndex], token);
-                RemoveOldLocation();
-                DestroyWelcomeText();
+                CheckAndRemoveOldLocation();
+                RemoveWelcomeText();
             }
         }
 
@@ -100,8 +100,7 @@ namespace Runtime.Service.LocationGenerator
             while (elementQueue.Count > 0)
             {
                 if (token.IsCancellationRequested) break;
-                
-                await UniTask.Delay(100, cancellationToken: token); // TODO: Remove after test
+                await UniTask.NextFrame();
                 var temp = Instantiate(elementQueue.Dequeue(), startLocationSpawnPosition, Quaternion.identity);
                 temp.transform.SetParent(locationElementsHolder.transform);
                 await UniTask.NextFrame();
@@ -121,25 +120,17 @@ namespace Runtime.Service.LocationGenerator
             _welcomeModel = Instantiate(_welcomeTextPrefab, new Vector3(0f, 160f, 160f), Quaternion.identity);
         }
 
-        private void DestroyWelcomeText()
+        private void CreateBackground()
         {
-            if (_welcomeModel != null)
-            {
-                Destroy(_welcomeModel);
-            }
+            var spawnPosition = Vector3.forward * (BACKGROUND_OFFSET * _backgroundCounter);
+            var temp = Instantiate(_backgroundPrefab, spawnPosition, Quaternion.identity);
+            temp.transform.SetParent(_locationParent);
+            r_backgroundElementHoldersPull.Add(temp);
+            _backgroundCounter++;
+            CheckAndRemoveOldBackground();
         }
 
-        private void RemoveOldLocation()
-        {
-            if (r_locationElementHoldersPull.Count > 3)
-            {
-                var element = r_locationElementHoldersPull[0];
-                r_locationElementHoldersPull.RemoveAt(0); 
-                Destroy(element);
-            }
-        }
-
-        private void RemoveOldBackground()
+        private void CheckAndRemoveOldBackground()
         {
             if (r_backgroundElementHoldersPull.Count > 2)
             {
@@ -149,15 +140,22 @@ namespace Runtime.Service.LocationGenerator
             }
         }
 
-        private void CreateBackground()
+        private void CheckAndRemoveOldLocation()
         {
-            var spawnPosition = Vector3.forward * (BACKGROUND_OFFSET * _backgroundCounter);
-            _backgroundCounter++;
-            var temp = Instantiate(_backgroundPrefab, spawnPosition, Quaternion.identity);
-            temp.transform.SetParent(_locationParent);
-            r_backgroundElementHoldersPull.Add(temp);
+            if (r_locationElementHoldersPull.Count > 3)
+            {
+                var element = r_locationElementHoldersPull[0];
+                r_locationElementHoldersPull.RemoveAt(0); 
+                Destroy(element);
+            }
+        }
 
-            RemoveOldBackground();
+        private void RemoveWelcomeText()
+        {
+            if (_welcomeModel != null)
+            {
+                Destroy(_welcomeModel);
+            }
         }
     }
 }

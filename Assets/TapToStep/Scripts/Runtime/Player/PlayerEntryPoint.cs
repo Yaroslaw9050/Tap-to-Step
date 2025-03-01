@@ -1,9 +1,10 @@
 using CompositionRoot.SO.Player.Logic;
+using Core.Service.GlobalEvents;
 using Patterns.Models;
 using Runtime.Builders.Location;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player.CompositionRoot;
 using Runtime.Player.Perks;
+using TapToStep.Scripts.Core.Service.LocalUser;
 using UnityEngine;
 
 namespace Runtime.Player
@@ -12,38 +13,33 @@ namespace Runtime.Player
     {
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Movement _movement;
-        [SerializeField] private ScreenCaster _screenCaster;
         [SerializeField] private InteractionTriggerHolder _interactionTrigger;
-        
+
         [Header("Player Statistic")]
         [SerializeField] private PlayerStatistic _playerStatistic;
         
-        private GameEventHandler _gameEventHandler;
-        private PlayerEventHandler _playerEventHandler;
+        private ScreenCaster _screenCaster;
+        private GlobalEventsHolder _globalEventsHolder;
         private ILocationGenerator _locationGenerator;
         private PlayerSettingSO _playerSetting;
 
+        public GlobalEventsHolder GlobalEventsHolder => _globalEventsHolder;
         public PlayerStatistic PlayerStatistic => _playerStatistic;
-        public PlayerEventHandler PlayerEventHandler => _playerEventHandler;
         public PlayerSettingSO PlayerSettingSo => _playerSetting;
 
-        public void Init(GameEventHandler gameEventHandler, PlayerSettingSO playerSetting,
-            PlayerPerkSystem playerPerkSystem, PlayerModel playerModel)
+        public void Init(GlobalEventsHolder globalEventsHolder, PlayerSettingSO playerSetting,
+            PlayerPerkSystem playerPerkSystem, LocalPlayerService localPlayerService)
         {
             _playerSetting = playerSetting;
-            _gameEventHandler = gameEventHandler;
-            _playerEventHandler = new PlayerEventHandler(this, gameEventHandler);
+            _globalEventsHolder = globalEventsHolder;
             _playerStatistic.LoadAllDataToVariables();
-            
-            _cameraController.Init(this, gameEventHandler);
-            _movement.Init(this, playerPerkSystem, playerModel);
-            _screenCaster.Init(this, gameEventHandler);
-            _interactionTrigger.Initialize(_playerEventHandler);
-            
-            _gameEventHandler.InvokeOnPlayerScreenCastStatus(true);
-            _gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
-            _gameEventHandler.OnPlayerResumed += OnPlayerResumed;
-            _playerEventHandler.OnPlayerDied += OnPlayerDied;
+
+            _screenCaster = new ScreenCaster(this, _globalEventsHolder);
+            _cameraController.Initialise(this, _globalEventsHolder);
+            _interactionTrigger.Initialise(_globalEventsHolder, localPlayerService);
+            _movement.Initialise(this, playerPerkSystem, localPlayerService, _screenCaster);
+
+            SubscribeToEvents();
         }
 
         public void Destruct()
@@ -53,9 +49,21 @@ namespace Runtime.Player
             _movement.Destruct();
             _cameraController.Destruct();
             
-            _gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
-            _gameEventHandler.OnPlayerResumed -= OnPlayerResumed;
-            _playerEventHandler.OnPlayerDied -= OnPlayerDied;
+            UnSubscribeFromEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            //_gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
+            _globalEventsHolder.PlayerEvents.OnReborn += OnPlayerResumed;
+            _globalEventsHolder.PlayerEvents.OnDied += OnPlayerDied;
+        }
+
+        private void UnSubscribeFromEvents()
+        {
+            //_gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
+            _globalEventsHolder.PlayerEvents.OnReborn -= OnPlayerResumed;
+            _globalEventsHolder.PlayerEvents.OnDied -= OnPlayerDied;
         }
 
         private void OnMenuView(bool isOpen)

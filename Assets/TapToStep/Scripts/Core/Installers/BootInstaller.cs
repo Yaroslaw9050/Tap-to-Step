@@ -1,7 +1,6 @@
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using Runtime.Audio;
-using Runtime.EntryPoints.EventHandlers;
-using TapToStep.Scripts.Core.Service.ViewStorage;
 using UnityEngine;
 using Zenject;
 
@@ -11,11 +10,11 @@ namespace Core.Installers
     {
         [SerializeField] private AudioController _audioController;
         [SerializeField] private LeaderboardService _leaderboardService;
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
 
         public override void InstallBindings()
         {
-            _gameEventHandler = new GameEventHandler();
+            _globalEventsHolder = new GlobalEventsHolder();
             
             BindAudioController();
             BindGameEventHandler();
@@ -30,7 +29,7 @@ namespace Core.Installers
 
         private void BindGameEventHandler()
         {
-            Container.Bind<GameEventHandler>().FromInstance(_gameEventHandler).AsSingle().NonLazy();
+            Container.Bind<GlobalEventsHolder>().FromInstance(_globalEventsHolder).AsSingle().NonLazy();
         }
 
         private void BindLeaderboardService()
