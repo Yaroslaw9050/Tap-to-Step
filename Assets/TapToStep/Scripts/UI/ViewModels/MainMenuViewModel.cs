@@ -47,7 +47,7 @@ namespace UI.ViewModels
 
         private Action<Unit> OnLeaderBoardCommandExecuted()
         {
-            return _ => Debug.Log("Open leaderboard");
+            return _ => r_viewController.ShowLeaderBoardView();
         }
 
         private Action<ulong> BitValueChanged()

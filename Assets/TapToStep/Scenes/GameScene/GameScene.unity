@@ -1906,7 +1906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 349532907}
   - component: {fileID: 349532908}
-  - component: {fileID: 349532909}
+  - component: {fileID: 349532911}
   - component: {fileID: 349532910}
   m_Layer: 0
   m_Name: LeaderBoardView
@@ -1948,28 +1948,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &349532909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349532906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87a92103d6ca409b955ffd56d6e7d6d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _thisViewCanvasGroup: {fileID: 349532908}
-  _boardBuilder: {fileID: 349532910}
-  _backButton: {fileID: 784387970}
-  _userNameField: {fileID: 458314458}
-  _bits: {fileID: 1047658173}
-  _userRankText: {fileID: 836739539}
-  _userDistanceText: {fileID: 260006218}
-  _userUniqIDText: {fileID: 1833073286}
-  _saveNameButton: {fileID: 142065241}
-  _userContainerRect: {fileID: 392520162}
 --- !u!114 &349532910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1984,6 +1962,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardElement: {fileID: 1117813507143315842, guid: 3b60bd3858bca4c34a9939931cd4f65f, type: 3}
   _boardElementsParent: {fileID: 1164735403}
+--- !u!114 &349532911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349532906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec43ba74d65461aaa86d555892e4e50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _thisViewCanvasGroup: {fileID: 349532908}
+  _userInfoSubView: {fileID: 392520165}
+  _boardBuilder: {fileID: 349532910}
+  _bitsText: {fileID: 1047658173}
+  _backButton: {fileID: 784387970}
 --- !u!1 &392520161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,8 +1990,10 @@ GameObject:
   - component: {fileID: 392520162}
   - component: {fileID: 392520164}
   - component: {fileID: 392520163}
+  - component: {fileID: 392520166}
+  - component: {fileID: 392520165}
   m_Layer: 0
-  m_Name: PlayerCard
+  m_Name: 'UserInfo[SubView]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2139,6 +2136,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392520161}
   m_CullTransparentMesh: 1
+--- !u!114 &392520165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392520161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0c3b352a7e4182a9828640c4bf7145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _thisViewCanvasGroup: {fileID: 392520166}
+  _userNameField: {fileID: 458314458}
+  _userRankText: {fileID: 836739539}
+  _userDistanceText: {fileID: 260006218}
+  _userUniqIDText: {fileID: 1833073286}
+  _saveNameButton: {fileID: 142065241}
+--- !u!225 &392520166
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392520161}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &458314456
 GameObject:
   m_ObjectHideFlags: 0
@@ -9326,7 +9353,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 0.56
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

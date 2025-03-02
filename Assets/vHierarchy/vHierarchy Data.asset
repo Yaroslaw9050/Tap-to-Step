@@ -51,6 +51,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-724621148-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-60510694-0
         - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-1338970458-0
+        - globalObjectIdString: GlobalObjectId_V1-2-a2b1a8752b29240e0a4c18ef9053dcd3-392520161-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
@@ -104,6 +105,8 @@ MonoBehaviour:
           iconNameOrGuid: Folder Icon
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: Canvas Icon
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-1-5de166b0fa7b744098c07f21deab1f5f-8992320910516185413-0

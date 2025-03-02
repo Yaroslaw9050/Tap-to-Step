@@ -11,6 +11,7 @@ namespace UI.Views.Controller
         private GameViewModel _gameViewModel;
         private DeadViewModel _deadViewModel;
         private MainMenuViewModel _mainMenuViewModel;
+        private LeaderBoardViewModel _leaderBoardViewModel;
 
         private readonly GlobalEventsHolder r_globalEventsHolder;
         private readonly IViewModelStorageService r_viewModelStorage;
@@ -33,6 +34,7 @@ namespace UI.Views.Controller
             _gameViewModel = r_viewModelStorage.GetViewMode<GameViewModel>();
             _deadViewModel = r_viewModelStorage.GetViewMode<DeadViewModel>();
             _mainMenuViewModel = r_viewModelStorage.GetViewMode<MainMenuViewModel>();
+            _leaderBoardViewModel = r_viewModelStorage.GetViewMode<LeaderBoardViewModel>();
             
             SubscribeToEvents();
         }
@@ -52,7 +54,7 @@ namespace UI.Views.Controller
         public void DisplayGameLoopViews()
         {
             _loadingViewModel.CloseView();
-            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(true);
+            ShowGameView();
         }
         
         private void SubscribeToEvents()
@@ -80,6 +82,13 @@ namespace UI.Views.Controller
             r_globalEventsHolder.UIEvents.InvokeOnMainMenuIsOpen(true);
             r_viewModelStorage.CloseAllViewModels();
             _mainMenuViewModel.OpenView();
+            r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
+        }
+
+        public void ShowLeaderBoardView()
+        {
+            r_viewModelStorage.CloseAllViewModels();
+            _leaderBoardViewModel.OpenView();
             r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
         }
 

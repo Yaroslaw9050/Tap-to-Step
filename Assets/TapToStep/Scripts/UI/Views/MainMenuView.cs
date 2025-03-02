@@ -63,7 +63,7 @@ namespace UI.Views
         {
             if (isActive)
             {
-                ShowView(ViewAnimationAssets.BASE);
+                ShowView(ViewAnimationAssets.FAST);
                 _upgradeHolderSubView.DisplayActualValues();
             }
             else HideView(ViewAnimationAssets.FAST);

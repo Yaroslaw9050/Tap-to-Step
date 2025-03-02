@@ -34,11 +34,6 @@ namespace Core.Service.LocalUser
             return _playerPerkSystem.GetPerkByType(perkType);
         }
         
-        public void SetBits(ulong bits)
-        {
-            PlayerModel.Bits.Value = bits;
-        }
-
         public void SetCurrentDistance(double currentDistance)
         {
             PlayerModel.CurrentDistance.Value = currentDistance;
@@ -99,11 +94,13 @@ namespace Core.Service.LocalUser
 
         public async UniTask LoadBaseUserDataAsync()
         {
+            var userName = await _remoteDataStorageService.LoadBaseUserDataAsync(PlayerModel.UserId.Value, "userName");
             var bits = await _remoteDataStorageService.LoadBaseUserDataAsync(PlayerModel.UserId.Value, "bits");
             var currentDistance = await _remoteDataStorageService.LoadBaseUserDataAsync(PlayerModel.UserId.Value, "currentDistance");
             
-            SetBits(ulong.Parse(bits));
             SetCurrentDistance(double.Parse(currentDistance));
+            PlayerModel.Bits.Value = ushort.Parse(bits);
+            PlayerModel.UserName.Value = userName;
         }
     }
 }
