@@ -1,5 +1,7 @@
+using Core.Service.Authorization;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
+using Core.Service.RemoteDataStorage;
 using Runtime.Audio;
 using UnityEngine;
 using Zenject;
@@ -16,6 +18,18 @@ namespace Core.Installers
             BindAudioController();
             BindGameEventHandler();
             BindLeaderboardService();
+            BindAuthorizationService();
+            BindRemoteDataStorageService();
+        }
+
+        private void BindRemoteDataStorageService()
+        {
+            Container.BindInterfacesAndSelfTo<RemoteFirebaseDataStorageService>().AsSingle().NonLazy();
+        }
+
+        private void BindAuthorizationService()
+        {
+            Container.BindInterfacesAndSelfTo<FirebaseAuthorization>().AsSingle().NonLazy();
         }
 
         private void BindAudioController()

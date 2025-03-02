@@ -16,4 +16,4 @@ MonoBehaviour:
   _costPerOneLevel: 15
   _startPrice: 5
   _maxLevel: 50
-  _currentLevel: 50
+  _currentLevel: 0

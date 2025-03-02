@@ -1,14 +1,15 @@
 using System;
 using UniRx;
-using UnityEngine;
 
-namespace Patterns.Models
+namespace Patterns.MVVM.Models
 {
     [Serializable]
     public class PlayerModel
     {
-        [field: SerializeField] public ReactiveProperty<ulong> Bits { get; } = new(0);
-        [field: SerializeField] public ReactiveProperty<double> BestDistance { get; } = new(0);
-        [field: SerializeField] public ReactiveProperty<double> CurrentDistance { get; } = new(0);
+        public ReactiveProperty<string> UserId { get; } = new(string.Empty);
+        public ReactiveProperty<string> UserName { get; } = new(string.Empty);
+        public ReactiveProperty<ulong> Bits { get; } = new(0);
+        public ReactiveProperty<double> BestDistance { get; } = new(0);
+        public ReactiveProperty<double> CurrentDistance { get; } = new(0);
     }
 }

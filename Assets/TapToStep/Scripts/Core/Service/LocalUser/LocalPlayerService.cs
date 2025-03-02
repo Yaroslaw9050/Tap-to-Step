@@ -1,7 +1,11 @@
 using System;
+using System.Globalization;
+using System.Threading.Tasks;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
-using Patterns.Models;
+using Core.Service.RemoteDataStorage;
+using Cysharp.Threading.Tasks;
+using Patterns.MVVM.Models;
 using Runtime.Player.Upgrade;
 using UnityEngine;
 using Zenject;
@@ -13,15 +17,23 @@ namespace Core.Service.LocalUser
         [SerializeField] private PlayerSettingSO _startupPlayerSetting;
         
         private PlayerPerkSystem _playerPerkSystem;
+        private IRemoteDataStorageService _remoteDataStorageService;
+        private short _distanceCounter;
         public PlayerModel PlayerModel { get; } = new();
         
         
         [Inject]
-        public void Constructor(PlayerPerkSystem perkSystem)
+        public void Constructor(PlayerPerkSystem perkSystem, IRemoteDataStorageService remoteDataStorageService)
         {
             _playerPerkSystem = perkSystem;
+            _remoteDataStorageService = remoteDataStorageService;
         }
 
+        public PlayerPerkSO GetPerk(PerkType perkType)
+        {
+            return _playerPerkSystem.GetPerkByType(perkType);
+        }
+        
         public void SetBits(ulong bits)
         {
             PlayerModel.Bits.Value = bits;
@@ -40,17 +52,29 @@ namespace Core.Service.LocalUser
         public void AddBits(ushort newValue)
         {
             PlayerModel.Bits.Value += newValue;
+            _remoteDataStorageService.SaveBaseUserData<string>(PlayerModel.UserId.Value, "bits", PlayerModel.Bits
+                .Value.ToString());
         }
 
         public void RemoveBits(uint removedValue)
         {
             PlayerModel.Bits.Value -= removedValue;
+            _remoteDataStorageService.SaveBaseUserData<string>(PlayerModel.UserId.Value, "bits", PlayerModel.Bits
+                .Value.ToString());
         }
 
         public void AddDistance(float distance)
         {
             var newDistance = Math.Round(distance, 1);
             PlayerModel.CurrentDistance.Value += newDistance;
+            _distanceCounter++;
+
+            if (_distanceCounter >= 10)
+            {
+                _distanceCounter = 0;
+                _remoteDataStorageService.SaveBaseUserData<string>(PlayerModel.UserId.Value, "currentDistance", 
+                    PlayerModel.CurrentDistance.Value.ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         public float GetStepLenght()
@@ -66,6 +90,20 @@ namespace Core.Service.LocalUser
         public float GetTurnSpeed()
         {
             return _playerPerkSystem.GetPerkValueByType(PerkType.TurnSpeed);
+        }
+
+        public async UniTask LoadAllPerksAsync()
+        {
+            await _playerPerkSystem.LoadAllPerksAsync();
+        }
+
+        public async UniTask LoadBaseUserDataAsync()
+        {
+            var bits = await _remoteDataStorageService.LoadBaseUserDataAsync(PlayerModel.UserId.Value, "bits");
+            var currentDistance = await _remoteDataStorageService.LoadBaseUserDataAsync(PlayerModel.UserId.Value, "currentDistance");
+            
+            SetBits(ulong.Parse(bits));
+            SetCurrentDistance(double.Parse(currentDistance));
         }
     }
 }
