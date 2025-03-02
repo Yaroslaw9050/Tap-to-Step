@@ -1,6 +1,5 @@
-using Patterns.MVVM.ViewModels;
-using Patterns.ViewModels;
 using TapToStep.Scripts.Core.Service.ViewStorage;
+using UI.ViewModels;
 using Zenject;
 
 namespace Core.Installers

@@ -1,7 +1,7 @@
 using System;
 using UniRx;
 
-namespace Patterns.MVVM.ViewModels
+namespace UI.ViewModels
 {
     public class ViewModel
     {

@@ -6,6 +6,7 @@ using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
 using TapToStep.Scripts.Runtime.EntryPoints;
 using UI.Views;
+using UI.Views.Controller;
 using UI.Views.Upgrades;
 using UnityEngine;
 using UnityEngine.Serialization;

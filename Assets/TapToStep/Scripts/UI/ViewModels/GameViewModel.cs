@@ -1,12 +1,10 @@
 using System;
 using Core.Service.GlobalEvents;
 using Core.Service.LocalUser;
-using Patterns.Commands;
-using UI.Views;
+using UI.Views.Controller;
 using UniRx;
-using UnityEngine;
 
-namespace Patterns.MVVM.ViewModels
+namespace UI.ViewModels
 {
     public sealed class GameViewModel : ViewModel
     {

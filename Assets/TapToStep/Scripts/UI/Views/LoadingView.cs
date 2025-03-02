@@ -1,9 +1,9 @@
 using CompositionRoot.Constants;
-using Patterns.ViewModels;
+using UI.ViewModels;
 using UI.Views.Upgrades;
 using Zenject;
 
-namespace Patterns.Views
+namespace UI.Views
 {
     public class LoadingView : BaseView
     {

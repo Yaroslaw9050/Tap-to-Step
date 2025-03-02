@@ -1,5 +1,4 @@
-using Patterns.MVVM.ViewModels;
-using Patterns.ViewModels;
+using UI.ViewModels;
 
 public interface IViewModelStorageService
 {

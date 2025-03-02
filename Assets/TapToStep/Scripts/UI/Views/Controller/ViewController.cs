@@ -1,9 +1,8 @@
 using Core.Service.GlobalEvents;
-using Patterns.MVVM.ViewModels;
-using Patterns.ViewModels;
+using UI.ViewModels;
 using UnityEngine.SceneManagement;
 
-namespace UI.Views
+namespace UI.Views.Controller
 {
     public sealed class ViewController
     {

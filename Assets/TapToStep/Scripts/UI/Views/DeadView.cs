@@ -1,118 +1,57 @@
 using Core.Extension.UI;
-using Core.Service.GlobalEvents;
-using Core.Service.Leaderboard;
-using Cysharp.Threading.Tasks;
-using GoogleMobileAds.Api;
-using Runtime.Player;
-using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
+using UI.ViewModels;
+using UI.Views.Upgrades;
+using UniRx;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
-namespace UI.Views.Upgrades
+namespace UI.Views
 {
-    public class DeadView : BaseView
+    public sealed class DeadView: BaseView
     {
+        [Header("Buttons:")]
         [SerializeField] private Button _restartButton;
-        [SerializeField] private Button _continueButton;
+        [SerializeField] private Button _continueByAdButton;
 
-        [SerializeField] private TextMeshProUGUI _distanceText;
-
-        private GlobalEventsHolder _globalEventsHolder;
-        private LeaderboardService _leaderboardService;
-        private PlayerEntryPoint _playerEntryPoint;
-        private IMobileAdsService _mobileAdsService;
-
-        private const string DEAD_KEY = "DeadCount";
+        [Header("Texts:")]
+        [SerializeField] private TextMeshProUGUI _currentDistanceText;
+        
+        private DeadViewModel _deadViewModel;
         
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder,
-            LeaderboardService leaderboardService, IMobileAdsService mobileAdsService)
+        public void Constructor(DeadViewModel deadViewModel)
         {
-            _mobileAdsService = mobileAdsService;
-            _globalEventsHolder = globalEventsHolder;
-            _leaderboardService = leaderboardService;
+            _deadViewModel = deadViewModel;
         }
-
+        
         protected override void SubscribeToEvents()
         {
+            _restartButton.onClick.AddListener(() => _deadViewModel.RestartCommand.Execute());
+            _continueByAdButton.onClick.AddListener(() => _deadViewModel.ContinueByAdCommand.Execute());
             
+            _deadViewModel.OnViewActivityStatusChanged += OnViewStatusChanged;
+            _deadViewModel.Distance.Subscribe(ReactCurrentDistanceUpdated).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
         {
-            
-        }
-
-        public override void ShowView(float duration = 0.5f)
-        {
-            UpdateDeadCounter();
-            base.ShowView(duration);
-            _distanceText.SetText($"Distance: {ValueConvertor.ToDistance(_playerEntryPoint.PlayerStatistic.Distance)}");
-            _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance).Forget();
-            _continueButton.interactable = false;
-            _mobileAdsService.LoadContinueAd();
-        }
-
-        public void Init(PlayerEntryPoint playerEntryPoint)
-        {
-            _playerEntryPoint = playerEntryPoint;
-            
-            _restartButton.onClick.AddListener(() =>
-            {
-                _playerEntryPoint.PlayerStatistic.ResetDistance();
-                //_globalEventsHolder.InvokeOnUiElementClicked();
-
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            });
-            
-            _mobileAdsService.OnShowInterstitialAd += InterstitialAdReady;
-            _mobileAdsService.OnContinueAdRecorded += OnDeadAdRecorded;
-        }
-
-        public void Destruct()
-        {
             _restartButton.onClick.RemoveAllListeners();
-            _continueButton.onClick.RemoveAllListeners();
+            _continueByAdButton.onClick.RemoveAllListeners();
             
-            _mobileAdsService.OnShowInterstitialAd -= InterstitialAdReady;
-            _mobileAdsService.OnContinueAdRecorded -= OnDeadAdRecorded;
+            _deadViewModel.OnViewActivityStatusChanged -= OnViewStatusChanged;
         }
 
-        private void InterstitialAdReady(InterstitialAd ad)
+        private void OnViewStatusChanged(bool isActive)
         {
-            _continueButton.interactable = true;
-            
-            _continueButton.onClick.RemoveAllListeners();
-            _continueButton.onClick.AddListener(() =>
-            {
-                _mobileAdsService.ShowInterstitialAd(ad);
-            });
+            if(isActive) ShowView();
+            else HideView();
         }
 
-        private void OnDeadAdRecorded()
+        private void ReactCurrentDistanceUpdated(double currentDistance)
         {
-            //_globalEventsHolder.InvokeOnGameResumed();
-        }
-
-        private void UpdateDeadCounter()
-        {
-            var deadCounter = 0;
-            if (PlayerPrefs.HasKey(DEAD_KEY))
-            { 
-                deadCounter = PlayerPrefs.GetInt(DEAD_KEY);
-            }
-            
-            deadCounter++;
-            if (deadCounter >= 4)
-            {
-                _mobileAdsService.LoadAndShowDeadAd();
-                deadCounter = 0;
-            }
-            PlayerPrefs.SetInt(DEAD_KEY, deadCounter);
-            PlayerPrefs.Save();
+            _currentDistanceText.SetText($"Distance: {ValueConvertor.ToDistance(currentDistance)}");
         }
     }
 }

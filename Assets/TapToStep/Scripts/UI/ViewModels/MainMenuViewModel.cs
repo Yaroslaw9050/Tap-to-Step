@@ -1,12 +1,11 @@
-using Core.Service.LocalUser;
 using System;
 using CompositionRoot.Constants;
-using Cysharp.Threading.Tasks;
-using UI.Views;
+using Core.Service.LocalUser;
+using UI.Views.Controller;
 using UniRx;
 using UnityEngine;
 
-namespace Patterns.MVVM.ViewModels
+namespace UI.ViewModels
 {
     public sealed class MainMenuViewModel : ViewModel
     {

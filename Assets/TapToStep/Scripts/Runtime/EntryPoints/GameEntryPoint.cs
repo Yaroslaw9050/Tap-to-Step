@@ -12,6 +12,7 @@ using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
 using UI.Views;
+using UI.Views.Controller;
 using UI.Views.Upgrades;
 using UnityEngine;
 using Zenject;

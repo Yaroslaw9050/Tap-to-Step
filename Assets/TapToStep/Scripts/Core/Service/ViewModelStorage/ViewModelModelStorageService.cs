@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Patterns.MVVM.ViewModels;
-using Patterns.ViewModels;
+using UI.ViewModels;
 using UnityEngine;
 
 namespace TapToStep.Scripts.Core.Service.ViewStorage

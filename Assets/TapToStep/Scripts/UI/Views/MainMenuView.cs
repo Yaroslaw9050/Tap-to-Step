@@ -1,105 +1,77 @@
-using System;
+using CompositionRoot.Constants;
 using Core.Extension.UI;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
-using Cysharp.Threading.Tasks;
-using Runtime.Audio;
-using Runtime.Player;
+using Core.Service.LocalUser;
 using Runtime.Player.Upgrade;
+using TMPro;
+using UI.ViewModels;
+using UI.Views.Upgrades;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace UI.Views.Upgrades
+namespace UI.Views
 {
-    public class MainMenuView : BaseView
+    public sealed class MainMenuView: BaseView
     {
-        [Header("Sub-Views")]
-        [SerializeField] private UpgradeHolderSubView _upgradeHolderSubView;
-        
-        [Header("Other settings")]
+        [Header("Buttons:")]
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _toLeaderboardButton;
         [SerializeField] private Button _toTelegramButton;
-        [SerializeField] private GradientAutoRotation _gradientAutoRotation;
 
-        private PlayerPerkSystem _playerPerkSystem;
-        private GlobalEventsHolder _globalEventsHolder;
-        private PlayerEntryPoint _playerEntryPoint;
-        private LeaderboardService _leaderboardService;
-
-        private const string TELEGRAM_URL = "https://t.me/+LBbm-wqA7uk0MTIy";
-        public event Action OnBackButtonClicked;
-        public event Action OnToLeaderboardButtonPressed;
+        [Header("Texts:")]
+        [SerializeField] private TextMeshProUGUI _bitsText;
+        
+        [Header("SubViews:")]
+        [SerializeField] private UpgradeHolderSubView _upgradeHolderSubView;
+        
+        private MainMenuViewModel _viewModel;
         
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder, PlayerPerkSystem playerPerkSystem,
-            AudioController audioController, LeaderboardService leaderboardService)
+        public void Constructor(MainMenuViewModel mainMenuViewModel,
+            GlobalEventsHolder eventsHolder, LocalPlayerService localPlayerService,
+            PlayerPerkSystem perkSystem, LeaderboardService leaderboardService)
         {
-            _leaderboardService = leaderboardService;
-            _globalEventsHolder = globalEventsHolder;
-            _playerPerkSystem = playerPerkSystem;
+            _viewModel = mainMenuViewModel;
+            _upgradeHolderSubView.Init(eventsHolder, perkSystem, localPlayerService, leaderboardService);
         }
         
-        public void Init(PlayerEntryPoint playerEntryPoint)
-        {
-            _playerEntryPoint = playerEntryPoint;
-            //_upgradeHolderSubView.Init(_globalEventsHolder, _playerPerkSystem, _playerEntryPoint, _leaderboardService);
-            
-            _backButton.onClick.AddListener(BackButtonCLicked);
-            _toLeaderboardButton.onClick.AddListener(ToLeaderboardButtonClicked);
-            _toTelegramButton.onClick.AddListener(()=> Application.OpenURL(TELEGRAM_URL));
-        }
-
-        public void Destruct()
-        {
-            _gradientAutoRotation.Destruct();
-            _backButton.onClick.RemoveListener(BackButtonCLicked);
-            _toLeaderboardButton.onClick.RemoveListener(ToLeaderboardButtonClicked);
-            _toTelegramButton.onClick.RemoveAllListeners();
-        }
-
         protected override void SubscribeToEvents()
         {
+            _backButton.onClick.AddListener(() => _viewModel.CloseMainMenuCommand.Execute());
+            _toLeaderboardButton.onClick.AddListener(() => _viewModel.OpenLeaderBoardCommand.Execute());
+            _toTelegramButton.onClick.AddListener(() => _viewModel.ToTelegramCommunityCommand.Execute());
+            
+            _viewModel.OnViewActivityStatusChanged += OnViewActivityStatusChanged;
+
+            _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
             
         }
 
         protected override void UnSubscribeFromEvents()
         {
+            _backButton.onClick.RemoveAllListeners();
+            _toLeaderboardButton.onClick.RemoveAllListeners();
+            _toTelegramButton.onClick.RemoveAllListeners();
             
+            _viewModel.OnViewActivityStatusChanged -= OnViewActivityStatusChanged;
         }
 
-        public override void ShowView(float duration = 0.5f)
+        private void OnViewActivityStatusChanged(bool isActive)
         {
-            base.ShowView(duration);
-            _gradientAutoRotation.PlayAnimation();
-            _upgradeHolderSubView.DisplayActualValues();
-            _toLeaderboardButton.interactable = _leaderboardService.SystemReady;
-            
-            TrySaveUserDistanceAsync().Forget();
+            if (isActive)
+            {
+                ShowView(ViewAnimationAssets.BASE);
+                _upgradeHolderSubView.DisplayActualValues();
+            }
+            else HideView(ViewAnimationAssets.FAST);
         }
-
-        public override void HideView(float duration = 0f)
+        
+        private void ReactBitsUpdated(ulong newValue)
         {
-            base.HideView(duration);
-            _gradientAutoRotation.StopAnimation();
-        }
-
-        private void BackButtonCLicked()
-        {
-            //_globalEventsHolder.InvokeOnUiElementClicked();
-            OnBackButtonClicked?.Invoke();
-        }
-
-        private void ToLeaderboardButtonClicked()
-        {
-            OnToLeaderboardButtonPressed?.Invoke();
-            //_globalEventsHolder.InvokeOnUiElementClicked();
-        }
-
-        private async UniTaskVoid TrySaveUserDistanceAsync()
-        {
-            await _leaderboardService.UpdateUserDistanceAsync(_playerEntryPoint.PlayerStatistic.Distance);
+            _bitsText.SetText(ValueConvertor.ToBits(newValue));
         }
     }
 }

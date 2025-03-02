@@ -1,11 +1,10 @@
 using System;
 using Core.Service.LocalUser;
-using Patterns.Commands;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Patterns.MVVM.ViewModels
+namespace UI.ViewModels
 {
     public sealed class DeadViewModel: ViewModel
     {
