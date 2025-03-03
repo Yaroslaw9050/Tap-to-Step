@@ -2,6 +2,7 @@ using System;
 using Core.Extension.UI;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
+using Core.Service.LocalUser;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
@@ -30,12 +31,15 @@ namespace UI.Views.LeaderBoard
         private GlobalEventsHolder _globalEventsHolder;
         private LeaderboardService _leaderboardService;
         private PlayerBuilder _playerBuilder;
+        private LocalPlayerService _localPlayerService;
 
         public event Action OnBackButtonPressed;
         
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder, LeaderboardService leaderboardService, PlayerBuilder playerBuilder)
+        public void Constructor(GlobalEventsHolder globalEventsHolder, LeaderboardService leaderboardService, 
+        PlayerBuilder playerBuilder, LocalPlayerService localPlayerService)
         {
+            _localPlayerService = localPlayerService;
             _globalEventsHolder = globalEventsHolder;
             _leaderboardService = leaderboardService;
             _playerBuilder = playerBuilder;
@@ -123,7 +127,7 @@ namespace UI.Views.LeaderBoard
             await _boardBuilder.CreateBoardAsync(top100Users, myCard);
             _userNameField.SetTextWithoutNotify(myCard.userName);
             _userRankText.SetText(myRank.ToString());
-            _userDistanceText.SetText(ValueConvertor.ToDistance((float)myCard.distance));
+            _userDistanceText.SetText(ValueConvertor.ToDistance(_localPlayerService.PlayerModel.CurrentDistance.Value));
             _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             _thisViewCanvasGroup.interactable = true;

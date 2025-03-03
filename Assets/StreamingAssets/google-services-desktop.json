@@ -8,22 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747402911407:ios:2b12e22a28d61b2d4a7e5a",
+        "mobilesdk_app_id": "1:747402911407:android:9460d0b1e00571014a7e5a",
         "android_client_info": {
           "package_name": "com.MaxProGame.TapToStep"
         }
       },
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCPgVfuj3JJbiXKAJRXY8N_LJDqSN0zf7A"
+          "current_key": "AIzaSyBbjjG0oh4Njfii4TjoiS49iangra_zFjA"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 0
-        },
         "appinvite_service": {
-          "status": 1
+          "other_platform_oauth_client": []
         }
       }
     }

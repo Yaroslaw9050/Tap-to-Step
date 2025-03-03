@@ -14,7 +14,7 @@ namespace UI.Views.LeaderBoard
         {
             _rankText.text = rank.ToString();
             _userNameText.text = userName;
-            _distanceText.text = TextMeshProExtension.ConvertToDistance((float)distance);
+            _distanceText.text = ValueConvertor.ToDistance(distance);
 
             if (isMyCard == false) return;
             

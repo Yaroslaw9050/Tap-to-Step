@@ -40,7 +40,7 @@ namespace Core.Service.Leaderboard
             }
             _systemReady = await TryReadOrCreateUserAsync();
             var user = await RequestPersonalDataAsync(_userId);
-            playerStatistic.SetDistance((float)user.currentDistance);
+            //TODO: Check this ! //playerStatistic.SetDistance((float)user.currentDistance);
             if(_systemReady == false) return;
             Debug.Log("Leaderboard Initialized!");
         }
