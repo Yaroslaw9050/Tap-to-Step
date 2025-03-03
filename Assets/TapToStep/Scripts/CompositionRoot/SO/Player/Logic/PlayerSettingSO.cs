@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CompositionRoot.SO.Player.Logic
@@ -11,5 +12,25 @@ namespace CompositionRoot.SO.Player.Logic
         public float StepLenght => _stepLenght;
 
         public float StepSpeed => _stepSpeed;
+
+        public PlayerSetting ConvertToClass()
+        {
+            return new PlayerSetting(_turnSpeed, _stepLenght, _stepSpeed);
+        }
+    }
+
+    [Serializable]
+    public class PlayerSetting
+    {
+        private float turnSpeed;
+        private float stepLenght;
+        private float stepSpeed;
+
+        public PlayerSetting(float turnSpeed, float stepLenght, float stepSpeed)
+        {
+            this.turnSpeed = turnSpeed;
+            this.stepLenght = stepLenght;
+            this.stepSpeed = stepSpeed;
+        }
     }
 }

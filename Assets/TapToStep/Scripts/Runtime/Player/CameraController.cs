@@ -1,8 +1,7 @@
 using System;
-using CompositionRoot.Enums;
+using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using DG.Tweening;
-using Runtime.EntryPoints.EventHandlers;
-using Runtime.Player.Perks;
 using UnityEngine;
 
 namespace Runtime.Player
@@ -12,10 +11,11 @@ namespace Runtime.Player
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private Camera _camera;
 
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
+        private LocalPlayerService _localPlayerService;
         private PlayerEntryPoint _entryPoint;
-        private PlayerPerkSystem _perkSystem;
-        
+
+        private Tween _cameraFieldOfViewTween;
         private Tween _cameraTurnTween;
         private Tween _cameraMoveTween;
         
@@ -23,78 +23,73 @@ namespace Runtime.Player
         
         private const float CAMERA_LIFT_AMOUNT = 0.05f;
 
-        public void Init(PlayerEntryPoint playerEntryPoint, GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem)
+        public void Initialise(PlayerEntryPoint playerEntryPoint, GlobalEventsHolder globalEventsHolder,
+            LocalPlayerService localPlayerService)
         {
-            _perkSystem = playerPerkSystem;
             _entryPoint = playerEntryPoint;
-            _gameEventHandler = gameEventHandler;
-            _entryPoint.PlayerEventHandler.OnPlayerStartMoving += MoveLikeStep;
-            _gameEventHandler.OnMenuViewStatusChanged += MenuViewCalled;
+            _globalEventsHolder = globalEventsHolder;
+            _localPlayerService = localPlayerService;
+            _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving += MoveLikeStep;
+            _entryPoint.GlobalEventsHolder.UIEvents.OnMainMenuOpening += OnMeinMenuIs;
         }
 
         public void Destruct()
         {
-            _entryPoint.PlayerEventHandler.OnPlayerStartMoving -= MoveLikeStep;
-            _gameEventHandler.OnMenuViewStatusChanged -= MenuViewCalled;
-            
+            _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving -= MoveLikeStep;
             _cameraMoveTween?.Kill();
-            _cameraMoveTween = null;
-            
             _cameraTurnTween?.Kill();
-            _cameraTurnTween = null;
+            _cameraFieldOfViewTween?.Kill();
         }
 
         public void MoveToDeadPosition()
         {
-            _cameraMoveTween?.Pause();
             _cameraMoveTween?.Kill();
-            _cameraMoveTween = null;
             
-            var camPosition = new Vector3(0f, _cameraTransform.localPosition.y - 1.2f, _cameraTransform.localPosition.z);
-            _cameraTransform?.DOLocalMove(camPosition, 1f).SetEase(Ease.InOutFlash);
+            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y - 1.2f, _cameraTransform.position.z);
+            _cameraMoveTween = _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
         }
 
-        public void MoveToPlayerResumePosition(Action onCompleted)
+        public void MoveToPlayerResumePosition()
         {
-            var camPosition = new Vector3(0f, _cameraTransform.localPosition.y + 1.2f, _cameraTransform.localPosition.z);
-            _cameraTransform?.DOLocalMove(camPosition, 0.5f).SetEase(Ease.InOutFlash).OnComplete(()=> onCompleted?.Invoke());
+            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y + 1.2f, _cameraTransform.position.z);
+            _cameraMoveTween = _cameraTransform.DOMove(camPosition, 0.5f).SetEase(Ease.InOutFlash);
         }
 
         private void MoveLikeStep()
         {
-            var setting = _entryPoint.PlayerSettingSo;
             var firstHalfCamPosition = _cameraTransform.localPosition.z + CAMERA_LIFT_AMOUNT;
             var secondHalfCamPosition = firstHalfCamPosition - CAMERA_LIFT_AMOUNT;
-            var halfStepTime = (setting.StepSpeed - _perkSystem.GetPerkValueByType(PerkType.StepSpeed)) / 2;
+            var halfStepTime = _localPlayerService.GetStepTime() / 2;
 
-            _cameraMoveTween = _cameraTransform?.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
+            _cameraMoveTween = _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
             {
-                _cameraMoveTween = _cameraTransform?.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
+                _cameraMoveTween = _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
             });
         }
 
-        private void MenuViewCalled(bool isActive)
+        private void OnMeinMenuIs(bool isOpening)
         {
-            LookAt(isActive ? CameraTargetType.Up : CameraTargetType.Forward, 0.5f);
+            LookAt(isOpening ? CameraTargetType.Up : CameraTargetType.Forward, 0.5f);
         }
-
+        
         private void LookAt(CameraTargetType cameraTargetType, float animTime = 0, Action onCompleted = null)
         {
             if (_cameraTurnTween != null && _cameraTurnTween.IsActive() && !_cameraTurnTween.IsComplete()) return;
-
+            _cameraFieldOfViewTween?.Kill();
+            
             switch (cameraTargetType)
             {
                 case CameraTargetType.Forward:
                     TurnCameraForward(animTime, onCompleted);
-                    _camera?.DOFieldOfView(136, animTime).SetEase(Ease.InOutCubic);
+                    _cameraFieldOfViewTween = _camera.DOFieldOfView(136, animTime).SetEase(Ease.InOutCubic);
                     break;
                 case CameraTargetType.Up:
                     TurnCameraToUp(animTime, onCompleted);
-                    _camera?.DOFieldOfView(90f, animTime).SetEase(Ease.InOutCubic);
+                    _cameraFieldOfViewTween = _camera.DOFieldOfView(90f, animTime).SetEase(Ease.InOutCubic);
                     break;
                 case CameraTargetType.Backward:
                     TurnCameraBackward(animTime, onCompleted);
-                    _camera?.DOFieldOfView(136, animTime).SetEase(Ease.InOutCubic);
+                    _cameraFieldOfViewTween = _camera.DOFieldOfView(136, animTime).SetEase(Ease.InOutCubic);
                     break;
             }
         }

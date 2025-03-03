@@ -1,8 +1,9 @@
 using System;
 using GoogleMobileAds.Api;
+using TapToStep.Scripts.Core.Service.AdMob;
 using UnityEngine;
 
-namespace TapToStep.Scripts.Core.Service.AdMob
+namespace Core.Service.AdMob
 {
     public class AdMobService: IMobileAdsService
     {
@@ -35,7 +36,6 @@ namespace TapToStep.Scripts.Core.Service.AdMob
                 Debug.LogWarning("Admob service is already initialized.");
                 return;
             }
-
             MobileAds.Initialize(status =>
             {
                 Debug.Log($"Admob service has been initialized.| {status}" );

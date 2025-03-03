@@ -1,37 +1,40 @@
+using System;
+using Core.Service.GlobalEvents;
 using Cysharp.Threading.Tasks;
 using InputActions;
-using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Runtime.Player
 {
-    public class ScreenCaster : MonoBehaviour
+    public class ScreenCaster
     {
         private TouchInputAction _inputAction;
-        private PlayerEntryPoint _entryPoint;
-        private GameEventHandler _gameEventHandler;
         private MoveDirection _moveDirection;
 
-        public void Init(PlayerEntryPoint entryPoint, GameEventHandler gameEventHandler)
+        private readonly PlayerEntryPoint r_entryPoint;
+        private readonly GlobalEventsHolder r_globalEventsHolder;
+
+        public event Action<MoveDirection> OnTouchedToScreenWithDirection;
+
+        public ScreenCaster(PlayerEntryPoint entryPoint, GlobalEventsHolder globalEventsHolder)
         {
-            _entryPoint = entryPoint;
-            _gameEventHandler = gameEventHandler;
+            r_entryPoint = entryPoint;
+            r_globalEventsHolder = globalEventsHolder;
             
             _inputAction = new TouchInputAction();
-            _gameEventHandler.OnPlayerScreenCastStatusChanged += ScreenCastStatusChanged;
-            ActivateControlAsync().Forget();
+            r_globalEventsHolder.PlayerEvents.OnScreenInputStatusChanged += ScreenInputStatusChanged;
         }
 
         public void Destruct()
         {
             DeactivateControl();
-            _gameEventHandler.OnPlayerScreenCastStatusChanged -= ScreenCastStatusChanged;
+            r_globalEventsHolder.PlayerEvents.OnScreenInputStatusChanged -= ScreenInputStatusChanged;
             _inputAction = null;
         }
 
-        private void ScreenCastStatusChanged(bool castIsActive)
+        private void ScreenInputStatusChanged(bool castIsActive)
         {
             if (castIsActive)
                 ActivateControlAsync().Forget();
@@ -52,7 +55,7 @@ namespace Runtime.Player
         {
             _inputAction.GameTouch.TapPosition.Enable();
             _inputAction.GameTouch.Taped.Enable();
-            await UniTask.NextFrame();
+            await UniTask.DelayFrame(60);
             _inputAction.GameTouch.TapPosition.performed += ReadTapPosition;
             _inputAction.GameTouch.Taped.started += TapStatusChanged;
             _inputAction.GameTouch.Taped.canceled += TapStatusChanged;
@@ -62,7 +65,7 @@ namespace Runtime.Player
         {
             if (context.phase == InputActionPhase.Started)
             {
-                _entryPoint.PlayerEventHandler.InvokeMoveButtonTouched(_moveDirection);
+                OnTouchedToScreenWithDirection?.Invoke(_moveDirection);
             }
         }
 

@@ -1,6 +1,8 @@
+using Core.Service.Authorization;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
+using Core.Service.RemoteDataStorage;
 using Runtime.Audio;
-using Runtime.EntryPoints.EventHandlers;
 using UnityEngine;
 using Zenject;
 
@@ -10,15 +12,24 @@ namespace Core.Installers
     {
         [SerializeField] private AudioController _audioController;
         [SerializeField] private LeaderboardService _leaderboardService;
-        private GameEventHandler _gameEventHandler;
-
+        
         public override void InstallBindings()
         {
-            _gameEventHandler = new GameEventHandler();
-            
             BindAudioController();
             BindGameEventHandler();
             BindLeaderboardService();
+            BindAuthorizationService();
+            BindRemoteDataStorageService();
+        }
+
+        private void BindRemoteDataStorageService()
+        {
+            Container.BindInterfacesAndSelfTo<RemoteFirebaseDataStorageService>().AsSingle().NonLazy();
+        }
+
+        private void BindAuthorizationService()
+        {
+            Container.BindInterfacesAndSelfTo<FirebaseAuthorization>().AsSingle().NonLazy();
         }
 
         private void BindAudioController()
@@ -28,7 +39,7 @@ namespace Core.Installers
 
         private void BindGameEventHandler()
         {
-            Container.Bind<GameEventHandler>().FromInstance(_gameEventHandler).AsSingle().NonLazy();
+            Container.Bind<GlobalEventsHolder>().AsSingle().NonLazy();
         }
 
         private void BindLeaderboardService()

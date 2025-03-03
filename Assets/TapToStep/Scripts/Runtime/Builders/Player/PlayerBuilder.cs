@@ -1,46 +1,45 @@
-using System;
 using CompositionRoot.SO.Player.Logic;
-using Core.Service.Leaderboard;
-using Runtime.EntryPoints.EventHandlers;
+using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Runtime.Player;
-using Runtime.Player.Perks;
 using UnityEngine;
 using Zenject;
 
 public class PlayerBuilder : MonoBehaviour
 {
-    [SerializeField] private PlayerSettingSO _playerSettingSo;
     [SerializeField] private GameObject _playerPrefab;
     
-    private PlayerPerkSystem _playerPerkSystem;
     private PlayerEntryPoint _playerEntryPoint;
-    private GameEventHandler _gameEventHandler;
-    private LeaderboardService _leaderboardService;
-    public PlayerSettingSO PlayerSettingSo => _playerSettingSo;
+    private GlobalEventsHolder _globalEventsHolder;
+    private LocalPlayerService _localPlayerService;
     public PlayerEntryPoint PlayerEntryPoint => _playerEntryPoint;
 
     [Inject]
-    public void Constructor(GameEventHandler gameEventHandler, PlayerPerkSystem playerPerkSystem, LeaderboardService leaderboardService)
+    public void Constructor(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService)
     {
-        _leaderboardService = leaderboardService;
-        _gameEventHandler  = gameEventHandler;
-        _playerPerkSystem = playerPerkSystem;
+        _globalEventsHolder  = globalEventsHolder;
+        _localPlayerService = localPlayerService;
     }
     
-    public void CreatePlayer(Vector3 position, Transform backgroundTransform)
+    public void CreatePlayer(Vector3 spawnPosition, Transform backgroundTransform)
     {
-        _playerPerkSystem.LoadAllPerks();
-        var yOffset = _playerPrefab.transform.position.y;
-        position = new Vector3(position.x, position.y + yOffset, position.z);
+        spawnPosition = CalculateSpawnPosition(spawnPosition);
+
+        _playerEntryPoint = Instantiate(_playerPrefab, spawnPosition, Quaternion.identity).GetComponent<PlayerEntryPoint>();
+        _playerEntryPoint.Init(_globalEventsHolder, _localPlayerService);
         
-        _playerEntryPoint = Instantiate(_playerPrefab, position, Quaternion.identity).GetComponent<PlayerEntryPoint>();
-        _playerEntryPoint.Init(_gameEventHandler, _playerSettingSo, _playerPerkSystem, _leaderboardService);
         backgroundTransform.SetParent(_playerEntryPoint.transform);
     }
 
     public void DestroyPlayer()
     {
-        _playerPerkSystem.SaveAllPerks();
         _playerEntryPoint.Destruct();
+    }
+
+    private Vector3 CalculateSpawnPosition(Vector3 position)
+    {
+        var yOffset = _playerPrefab.transform.position.y;
+        position = new Vector3(position.x, position.y + yOffset, position.z);
+        return position;
     }
 }

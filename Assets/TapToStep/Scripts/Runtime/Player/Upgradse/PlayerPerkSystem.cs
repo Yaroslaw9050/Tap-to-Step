@@ -1,13 +1,33 @@
+using System;
 using System.Linq;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
+using Core.Service.LocalUser;
+using Core.Service.RemoteDataStorage;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
-namespace Runtime.Player.Perks
+namespace Runtime.Player.Upgrade
 {
     public class PlayerPerkSystem : MonoBehaviour
     {
         [SerializeField] private PlayerPerkSO[] _supportedUpgrades;
+        
+        private IRemoteDataStorageService _remoteDataStorageService;
+        private LocalPlayerService _localPlayerService;
+        
+        [Inject]
+        public void Constructor(IRemoteDataStorageService remoteDataStorageService, LocalPlayerService localPlayerService)
+        {
+            _remoteDataStorageService = remoteDataStorageService;
+            _localPlayerService = localPlayerService;
+        }
+
+        public PlayerPerkSO GetPerkByType(PerkType type)
+        {
+            return _supportedUpgrades.First(upgrade => upgrade.UpgradeType == type);
+        }
 
         public int GetPerkLevel(PerkType perkType)
         {
@@ -18,6 +38,7 @@ namespace Runtime.Player.Perks
             }
             return perk.CurrentLevel;
         }
+
         public int GetPerkPrice(PerkType type)
         {
             var perk = GetPerkByType(type);
@@ -29,60 +50,42 @@ namespace Runtime.Player.Perks
             var perk = GetPerkByType(type);
             if (perk.UpgradePerk())
             {
-                SaveToMemory(perk.UpgradeType);
+                SaveToRemoteAsync(perk.UpgradeType).Forget();
                 return true;
             }
 
             return false;
         }
 
-        public void SaveAllPerks()
-        {
-            foreach (var perkSo in _supportedUpgrades)
-            {
-                SaveToMemory(perkSo.UpgradeType);
-            }
-        }
-
-        public void LoadAllPerks()
+        public async UniTask LoadAllPerksAsync()
         {
             foreach (var perk in _supportedUpgrades)
             {
                 perk.Reset();
-                LoadFromMemory(perk.UpgradeType);
+                await LoadFromRemoteAsync(perk.UpgradeType);
             }
         }
 
         public float GetPerkValueByType(PerkType type)
         {
             var perk = GetPerkByType(type);
-            return perk.CurrentLevel / 10f;
+            var raw = perk.CurrentLevel / 20f;
+            var rounded = (float)Math.Round(raw, 1);
+            return rounded;
         }
 
-        private void SaveToMemory(PerkType type)
+        private async UniTask SaveToRemoteAsync(PerkType type)
         {
             var perk = GetPerkByType(type);
-            var data = new PlayerPerkData(perk.CurrentLevel);
-            var serializedData = JsonUtility.ToJson(data);
-            PlayerPrefs.SetString(type.ToString(), serializedData);
+            var data = new PlayerPerkData(perk);
+            await _remoteDataStorageService.SavePerkAsync(_localPlayerService.PlayerModel.UserId.Value, data);
         }
 
-        private void LoadFromMemory(PerkType type)
+        private async UniTask LoadFromRemoteAsync(PerkType type)
         {
-            if (PlayerPrefs.HasKey(type.ToString()) == false)
-            {
-                return;
-            }
-            
-            var json = PlayerPrefs.GetString(type.ToString());
-            var data = JsonUtility.FromJson<PlayerPerkData>(json);
+            var data = await _remoteDataStorageService.LoadPerkAsync(_localPlayerService.PlayerModel.UserId.Value, type);
             var perk = GetPerkByType(type);
             perk.WriteData(data);
-        }
-
-        private PlayerPerkSO GetPerkByType(PerkType type)
-        {
-            return _supportedUpgrades.First(upgrade => upgrade.UpgradeType == type);
         }
     }
 }

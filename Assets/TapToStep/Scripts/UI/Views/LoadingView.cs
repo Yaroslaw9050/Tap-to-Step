@@ -1,10 +1,34 @@
-namespace UI.Views.Upgrades
+using CompositionRoot.Constants;
+using UI.ViewModels;
+using UI.Views.Upgrades;
+using Zenject;
+
+namespace UI.Views
 {
     public class LoadingView : BaseView
     {
-        public override void HideView(float duration = 0)
+        private LoadingViewModel _loadingViewModel;
+        
+        [Inject]
+        public void Constructor(LoadingViewModel loadingViewModel)
         {
-            base.HideView(duration);
+            _loadingViewModel = loadingViewModel;
+        }
+
+        protected override void SubscribeToEvents()
+        {
+            _loadingViewModel.OnViewActivityStatusChanged += OnLoadingStatusChanged;
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            _loadingViewModel.OnViewActivityStatusChanged -= OnLoadingStatusChanged;
+        }
+
+        private void OnLoadingStatusChanged(bool isActive)
+        {
+            if (isActive) ShowView(ViewAnimationAssets.INSTANTLY);
+            else HideView(ViewAnimationAssets.FAST);
         }
     }
 }

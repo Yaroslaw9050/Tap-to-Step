@@ -1,9 +1,9 @@
 using System;
 using Core.Extension.UI;
+using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Runtime.EntryPoints.EventHandlers;
 using TMPro;
 using UI.Views.Upgrades;
 using UnityEngine;
@@ -27,16 +27,16 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private Button _saveNameButton;
         [SerializeField] private RectTransform _userContainerRect;
 
-        private GameEventHandler _gameEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
         private LeaderboardService _leaderboardService;
         private PlayerBuilder _playerBuilder;
 
         public event Action OnBackButtonPressed;
         
         [Inject]
-        public void Constructor(GameEventHandler gameEventHandler, LeaderboardService leaderboardService, PlayerBuilder playerBuilder)
+        public void Constructor(GlobalEventsHolder globalEventsHolder, LeaderboardService leaderboardService, PlayerBuilder playerBuilder)
         {
-            _gameEventHandler = gameEventHandler;
+            _globalEventsHolder = globalEventsHolder;
             _leaderboardService = leaderboardService;
             _playerBuilder = playerBuilder;
         }
@@ -45,7 +45,17 @@ namespace UI.Views.LeaderBoard
         {
             _backButton.onClick.AddListener(BackButtonClicked);
         }
-        
+
+        protected override void SubscribeToEvents()
+        {
+            
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            
+        }
+
         public override void ShowView(float duration = 0.5f)
         {
             base.ShowView(duration);
@@ -100,7 +110,7 @@ namespace UI.Views.LeaderBoard
 
         private void BackButtonClicked()
         {
-            _gameEventHandler.InvokeOnUiElementClicked();
+            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements();
             OnBackButtonPressed?.Invoke();
         }
 
@@ -113,7 +123,7 @@ namespace UI.Views.LeaderBoard
             await _boardBuilder.CreateBoardAsync(top100Users, myCard);
             _userNameField.SetTextWithoutNotify(myCard.userName);
             _userRankText.SetText(myRank.ToString());
-            _userDistanceText.SetText(TextMeshProExtension.ConvertToDistance((float)myCard.bestDistance));
+            _userDistanceText.SetText(ValueConvertor.ToDistance((float)myCard.distance));
             _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             _thisViewCanvasGroup.interactable = true;
@@ -121,15 +131,16 @@ namespace UI.Views.LeaderBoard
 
         private async UniTaskVoid ChangeUserNameAsync()
         {
-            _gameEventHandler.InvokeOnCollectablesChanged(-30);
+            _globalEventsHolder.InvokeNickNameChanged();
+            // TODO: Fix on collectable changed!
             _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
             _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
             
             _thisViewCanvasGroup.interactable = false;
-            await _leaderboardService.RenameUserAsync(_userNameField.text);
-            _boardBuilder.DestroyBoard();
-            await DisplayLeaderboardAsync();
-            _thisViewCanvasGroup.interactable = true;
+           await _leaderboardService.RenameUserAsync(_userNameField.text);
+           _boardBuilder.DestroyBoard();
+           await DisplayLeaderboardAsync();
+           _thisViewCanvasGroup.interactable = true;
 
         }
     }

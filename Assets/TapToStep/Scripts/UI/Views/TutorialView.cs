@@ -1,21 +1,34 @@
-namespace UI.Views.Upgrades
+using CompositionRoot.Constants;
+using UI.ViewModels;
+using UI.Views.Upgrades;
+using Zenject;
+
+namespace UI.Views
 {
     public class TutorialView : BaseView
     {
-        private bool _isTutorialActive;
+        private TutorialViewModel _tutorialViewModel;
         
-        public override void ShowView(float duration = 0.5f)
+        [Inject]
+        public void Constructor(TutorialViewModel tutorialViewModel)
         {
-            base.ShowView(duration);
-            _isTutorialActive = true;
-
+            _tutorialViewModel = tutorialViewModel;
         }
 
-        public override void HideView(float duration = 0.5f)
+        protected override void SubscribeToEvents()
         {
-            if(_isTutorialActive == false) return;
-            base.HideView(duration);
-            _isTutorialActive = false;
+            _tutorialViewModel.OnViewActivityStatusChanged += OnViewActivityStatusChanged;
+        }
+
+        protected override void UnSubscribeFromEvents()
+        {
+            _tutorialViewModel.OnViewActivityStatusChanged -= OnViewActivityStatusChanged;
+        }
+
+        private void OnViewActivityStatusChanged(bool isActive)
+        {
+            if(isActive) ShowView(ViewAnimationAssets.INSTANTLY);
+            else HideView(ViewAnimationAssets.FAST);
         }
     }
 }

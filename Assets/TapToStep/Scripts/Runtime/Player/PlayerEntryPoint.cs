@@ -1,9 +1,7 @@
-using CompositionRoot.SO.Player.Logic;
-using Core.Service.Leaderboard;
+using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Runtime.Builders.Location;
-using Runtime.EntryPoints.EventHandlers;
 using Runtime.Player.CompositionRoot;
-using Runtime.Player.Perks;
 using UnityEngine;
 
 namespace Runtime.Player
@@ -12,38 +10,29 @@ namespace Runtime.Player
     {
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Movement _movement;
-        [SerializeField] private ScreenCaster _screenCaster;
         [SerializeField] private InteractionTriggerHolder _interactionTrigger;
-        
+
         [Header("Player Statistic")]
         [SerializeField] private PlayerStatistic _playerStatistic;
         
-        private GameEventHandler _gameEventHandler;
-        private PlayerEventHandler _playerEventHandler;
+        private ScreenCaster _screenCaster;
+        private GlobalEventsHolder _globalEventsHolder;
         private ILocationGenerator _locationGenerator;
-        private PlayerSettingSO _playerSetting;
 
+        public GlobalEventsHolder GlobalEventsHolder => _globalEventsHolder;
         public PlayerStatistic PlayerStatistic => _playerStatistic;
-        public PlayerEventHandler PlayerEventHandler => _playerEventHandler;
-        public PlayerSettingSO PlayerSettingSo => _playerSetting;
 
-        public void Init(GameEventHandler gameEventHandler, PlayerSettingSO playerSetting,
-            PlayerPerkSystem playerPerkSystem, LeaderboardService leaderboardService)
+        public void Init(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService)
         {
-            _playerSetting = playerSetting;
-            _gameEventHandler = gameEventHandler;
-            _playerEventHandler = new PlayerEventHandler(this, gameEventHandler);
+            _globalEventsHolder = globalEventsHolder;
             _playerStatistic.LoadAllDataToVariables();
-            
-            _cameraController.Init(this, gameEventHandler, playerPerkSystem);
-            _movement.Init(this, playerPerkSystem, leaderboardService);
-            _screenCaster.Init(this, gameEventHandler);
-            _interactionTrigger.Initialize(_playerEventHandler);
-            
-            _gameEventHandler.InvokeOnPlayerScreenCastStatus(true);
-            _gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
-            _gameEventHandler.OnPlayerResumed += OnPlayerResumed;
-            _playerEventHandler.OnPlayerDied += OnPlayerDied;
+
+            _screenCaster = new ScreenCaster(this, _globalEventsHolder);
+            _cameraController.Initialise(this, _globalEventsHolder, localPlayerService);
+            _interactionTrigger.Initialise(_globalEventsHolder, localPlayerService);
+            _movement.Initialise(this, localPlayerService, _screenCaster);
+
+            SubscribeToEvents();
         }
 
         public void Destruct()
@@ -53,9 +42,21 @@ namespace Runtime.Player
             _movement.Destruct();
             _cameraController.Destruct();
             
-            _gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
-            _gameEventHandler.OnPlayerResumed -= OnPlayerResumed;
-            _playerEventHandler.OnPlayerDied -= OnPlayerDied;
+            UnSubscribeFromEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            //_gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
+            _globalEventsHolder.PlayerEvents.OnReborn += OnPlayerResumed;
+            _globalEventsHolder.PlayerEvents.OnDied += OnPlayerDied;
+        }
+
+        private void UnSubscribeFromEvents()
+        {
+            //_gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
+            _globalEventsHolder.PlayerEvents.OnReborn -= OnPlayerResumed;
+            _globalEventsHolder.PlayerEvents.OnDied -= OnPlayerDied;
         }
 
         private void OnMenuView(bool isOpen)
@@ -71,7 +72,8 @@ namespace Runtime.Player
 
         private void OnPlayerResumed()
         {
-            _cameraController.MoveToPlayerResumePosition(()=> _movement.OnPlayerResumed());
+            _movement.OnPlayerResumed();
+            _cameraController.MoveToPlayerResumePosition();
         }
     }
 }

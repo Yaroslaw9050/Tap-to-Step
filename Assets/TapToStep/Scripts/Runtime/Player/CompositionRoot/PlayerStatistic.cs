@@ -6,19 +6,18 @@ namespace Runtime.Player.CompositionRoot
     [Serializable]
     public class PlayerStatistic
     {
-        [SerializeField] private int _bits;
+        [SerializeField] private ulong _bits;
         [SerializeField] private float _distance;
         
-        public int Bits => _bits;
+        public ulong Bits => _bits;
 
         public float Distance => _distance;
 
 
-        public void ChangeBits(int value)
+        public void ChangeBits(ulong value)
         {
             _bits += value;
             
-            PlayerPrefs.SetInt("Bits", _bits);
             PlayerPrefs.Save();
         }
 
@@ -33,20 +32,15 @@ namespace Runtime.Player.CompositionRoot
             SaveAllData();
         }
 
-        public void SetDistance(float currentDistance)
-        {
-            _distance = currentDistance;
-        }
-
         public void SaveAllData()
         {
-            PlayerPrefs.SetInt("Bits", _bits);
+            PlayerPrefs.SetFloat("Distance", _distance);
             PlayerPrefs.Save();
         }
 
         public void LoadAllDataToVariables()
         {
-            _bits = PlayerPrefs.GetInt("Bits", 0);
+            _distance = PlayerPrefs.GetFloat("Distance", 0);
         }
     }
 }

@@ -15,8 +15,8 @@ namespace CompositionRoot.SO.Player.Logic
         [Range(1, 100)]
         [SerializeField] private int _maxLevel;
         
-        private int _currentLevel;
-
+        [SerializeField] private int _currentLevel;
+        
         public int StartPrice => _startPrice;
         public PerkType UpgradeType => _upgradeType;
         public int CostPerOneLevel => _costPerOneLevel;
@@ -43,7 +43,15 @@ namespace CompositionRoot.SO.Player.Logic
 
         public void WriteData(PlayerPerkData data)
         {
-            _currentLevel = data.CurrentLevel;
+            _costPerOneLevel = data.costPerOneLevel;
+            _startPrice = data.startPrice;
+            _maxLevel = data.maxLevel;
+            _currentLevel = data.currentLevel;
+        }
+
+        public PlayerPerkData ToPlayerPerkData()
+        {
+            return new PlayerPerkData(this);
         }
 
         public void Reset()

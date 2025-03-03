@@ -1,4 +1,6 @@
 using CompositionRoot.Constants;
+using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Runtime.InteractedObjects.Collectables;
 using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
@@ -7,11 +9,13 @@ namespace Runtime.Player
 {
     public class InteractionTriggerHolder : MonoBehaviour
     {
-        private PlayerEventHandler _playerEventHandler;
+        private GlobalEventsHolder _globalEventsHolder;
+        private LocalPlayerService _localPlayerService;
 
-        public void Initialize(PlayerEventHandler playerEventHandler)
+        public void Initialise(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService)
         {
-            _playerEventHandler = playerEventHandler;
+            _globalEventsHolder = globalEventsHolder;
+            _localPlayerService = localPlayerService;
         }
         
         private void OnTriggerEnter(Collider other)
@@ -20,7 +24,8 @@ namespace Runtime.Player
             {
                 if (other.TryGetComponent<Bit>(out var coin))
                 {
-                    _playerEventHandler.InvokeTouchedToCollectables(coin.Value);
+                    _localPlayerService.AddBits(coin.Value);
+                    _globalEventsHolder.InvokeOnCollectablesChanged();
                     coin.Collect();
                     return;
                 }
@@ -31,14 +36,14 @@ namespace Runtime.Player
                     {
                         case ObstacleType.OneTouch:
                             obstacle.Collect();
-                            _playerEventHandler.InvokeDied();
+                            _globalEventsHolder.PlayerEvents.InvokeOnDied();
                             break;
                     }
                 }
             }
             else if (other.CompareTag(InteractionAssets.FINISH_TAG))
             {
-                _playerEventHandler.InvokeTouchedToEndOfLocation(transform.position.z);
+                _globalEventsHolder.PlayerEvents.InvokeOnTouchedToEndOfLocation(transform.position.z);
             }
         }
     }
