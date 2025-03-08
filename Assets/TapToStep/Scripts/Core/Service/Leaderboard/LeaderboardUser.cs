@@ -5,17 +5,14 @@ namespace Core.Service.Leaderboard
     [Serializable]
     public class LeaderboardUser
     {
+        public string userId;
         public string userName;
-        public double currentDistance;
         public double bestDistance;
-        public string userUniqueId;
-
-
-        public LeaderboardUser(string userName, double currentDistance, double bestDistance, string userUniqueId)
+        
+        public LeaderboardUser(string userId, string userName, double bestDistance)
         {
+            this.userId = userId;
             this.userName = userName;
-            this.currentDistance = currentDistance;
-            this.userUniqueId = userUniqueId;
             this.bestDistance = bestDistance;
         }
     }

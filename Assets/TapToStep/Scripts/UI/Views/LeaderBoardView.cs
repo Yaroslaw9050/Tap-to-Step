@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using CompositionRoot.Constants;
 using Core.Extension.UI;
 using Core.Service.Leaderboard;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UI.ViewModels;
 using UI.Views.LeaderBoard;
@@ -30,12 +33,13 @@ namespace UI.Views
         {
             _viewModel = leaderBoardViewModel;
         }
-        
+
         protected override void SubscribeToEvents()
         {
             _backButton.onClick.AddListener(() => _viewModel.CloseLeaderboardCommand.Execute());
             _viewModel.OnViewActivityStatusChanged += OnViewActivityStatusChanged;
 
+            _viewModel.Top100UsersUpdated.Subscribe(DisplayTop100Users).AddTo(_disposable);
             _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
             _viewModel.BlockInteraction.Subscribe(ReactBlockInteraction).AddTo(_disposable);
         }
@@ -58,11 +62,23 @@ namespace UI.Views
         private void ReactBitsUpdated(ulong newValue)
         {
             _bitsText.SetText(ValueConvertor.ToBits(newValue));
+            _bitsText.DOColor(Color.magenta, 0.5f).OnComplete(() => _bitsText.DOColor(Color.white, 1f));
         }
 
         private void ReactBlockInteraction(bool isBlocked)
         {
             _thisViewCanvasGroup.interactable = !isBlocked;
+        }
+
+        private void DisplayTop100Users(List<LeaderboardUser> users)
+        {
+            if (users.Count == 0)
+            {
+                _boardBuilder.DestroyBoard();
+                return;
+            }
+            
+            _boardBuilder.CreateBoardAsync(users).Forget();
         }
     }
 }

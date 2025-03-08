@@ -1,6 +1,7 @@
 using System.Threading;
 using CompositionRoot.Constants;
 using CompositionRoot.Enums;
+using Core.Service.AdMob;
 using Core.Service.Authorization;
 using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
@@ -8,7 +9,6 @@ using Core.Service.RemoteDataStorage;
 using Cysharp.Threading.Tasks;
 using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
-using TapToStep.Scripts.Core.Service.AdMob;
 using UI.Models;
 using UI.Views.Controller;
 using UnityEngine;

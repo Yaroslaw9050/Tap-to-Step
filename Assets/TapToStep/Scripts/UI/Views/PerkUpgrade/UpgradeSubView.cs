@@ -3,7 +3,6 @@ using CompositionRoot.Enums;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
 using DG.Tweening;
-using TapToStep.Scripts.Core.Service.AdMob;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

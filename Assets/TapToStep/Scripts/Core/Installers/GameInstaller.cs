@@ -4,7 +4,6 @@ using Runtime.Audio;
 using Runtime.EntryPoints;
 using Runtime.Player.Upgrade;
 using Runtime.Service.LocationGenerator;
-using TapToStep.Scripts.Core.Service.AdMob;
 using UI.Views;
 using UI.Views.Controller;
 using UI.Views.Upgrades;

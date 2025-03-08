@@ -1,6 +1,5 @@
 using System;
 using GoogleMobileAds.Api;
-using TapToStep.Scripts.Core.Service.AdMob;
 using UnityEngine;
 
 namespace Core.Service.AdMob

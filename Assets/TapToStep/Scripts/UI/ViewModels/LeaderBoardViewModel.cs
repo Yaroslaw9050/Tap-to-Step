@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
+using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
 using Cysharp.Threading.Tasks;
 using UI.Models;
 using UI.Views.Controller;
 using UniRx;
-using UnityEngine;
 
 namespace UI.ViewModels
 {
@@ -13,18 +14,23 @@ namespace UI.ViewModels
         private string _tempNewUserName;
         
         private readonly LocalPlayerService r_localPlayerService;
+        private readonly ILeaderboardService r_leaderboardService;
         private readonly ViewController r_viewController;
         public ReactiveCommand CloseLeaderboardCommand { get; } = new();
         public ReactiveCommand SaveUserNameCommand { get; } = new();
         public ReactiveCommand<string> UserNameValueUpdated { get; } = new();
         public ReactiveCommand<bool> BlockInteraction { get; } = new();
+
+        public ReactiveCommand<List<LeaderboardUser>> Top100UsersUpdated { get; } = new();
         public ReactiveProperty<ulong> Bits { get; } = new(0);
 
-        private LeaderBoardViewModel(LocalPlayerService localPlayerService, ViewController viewController, IViewModelStorageService 
+        private LeaderBoardViewModel(ILeaderboardService leaderboardService, LocalPlayerService localPlayerService,
+            ViewController viewController, IViewModelStorageService 
             viewModelStorageService) : base
             (viewModelStorageService)
         {
             _tempNewUserName = string.Empty;
+            r_leaderboardService = leaderboardService;
             r_viewController = viewController;
             r_localPlayerService = localPlayerService;
             SubscribeReactive();
@@ -39,6 +45,18 @@ namespace UI.ViewModels
             r_localPlayerService.PlayerModel.Bits
                 .Subscribe(BitValueChanged())
                 .AddTo(r_disposables);
+        }
+
+        public override void OpenView()
+        {
+            base.OpenView();
+            LoadLeaderBoardUsersAsync().Forget();
+        }
+
+        public override void CloseView()
+        {
+            base.CloseView();
+            ClearLeaderboard();
         }
 
         private Action<Unit> OoCloseLeaderboardCommandExecuted()
@@ -61,6 +79,17 @@ namespace UI.ViewModels
             return _ => ChangeUserNameAsync().Forget();
         }
 
+        private void ClearLeaderboard()
+        {
+            Top100UsersUpdated.Execute(new List<LeaderboardUser>());
+        }
+
+        private async UniTaskVoid LoadLeaderBoardUsersAsync()
+        { 
+            var users = await r_leaderboardService.GetTop100UserByDistanceAsync();
+            Top100UsersUpdated.Execute(users);
+        }
+
         private async UniTask ChangeUserNameAsync()
         {
             BlockInteraction.Execute(true);
@@ -70,6 +99,11 @@ namespace UI.ViewModels
                 var temp = r_localPlayerService.PlayerModel.UserName.Value;
                 r_localPlayerService.PlayerModel.UserName.Value = string.Empty;
                 r_localPlayerService.PlayerModel.UserName.Value = temp;
+            }
+            else
+            {
+                ClearLeaderboard();
+                LoadLeaderBoardUsersAsync().Forget();
             }
             BlockInteraction.Execute(false);
         }

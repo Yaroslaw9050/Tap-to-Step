@@ -33,6 +33,7 @@ namespace UI.Views
             
             _deadViewModel.OnViewActivityStatusChanged += OnViewStatusChanged;
             _deadViewModel.Distance.Subscribe(ReactCurrentDistanceUpdated).AddTo(_disposable);
+            _deadViewModel.ChangeAdButtonStatus.Subscribe(CheckContinueButtonStatus).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
@@ -52,6 +53,11 @@ namespace UI.Views
         private void ReactCurrentDistanceUpdated(double currentDistance)
         {
             _currentDistanceText.SetText($"Distance: {ValueConvertor.ToDistance(currentDistance)}");
+        }
+
+        private void CheckContinueButtonStatus(bool isActive)
+        {
+            _continueByAdButton.interactable = isActive;
         }
     }
 }

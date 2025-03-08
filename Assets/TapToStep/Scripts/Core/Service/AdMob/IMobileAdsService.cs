@@ -1,7 +1,7 @@
 using System;
 using GoogleMobileAds.Api;
 
-namespace TapToStep.Scripts.Core.Service.AdMob
+namespace Core.Service.AdMob
 {
     public interface IMobileAdsService
     {

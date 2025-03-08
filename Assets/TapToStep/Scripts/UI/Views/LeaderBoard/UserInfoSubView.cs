@@ -1,4 +1,5 @@
 using System;
+using Core.Extension.UI;
 using Core.Service.LocalUser;
 using TMPro;
 using UI.Models;
@@ -6,6 +7,7 @@ using UI.ViewModels;
 using UI.Views.Upgrades;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zenject;
 
@@ -19,7 +21,7 @@ namespace UI.Views.LeaderBoard
         [Header("Texts:")]
         [SerializeField] private TextMeshProUGUI _changeNamePriceText;
         [SerializeField] private TextMeshProUGUI _userRankText;
-        [SerializeField] private TextMeshProUGUI _userDistanceText;
+        [SerializeField] private TextMeshProUGUI _userBestUserDistanceText;
         [SerializeField] private TextMeshProUGUI _userUniqIDText;
 
         [Header("Buttons:")]
@@ -42,6 +44,7 @@ namespace UI.Views.LeaderBoard
             
             _localPlayerService.PlayerModel.UserName.Subscribe(ReactNameUpdated).AddTo(_disposable);
             _localPlayerService.PlayerModel.UserId.Subscribe(ReactUserIdUpdated).AddTo(_disposable);
+            _localPlayerService.PlayerModel.BestDistance.Subscribe(ReactBestDistanceUpdated).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
@@ -65,6 +68,11 @@ namespace UI.Views.LeaderBoard
         private void ReactUserIdUpdated(string newUserId)
         {
             _userUniqIDText.SetText(newUserId);
+        }
+
+        private void ReactBestDistanceUpdated(double newBestDistance)
+        {
+            _userBestUserDistanceText.SetText(ValueConvertor.ToDistance(newBestDistance));
         }
     }
 }

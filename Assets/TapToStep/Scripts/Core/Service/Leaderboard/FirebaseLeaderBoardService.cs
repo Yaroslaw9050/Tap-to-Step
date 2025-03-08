@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CompositionRoot.Constants;
 using Cysharp.Threading.Tasks;
 using Firebase.Database;
 using UnityEngine;
 
 namespace Core.Service.Leaderboard
 {
-    public class FirebaseLeaderBoardService: ILeaderboardService
+    public sealed class FirebaseLeaderBoardService: ILeaderboardService
     {
         private DatabaseReference _databaseReference;
         private LeaderboardUser _leaderboardUser;
@@ -73,7 +74,7 @@ namespace Core.Service.Leaderboard
                 }
                 var snapshot = task.Result;
                 if (snapshot is not { HasChildren: true }) return false;
-                if(snapshot.HasChild("bestDistance")) return true;
+                if(snapshot.HasChild(DatabaseKeyAssets.BEST_DISTANCE_KEY)) return true;
             }
             catch (Exception _)
             {
@@ -86,135 +87,33 @@ namespace Core.Service.Leaderboard
         
         private async UniTask CreateNewUserDataAsync(string userID)
         {
-           await _databaseReference.Child(userID).Child("bestDistance")
+           await _databaseReference.Child(userID).Child(DatabaseKeyAssets.BEST_DISTANCE_KEY)
                .SetValueAsync(0.0);
         }
-
-        public async UniTask UpdateBestUserDistanceAsync(double currentUserDistance)
-        {
-            var tempUser = await RequestPersonalDataAsync(_userId);
-
-            if (currentUserDistance > tempUser.bestDistance)
-            {
-                await _databaseReference.Child(_userId).Child(string.Empty).SetValueAsync(currentUserDistance);
-            }
-        }
         
-        public async UniTask UpdateCurrentDistanceAsync(double currentUserDistance)
-        {
-            
-            await _databaseReference.Child(_userId).Child(string.Empty).SetValueAsync(currentUserDistance);
-        }
-
-        public async UniTask<(List<LeaderboardUser>, LeaderboardUser,  int)> RequestAllLeaderboardAsync()
+        public async UniTask<List<LeaderboardUser>> GetTop100UserByDistanceAsync()
         {
             var allUsers = await GetAllUsersSortedByDistanceAsync();
             var top100Users = allUsers.Take(100).ToList();
-            var myUser = await RequestPersonalDataAsync(_userId);
-            var myRank = GetUserRank(allUsers);
-            
-            return (top100Users, myUser, myRank);
+            return top100Users;
         }
         
-
-        private int GetUserRank(List<LeaderboardUser> users)
-        {
-            var rank = users.FindIndex(u => u.userUniqueId == SystemInfo.deviceUniqueIdentifier) + 1;
-            return rank;
-        }
-
-        private async UniTask<bool> TryReadOrCreateUserAsync()
-        {
-            if(_leaderboardUser != null) return false;
-            
-            if (PlayerPrefs.HasKey(string.Empty))
-            {
-                _leaderboardUser = await RequestPersonalDataAsync(_userId);
-               
-                if (_leaderboardUser == null)
-                {
-                    return true;
-                }
-                return true;
-            }
-            
-            return true;
-        }
-        
-
-        private async UniTask<string> GetUserCardIdByUniqueIdAsync()
-        {
-            var snapshot = await _databaseReference.GetValueAsync();
-            if (!snapshot.Exists)
-            {
-                return string.Empty;
-            }
-            foreach (var child in snapshot.Children)
-            {
-                var user = child.Value as Dictionary<string, object>;
-
-                if (user == null) continue;
-                if (user.ContainsKey(string.Empty) && Equals(user[string.Empty], SystemInfo.deviceUniqueIdentifier))
-                {
-                    return child.Key;
-                }
-            }
-            return string.Empty;
-        }
-
-        private async UniTask<LeaderboardUser> RequestPersonalDataAsync(string userId)
-        {
-            var task = _databaseReference.Child(userId).GetValueAsync();
-
-            await task;
-
-            if (task.IsFaulted)
-            {
-                Debug.LogError($"Request user faulted: {task.Exception?.Message}");
-                return null;
-            }
-
-            if (task.IsCompleted)
-            {
-                var snapshot = task.Result;
-
-                if (snapshot != null && snapshot.HasChildren)
-                {
-                    var userName = snapshot.Child(string.Empty).Value.ToString();
-                    var besDistance = double.Parse(snapshot.Child(string.Empty).Value.ToString());
-                    var currentDistance = double.Parse(snapshot.Child(string.Empty).Value.ToString());
-                    var userUniqId = snapshot.Child(string.Empty).Value.ToString();
-                    return new LeaderboardUser(userName, currentDistance, besDistance, userUniqId);
-                }
-
-                Debug.LogError("User Not Found!");
-            }
-            return null;
-        }
-
-        private async UniTask<long> GetTotalUserCountAsync()
-        {
-            var snapshot = await _databaseReference.OrderByChild(string.Empty).GetValueAsync();
-            if (snapshot.Exists == false) return -1;
-
-            return snapshot.Children.Count();
-        }
         private async UniTask<List<LeaderboardUser>> GetAllUsersSortedByDistanceAsync()
         {
-            var snapshot = await _databaseReference.OrderByChild(string.Empty).GetValueAsync();
+            var snapshot = await _databaseReference.OrderByChild(DatabaseKeyAssets.BEST_DISTANCE_KEY).GetValueAsync();
             if (snapshot.Exists == false) return null;
             
             var users = new List<LeaderboardUser>();
             
             foreach (var child in snapshot.Children)
             {
+                var useId = child.Key;
                 if (child.Value is Dictionary<string, object> user)
                 {
                     var newElement = new LeaderboardUser(
-                        user.ContainsKey(string.Empty) ? user[string.Empty].ToString() : "Unknown",
-                        user.ContainsKey(string.Empty) ? double.Parse(user[string.Empty].ToString()) : 0,
-                        user.ContainsKey(string.Empty) ? double.Parse(user[string.Empty].ToString()) : 0,
-                        user.ContainsKey(string.Empty) ? user[string.Empty].ToString() : string.Empty
+                        useId,
+                        user.TryGetValue(DatabaseKeyAssets.USER_NAME_KEY, out var userName) ? userName.ToString() : "Unknown",
+                        user.TryGetValue(DatabaseKeyAssets.BEST_DISTANCE_KEY, out var bestDistance) ? double.Parse(bestDistance.ToString()) : 0.0
                     );
                     users.Add(newElement);
                 }

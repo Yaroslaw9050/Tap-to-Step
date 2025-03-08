@@ -10,17 +10,11 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private TextMeshProUGUI _userNameText;
         [SerializeField] private TextMeshProUGUI _distanceText;
 
-        public void Init(int rank, string userName, double distance, bool isMyCard = false)
+        public void Init(int rank, string userName, double distance)
         {
             _rankText.text = rank.ToString();
             _userNameText.text = userName;
             _distanceText.text = ValueConvertor.ToDistance(distance);
-
-            if (isMyCard == false) return;
-            
-            _rankText.color = Color.magenta;
-            _userNameText.color = Color.magenta;
-            _distanceText.color = Color.magenta;
         }
     }
 }

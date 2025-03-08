@@ -10,6 +10,7 @@ namespace UI.ViewModels
     public sealed class MainMenuViewModel : ViewModel
     {
         private readonly ViewController r_viewController;
+        private readonly LocalPlayerService r_localPlayerService;
         public ReactiveCommand CloseMainMenuCommand { get; } = new();
         public ReactiveCommand OpenLeaderBoardCommand { get; } = new();
         public ReactiveCommand ToTelegramCommunityCommand { get; } = new();
@@ -21,18 +22,25 @@ namespace UI.ViewModels
             (viewModelStorageService)
         {
             r_viewController = viewController;
-            SubscribeReactive(localPlayerService);
+            r_localPlayerService = localPlayerService;
+            SubscribeReactive();
         }
 
-        private void SubscribeReactive(LocalPlayerService localPlayerService)
+        private void SubscribeReactive()
         {
             CloseMainMenuCommand.Subscribe(OnBackToMenuCommandExecuted()).AddTo(r_disposables);
             OpenLeaderBoardCommand.Subscribe(OnLeaderBoardCommandExecuted()).AddTo(r_disposables);
             ToTelegramCommunityCommand.Subscribe(OnTelegramCommandExecuted()).AddTo(r_disposables);
 
-            localPlayerService.PlayerModel.Bits
+            r_localPlayerService.PlayerModel.Bits
                 .Subscribe(BitValueChanged())
                 .AddTo(r_disposables);
+        }
+
+        public override void OpenView()
+        {
+            base.OpenView();
+            r_localPlayerService.ForceUpdateDistanceDataOnRemote();
         }
 
         private Action<Unit> OnTelegramCommandExecuted()

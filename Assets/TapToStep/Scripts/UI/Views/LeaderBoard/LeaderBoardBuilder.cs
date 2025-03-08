@@ -27,7 +27,7 @@ namespace UI.Views.LeaderBoard
             r_boardElements.Clear();
         }
 
-        public async UniTask CreateBoardAsync(List<LeaderboardUser> top100Users, LeaderboardUser myCard)
+        public async UniTask CreateBoardAsync(List<LeaderboardUser> top100Users)
         {
             _cts?.Cancel();
             _cts?.Dispose();
@@ -39,7 +39,7 @@ namespace UI.Views.LeaderBoard
                
                 var user = top100Users[i];
                 var element = Instantiate(_boardElement, _boardElementsParent);
-                element.Init(i+1, user.userName, user.bestDistance, string.Equals(user.userUniqueId, myCard.userUniqueId));
+                element.Init(i+1, user.userName, user.bestDistance);
                 r_boardElements.Add(element);
                 await UniTask.DelayFrame(1, cancellationToken: _cts.Token);
             }

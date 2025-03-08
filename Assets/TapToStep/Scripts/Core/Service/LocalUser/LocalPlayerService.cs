@@ -46,6 +46,11 @@ namespace Core.Service.LocalUser
             PlayerModel.BestDistance.Value = bestDistance;
         }
 
+        public void ForceUpdateDistanceDataOnRemote()
+        {
+            UpdateDistanceDataOnRemote();
+        }
+
         public async UniTask<bool> TryChangeUserNameAsync(string userName, uint cost)
         {
             if(PlayerModel.Bits.Value < cost) return false;
@@ -80,10 +85,15 @@ namespace Core.Service.LocalUser
             if (_distanceCounter >= 10)
             {
                 _distanceCounter = 0;
-                _remoteDataStorageService.SaveBaseUserDataAsync(PlayerModel.UserId.Value, DatabaseKeyAssets.CURRENT_DISTANCE_KEY, 
-                    PlayerModel.CurrentDistance.Value.ToString(CultureInfo.InvariantCulture));
-                UpdateBestDistance(PlayerModel.CurrentDistance.Value);
+                UpdateDistanceDataOnRemote();
             }
+        }
+
+        private void UpdateDistanceDataOnRemote()
+        {
+            _remoteDataStorageService.SaveBaseUserDataAsync(PlayerModel.UserId.Value, DatabaseKeyAssets.CURRENT_DISTANCE_KEY, 
+                PlayerModel.CurrentDistance.Value.ToString(CultureInfo.InvariantCulture));
+            UpdateBestDistance(PlayerModel.CurrentDistance.Value);
         }
 
         public float GetStepLenght()
