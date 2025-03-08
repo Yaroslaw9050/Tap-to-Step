@@ -1,7 +1,6 @@
 using System;
 using CompositionRoot.Enums;
 using Core.Service.GlobalEvents;
-using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
 using Runtime.Player.Upgrade;
 using UnityEngine;
@@ -18,8 +17,7 @@ namespace UI.Views.Upgrades
         private LocalPlayerService _localPlayerService;
 
         public void Init(GlobalEventsHolder globalEventsHolder,
-            PlayerPerkSystem playerPerkSystem, LocalPlayerService localPlayerService,
-            LeaderboardService leaderboardService)
+            PlayerPerkSystem playerPerkSystem, LocalPlayerService localPlayerService)
         {
             _globalEventsHolder = globalEventsHolder;
             _playerPerkSystem = playerPerkSystem;
@@ -27,7 +25,7 @@ namespace UI.Views.Upgrades
 
             foreach (var subView in _upgradeSubViews)
             {
-                subView.Init(leaderboardService, _globalEventsHolder);
+                subView.Init(_globalEventsHolder);
                 subView.OnUpgradeButtonPressed += ButtonPressed;
             }
             

@@ -1,7 +1,6 @@
 using CompositionRoot.Constants;
 using Core.Extension.UI;
 using Core.Service.Leaderboard;
-using Cysharp.Threading.Tasks;
 using TMPro;
 using UI.ViewModels;
 using UI.Views.LeaderBoard;
@@ -15,9 +14,6 @@ namespace UI.Views
 {
     public class LeaderBoardView: BaseView
     {
-        [Header("Sub-Views:")]
-        [SerializeField] private UserInfoSubView _userInfoSubView;
-        
         [Header("Builders:")]
         [SerializeField] private LeaderBoardBuilder _boardBuilder;
 
@@ -28,13 +24,11 @@ namespace UI.Views
         [SerializeField] private Button _backButton;
         
         private LeaderBoardViewModel _viewModel;
-        private LeaderboardService _leaderboardService;
         
         [Inject]
-        public void Constructor(LeaderBoardViewModel leaderBoardViewModel, LeaderboardService leaderboardService)
+        public void Constructor(LeaderBoardViewModel leaderBoardViewModel)
         {
             _viewModel = leaderBoardViewModel;
-            _leaderboardService = leaderboardService;
         }
         
         protected override void SubscribeToEvents()
@@ -43,18 +37,13 @@ namespace UI.Views
             _viewModel.OnViewActivityStatusChanged += OnViewActivityStatusChanged;
 
             _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
+            _viewModel.BlockInteraction.Subscribe(ReactBlockInteraction).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
         {
             _backButton.onClick.RemoveAllListeners();
             _viewModel.OnViewActivityStatusChanged -= OnViewActivityStatusChanged;
-        }
-
-        public override void ShowView(float duration = 0.5f)
-        {
-            base.ShowView(duration);
-            
         }
 
         private void OnViewActivityStatusChanged(bool isActive)
@@ -69,6 +58,11 @@ namespace UI.Views
         private void ReactBitsUpdated(ulong newValue)
         {
             _bitsText.SetText(ValueConvertor.ToBits(newValue));
+        }
+
+        private void ReactBlockInteraction(bool isBlocked)
+        {
+            _thisViewCanvasGroup.interactable = !isBlocked;
         }
     }
 }

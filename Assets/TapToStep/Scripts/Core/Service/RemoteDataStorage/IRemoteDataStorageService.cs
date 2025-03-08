@@ -8,7 +8,7 @@ namespace Core.Service.RemoteDataStorage
     {
         public void Initialise();
         public void CreateStartedFieldsForNewUser(string userId);
-        public void SaveBaseUserData<T>(string userId, string key, T value);
+        public UniTask SaveBaseUserDataAsync<T>(string userId, string key, T value);
         public UniTask<string> LoadBaseUserDataAsync(string userId, string key);
         public UniTask<T> LoadBaseClassUserDataAsync<T>(string userId, string key);
         public UniTask SavePerkAsync(string userId, PlayerPerkData perkData);

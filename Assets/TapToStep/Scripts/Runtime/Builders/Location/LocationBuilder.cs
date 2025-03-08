@@ -100,7 +100,6 @@ namespace Runtime.Service.LocationGenerator
             while (elementQueue.Count > 0)
             {
                 if (token.IsCancellationRequested) break;
-                await UniTask.NextFrame();
                 var temp = Instantiate(elementQueue.Dequeue(), startLocationSpawnPosition, Quaternion.identity);
                 temp.transform.SetParent(locationElementsHolder.transform);
                 await UniTask.NextFrame();

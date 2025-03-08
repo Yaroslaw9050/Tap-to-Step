@@ -16,7 +16,7 @@ namespace Runtime.Audio
         private float[] spectrumData = new float[512];
         private float currentIntensity = 2;
 
-        public void Init(AudioSource musicSource)
+        public void Initialise(AudioSource musicSource)
         {
             _audioSource = musicSource;
             if (_audioSource != null && targetMaterial != null)

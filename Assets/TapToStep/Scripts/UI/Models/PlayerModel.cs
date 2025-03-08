@@ -1,7 +1,7 @@
 using System;
 using UniRx;
 
-namespace Patterns.MVVM.Models
+namespace UI.Models
 {
     [Serializable]
     public class PlayerModel

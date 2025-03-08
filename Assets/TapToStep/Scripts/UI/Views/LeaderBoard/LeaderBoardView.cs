@@ -29,19 +29,16 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private RectTransform _userContainerRect;
 
         private GlobalEventsHolder _globalEventsHolder;
-        private LeaderboardService _leaderboardService;
         private PlayerBuilder _playerBuilder;
         private LocalPlayerService _localPlayerService;
-
-        public event Action OnBackButtonPressed;
+        
         
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder, LeaderboardService leaderboardService, 
+        public void Constructor(GlobalEventsHolder globalEventsHolder, 
         PlayerBuilder playerBuilder, LocalPlayerService localPlayerService)
         {
             _localPlayerService = localPlayerService;
             _globalEventsHolder = globalEventsHolder;
-            _leaderboardService = leaderboardService;
             _playerBuilder = playerBuilder;
         }
         
@@ -114,21 +111,21 @@ namespace UI.Views.LeaderBoard
 
         private void BackButtonClicked()
         {
-            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements();
-            OnBackButtonPressed?.Invoke();
+            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements(); 
+            //OnBackButtonPressed?.Invoke();
         }
 
         private async UniTask DisplayLeaderboardAsync()
         {
             _thisViewCanvasGroup.interactable = false;
             
-            var (top100Users, myCard, myRank) =  await _leaderboardService.RequestAllLeaderboardAsync();
+            //var (top100Users, myCard, myRank) =  await _leaderboardService.RequestAllLeaderboardAsync();
             
-            await _boardBuilder.CreateBoardAsync(top100Users, myCard);
-            _userNameField.SetTextWithoutNotify(myCard.userName);
-            _userRankText.SetText(myRank.ToString());
-            _userDistanceText.SetText(ValueConvertor.ToDistance(_localPlayerService.PlayerModel.CurrentDistance.Value));
-            _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
+            // await _boardBuilder.CreateBoardAsync(top100Users, myCard);
+            // _userNameField.SetTextWithoutNotify(myCard.userName);
+            // _userRankText.SetText(myRank.ToString());
+            // _userDistanceText.SetText(ValueConvertor.ToDistance(_localPlayerService.PlayerModel.CurrentDistance.Value));
+            // _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
             
             _thisViewCanvasGroup.interactable = true;
         }
@@ -141,7 +138,6 @@ namespace UI.Views.LeaderBoard
             _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
             
             _thisViewCanvasGroup.interactable = false;
-           await _leaderboardService.RenameUserAsync(_userNameField.text);
            _boardBuilder.DestroyBoard();
            await DisplayLeaderboardAsync();
            _thisViewCanvasGroup.interactable = true;

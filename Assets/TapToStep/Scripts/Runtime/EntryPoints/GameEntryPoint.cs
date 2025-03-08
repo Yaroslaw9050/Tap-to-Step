@@ -1,23 +1,20 @@
-using System;
 using System.Threading;
-using System.Threading.Tasks;
+using CompositionRoot.Constants;
 using CompositionRoot.Enums;
 using Core.Service.Authorization;
 using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
 using Core.Service.RemoteDataStorage;
 using Cysharp.Threading.Tasks;
-using Patterns.MVVM.Models;
 using Runtime.Audio;
 using Runtime.Service.LocationGenerator;
 using TapToStep.Scripts.Core.Service.AdMob;
-using UI.Views;
+using UI.Models;
 using UI.Views.Controller;
-using UI.Views.Upgrades;
 using UnityEngine;
 using Zenject;
 
-namespace TapToStep.Scripts.Runtime.EntryPoints
+namespace Runtime.EntryPoints
 {
     public class GameEntryPoint : MonoBehaviour
     {
@@ -25,7 +22,6 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
         private PlayerBuilder _playerBuilder;
         private LocationBuilder _locationBuilder;
         private ViewController _viewController;
-        private LeaderboardService _leaderboardService;
         private IMobileAdsService _mobileAdsService;
         private MusicToMaterialEmmision _musicToMaterialEmision;
         private IAuthorizationService _authorizationService;
@@ -34,16 +30,18 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
         private CancellationTokenSource _cts;
         private LocalPlayerService _localPlayerService;
         private IRemoteDataStorageService _remoteDataStorageService;
+        private ILeaderboardService _leaderboardService;
 
         [Inject]
         public void Constructor(PlayerBuilder playerBuilder,
             LocationBuilder locationBuilder, ViewController viewController,
-            AudioController audioController, LeaderboardService leaderboardService,
+            AudioController audioController,
             IMobileAdsService mobileAdsService,
             MusicToMaterialEmmision musicToMaterialEmision,
             IAuthorizationService authorizationService,
             LocalPlayerService localPlayerService,
-            IRemoteDataStorageService remoteDataStorageService)
+            IRemoteDataStorageService remoteDataStorageService,
+            ILeaderboardService leaderboardService)
         {
             _cts = new CancellationTokenSource();
             
@@ -51,34 +49,31 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             _locationBuilder = locationBuilder;
             _viewController = viewController;
             _audioController = audioController;
-            _leaderboardService = leaderboardService;
             _mobileAdsService = mobileAdsService;
             _musicToMaterialEmision = musicToMaterialEmision;
             _authorizationService = authorizationService;
             _localPlayerService = localPlayerService;
             _remoteDataStorageService = remoteDataStorageService;
-        }
+            _leaderboardService = leaderboardService;
+        }   
         
         private async void Start()
         {
             SetupGraphicSetting();
+            _audioController.Initialise();
             _viewController.Initialize();
             _viewController.DisplayPreparingViews();
+            _mobileAdsService.Initialise();
             
             await UserAuthorizationAsync();
+            await InitialiseLeaderboardAsync();
             
             await _locationBuilder.GenerateNewLocationAsync(_cts.Token);
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
-            
+            _musicToMaterialEmision.Initialise(_audioController.MusicSource);
             _viewController.DisplayGameLoopViews();
-            //
-            // _mobileAdsService.Init();
-            // _audioController.Init();
-           
-            // await _viewController.InitAsync(_playerBuilder.PlayerEntryPoint);
-            // await _leaderboardService.InitAsync();
-            // _mobileAdsService.LoadBannerAd();
-            // _musicToMaterialEmision.Init(_audioController.MusicSource);
+            
+            _mobileAdsService.LoadBannerAd();
         }
 
         private void OnDestroy()
@@ -96,24 +91,40 @@ namespace TapToStep.Scripts.Runtime.EntryPoints
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
         }
 
+        private async UniTask InitialiseLeaderboardAsync()
+        {
+            var userID = _localPlayerService.PlayerModel.UserId.Value;
+            var userName = _localPlayerService.PlayerModel.UserName.Value;
+            
+            _leaderboardService.Initialise();
+            await _leaderboardService.CheckAllUserFieldsAsync(userID); 
+            await _leaderboardService.SaveUserDataAsync(userID, DatabaseKeyAssets.USER_NAME_KEY ,userName);
+            
+            var value = await _leaderboardService.LoadUserDataAsync(userID, DatabaseKeyAssets.BEST_DISTANCE_KEY);
+            _localPlayerService.SetBestDistance(double.Parse(value));
+        }
+
         private async UniTask UserAuthorizationAsync()
         {
             _authorizationService.Initialise();
             _remoteDataStorageService.Initialise();
-            
-            var userId = await _authorizationService.SignInAsync();
+            var userId = _localPlayerService.PlayerModel.UserId.Value;
             if (string.IsNullOrEmpty(userId))
             {
-                userId = await _authorizationService.SignUpAsync();
+                userId = await _authorizationService.SignInAsync();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    userId = await _authorizationService.SignUpAsync();
+                    _localPlayerService.PlayerModel.UserId.Value = userId;
+                    _remoteDataStorageService.CreateStartedFieldsForNewUser(userId);
+                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepSpeed).ToPlayerPerkData());
+                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepLenght).ToPlayerPerkData());
+                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.TurnSpeed).ToPlayerPerkData());
+                    return;
+                }
                 _localPlayerService.PlayerModel.UserId.Value = userId;
-                _remoteDataStorageService.CreateStartedFieldsForNewUser(userId);
-                _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepSpeed).ToPlayerPerkData());
-                _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepLenght).ToPlayerPerkData());
-                _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.TurnSpeed).ToPlayerPerkData());
-                return;
             }
             
-            _localPlayerService.PlayerModel.UserId.Value = userId;
             await _localPlayerService.LoadAllPerksAsync();
             await _localPlayerService.LoadBaseUserDataAsync();
         }

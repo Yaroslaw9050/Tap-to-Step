@@ -29,7 +29,7 @@ namespace Core.Service.AdMob
         public event Action<InterstitialAd> OnShowInterstitialAd;
         public event Action OnContinueAdRecorded;
 
-        public void Init()
+        public void Initialise()
         {
             if (_isInitialized)
             {

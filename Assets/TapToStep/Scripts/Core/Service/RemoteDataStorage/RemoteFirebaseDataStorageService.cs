@@ -1,4 +1,5 @@
 using System;
+using CompositionRoot.Constants;
 using CompositionRoot.Enums;
 using CompositionRoot.SO.Player.Logic;
 using CompositionRoot.Static;
@@ -21,15 +22,15 @@ namespace Core.Service.RemoteDataStorage
         public void CreateStartedFieldsForNewUser(string userId)
         {
             var userName = RandomNameGenerator.GetRandomName();
-            _databaseReference.Child(userId).Child("userName").SetValueAsync(userName);
-            _databaseReference.Child(userId).Child("bits").SetValueAsync(0);
-            _databaseReference.Child(userId).Child("bestDistance").SetValueAsync(0.0);
-            _databaseReference.Child(userId).Child("currentDistance").SetValueAsync(0.0);
+            _databaseReference.Child(userId).Child(DatabaseKeyAssets.USER_NAME_KEY).SetValueAsync(userName);
+            _databaseReference.Child(userId).Child(DatabaseKeyAssets.BITS_KEY).SetValueAsync(0);
+            _databaseReference.Child(userId).Child(DatabaseKeyAssets.BEST_DISTANCE_KEY).SetValueAsync(0.0);
+            _databaseReference.Child(userId).Child(DatabaseKeyAssets.CURRENT_DISTANCE_KEY).SetValueAsync(0.0);
         }
 
-        public void SaveBaseUserData<T>(string userId, string key, T value)
+        public async UniTask SaveBaseUserDataAsync<T>(string userId, string key, T value)
         {
-            _databaseReference.Child(userId).Child(key).SetValueAsync(value);
+            await _databaseReference.Child(userId).Child(key).SetValueAsync(value);
         }
         public async UniTask<string> LoadBaseUserDataAsync(string userId, string key)
         {
@@ -79,7 +80,7 @@ namespace Core.Service.RemoteDataStorage
         public async UniTask SavePerkAsync(string userId, PlayerPerkData perkData)
         {
             var json = JsonUtility.ToJson(perkData);
-            await _databaseReference.Child(userId).Child("perks").Child(perkData.upgradeType.ToString())
+            await _databaseReference.Child(userId).Child(DatabaseKeyAssets.PERKS_KEY).Child(perkData.upgradeType.ToString())
                 .SetRawJsonValueAsync(json);
         }
 
@@ -88,7 +89,7 @@ namespace Core.Service.RemoteDataStorage
             try
             {
                 var perkTypeString = perkType.ToString();
-                var perkRef = _databaseReference.Child(userId).Child("perks").Child(perkTypeString);
+                var perkRef = _databaseReference.Child(userId).Child(DatabaseKeyAssets.PERKS_KEY).Child(perkTypeString);
                 var snapshot = await perkRef.GetValueAsync();
 
                 if (!snapshot.Exists)

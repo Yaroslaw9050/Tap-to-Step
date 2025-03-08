@@ -1,6 +1,7 @@
 using Core.Service.Authorization;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
+using Core.Service.LocalUser;
 using Core.Service.RemoteDataStorage;
 using Runtime.Audio;
 using UnityEngine;
@@ -11,17 +12,21 @@ namespace Core.Installers
     public class BootInstaller: MonoInstaller
     {
         [SerializeField] private AudioController _audioController;
-        [SerializeField] private LeaderboardService _leaderboardService;
         
         public override void InstallBindings()
         {
             BindAudioController();
             BindGameEventHandler();
-            BindLeaderboardService();
             BindAuthorizationService();
             BindRemoteDataStorageService();
+            BindLeaderboardService();
         }
 
+        private void BindLeaderboardService()
+        {
+            Container.BindInterfacesAndSelfTo<FirebaseLeaderBoardService>().AsSingle().NonLazy();
+        }
+        
         private void BindRemoteDataStorageService()
         {
             Container.BindInterfacesAndSelfTo<RemoteFirebaseDataStorageService>().AsSingle().NonLazy();
@@ -40,11 +45,6 @@ namespace Core.Installers
         private void BindGameEventHandler()
         {
             Container.Bind<GlobalEventsHolder>().AsSingle().NonLazy();
-        }
-
-        private void BindLeaderboardService()
-        {
-            Container.Bind<LeaderboardService>().FromInstance(_leaderboardService).AsSingle().NonLazy();
         }
     }
 }

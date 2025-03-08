@@ -1,7 +1,6 @@
 using CompositionRoot.Constants;
 using Core.Extension.UI;
 using Core.Service.GlobalEvents;
-using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
 using Runtime.Player.Upgrade;
 using TMPro;
@@ -32,10 +31,10 @@ namespace UI.Views
         [Inject]
         public void Constructor(MainMenuViewModel mainMenuViewModel,
             GlobalEventsHolder eventsHolder, LocalPlayerService localPlayerService,
-            PlayerPerkSystem perkSystem, LeaderboardService leaderboardService)
+            PlayerPerkSystem perkSystem)
         {
             _viewModel = mainMenuViewModel;
-            _upgradeHolderSubView.Init(eventsHolder, perkSystem, localPlayerService, leaderboardService);
+            _upgradeHolderSubView.Init(eventsHolder, perkSystem, localPlayerService);
         }
         
         protected override void SubscribeToEvents()

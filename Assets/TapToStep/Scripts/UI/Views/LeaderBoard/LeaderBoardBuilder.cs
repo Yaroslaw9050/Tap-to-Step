@@ -1,12 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using Core.Service.Leaderboard;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using Zenject;
-
 
 namespace UI.Views.LeaderBoard
 {
@@ -16,14 +12,8 @@ namespace UI.Views.LeaderBoard
         [SerializeField] private RectTransform _boardElementsParent;
         
         private readonly List<BoardElement> r_boardElements = new(100);
-        private LeaderboardService _leaderboardService;
         private CancellationTokenSource _cts;
         
-        [Inject]
-        public void Constructor(LeaderboardService leaderboardService)
-        {
-            _leaderboardService = leaderboardService;
-        }
         public void DestroyBoard()
         {
             _cts?.Cancel();
@@ -39,8 +29,6 @@ namespace UI.Views.LeaderBoard
 
         public async UniTask CreateBoardAsync(List<LeaderboardUser> top100Users, LeaderboardUser myCard)
         {
-            if(_leaderboardService.SystemReady == false) return;
-            
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = new CancellationTokenSource();

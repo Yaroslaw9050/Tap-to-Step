@@ -44,7 +44,7 @@ namespace Runtime.Audio
             _globalEventsHolder = globalEventsHolder;
         }
         
-        public void Init()
+        public void Initialise()
         {
             if(_isInitialized) return;
             

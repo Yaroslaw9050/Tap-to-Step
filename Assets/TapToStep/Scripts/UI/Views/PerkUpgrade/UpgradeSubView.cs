@@ -18,16 +18,14 @@ namespace UI.Views.Upgrades
         [SerializeField] private TextMeshProUGUI _costText;
         [SerializeField] private Button _upgradeButton;
         
-        private LeaderboardService _leaderboardService;
         private GlobalEventsHolder _globalEventsHolder;
 
         public PerkType PerkType => _perkType;
         public event Action<PerkType> OnUpgradeButtonPressed;
 
-        public void Init(LeaderboardService leaderboardService, GlobalEventsHolder globalEventsHolder)
+        public void Init(GlobalEventsHolder globalEventsHolder)
         {
             _globalEventsHolder = globalEventsHolder;
-            _leaderboardService = leaderboardService;
             _upgradeButton.onClick.AddListener(() =>  OnUpgradeButtonPressed?.Invoke(_perkType));
         }
 
