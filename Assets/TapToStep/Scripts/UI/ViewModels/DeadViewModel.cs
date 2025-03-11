@@ -38,14 +38,14 @@ namespace UI.ViewModels
         {
             base.OpenView();
             CalculateDiedCount();
-            r_mobileAdsService.OnContinueAdRecorded += () => Debug.Log("Continue ad recorded!");
+            //r_mobileAdsService.OnContinueAdRecorded += () => Debug.Log("Continue ad recorded!");
         }
 
         private Action<Unit> ContinueByAdCommandExecuted()
         {
             return _ =>
             {
-                r_mobileAdsService.LoadContinueAd();
+                //r_mobileAdsService.LoadContinueAd();
             };
         }
 

@@ -2,6 +2,7 @@ using System.Threading;
 using CompositionRoot.Constants;
 using CompositionRoot.Enums;
 using Core.Service.AdMob;
+using Core.Service.AdMob.Enums;
 using Core.Service.Authorization;
 using Core.Service.Leaderboard;
 using Core.Service.LocalUser;
@@ -63,7 +64,6 @@ namespace Runtime.EntryPoints
             _audioController.Initialise();
             _viewController.Initialize();
             _viewController.DisplayPreparingViews();
-            _mobileAdsService.Initialise();
             
             await UserAuthorizationAsync();
             await InitialiseLeaderboardAsync();
@@ -73,7 +73,7 @@ namespace Runtime.EntryPoints
             _musicToMaterialEmision.Initialise(_audioController.MusicSource);
             _viewController.DisplayGameLoopViews();
             
-            _mobileAdsService.LoadBannerAd();
+            _mobileAdsService.LoadAndShowBanner(BannerAdType.GameLoopBanner);
         }
 
         private void OnDestroy()
@@ -83,6 +83,7 @@ namespace Runtime.EntryPoints
             
             _playerBuilder.DestroyPlayer();
             _viewController.Destruct();
+            _mobileAdsService.HideAndUnloadBanner(BannerAdType.GameLoopBanner);
         }
 
         private void SetupGraphicSetting()

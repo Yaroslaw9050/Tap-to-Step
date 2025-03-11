@@ -46,7 +46,7 @@ namespace Core.Installers
 
         private void BindMobAds()
         {
-            Container.BindInterfacesAndSelfTo<AdMobService>().AsSingle().NonLazy();
+            Container.Bind<IMobileAdsService>().To<AdMobService>().AsSingle().NonLazy();
         }
 
         private void BindEntryPoint()
