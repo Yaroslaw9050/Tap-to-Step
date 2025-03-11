@@ -6,6 +6,8 @@ namespace Core.Extension.UI
     {
         public static string ToDistance(double distance)
         {
+            if (distance == 0) return "0m";
+            
             var meters = (int)distance;
             var centimeters = (distance - meters) * 100;
     
