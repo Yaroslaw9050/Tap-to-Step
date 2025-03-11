@@ -3,6 +3,7 @@ using Core.Extension.UI;
 using DG.Tweening;
 using MPUIKIT;
 using TMPro;
+using UI.CustomElements.Buttons;
 using UI.ViewModels;
 using UI.Views.Upgrades;
 using UniRx;
@@ -16,7 +17,7 @@ namespace UI.Views
     {
         [Header("Buttons:")]
         [SerializeField] private Button _toMenuButton;
-        [SerializeField] private Button _getRewardButton;
+        [SerializeField] private TMPButton _getRewardButton;
 
         [Header("Texts:")]
         [SerializeField] private TextMeshProUGUI _distanceText;
@@ -46,10 +47,12 @@ namespace UI.Views
             _getRewardButton.onClick.AddListener(() => _viewModel.GetRewardCommand.Execute());
             
             _viewModel.OnViewActivityStatusChanged += OnViewStatusChangedHandler;
-            
+
+            _viewModel.RewardAdStatusChanged.Subscribe(ReactRewardAdStatusChanged).AddTo(_disposable);
             _viewModel.PlayerStartMoveCommand.Subscribe(ReactPlayEnergyAnimation).AddTo(_disposable);
             _viewModel.Distance.Subscribe(ReactDistanceUpdateHandler).AddTo(_disposable);
             _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
+            _viewModel.RewardAdAmount.Subscribe(ReactAdAmountUpdated).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
@@ -75,12 +78,22 @@ namespace UI.Views
         {
             _distanceText.SetText($"Distance\n{ValueConvertor.ToDistance(distance)}");
         }
+
+        private void ReactAdAmountUpdated(double amount)
+        {
+            _getRewardButton.Text.SetText($"+{(int)amount}");
+        }
         
         private void ReactPlayEnergyAnimation(float duration)
         {
             _energyAnimationTween?.Kill();
             _characterEnergyImage.fillAmount = 0f;
             _energyAnimationTween = _characterEnergyImage.DOFillAmount(1f, duration).SetEase(Ease.Linear);
+        }
+
+        private void ReactRewardAdStatusChanged(bool isActive)
+        {
+            _getRewardButton.interactable = isActive;
         }
     }
 }
