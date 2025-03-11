@@ -1,22 +1,15 @@
 using System;
-using GoogleMobileAds.Api;
+using System.Threading;
+using Core.Service.AdMob.Enums;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Service.AdMob
 {
     public interface IMobileAdsService
     {
-        public void Initialise();
-
-        public void LoadBannerAd();
-
-        public void LoadAndShowDeadAd();
-        public void LoadContinueAd();
-        public void ShowInterstitialAd(InterstitialAd ad);
-
-        public void ShowRewardedBitsAd(Action<double> onComplete);
-        public void LoadRewardBitsAd(Action onComplete);
-        
-        public event Action<InterstitialAd> OnShowInterstitialAd;
-        public event Action OnContinueAdRecorded;
+        public void LoadAndShowBanner(BannerAdType adType);
+        public void HideAndUnloadBanner(BannerAdType adType);
+        public UniTask<(LoadStatus, double)> LoadRewardAdAsync(RewardAdType adType, CancellationToken token);
+        public UniTask<double> ShowRewardAdAsync(RewardAdType adType);
     }
 }
