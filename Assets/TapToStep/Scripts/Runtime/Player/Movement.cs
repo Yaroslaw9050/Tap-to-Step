@@ -28,7 +28,7 @@ namespace Runtime.Player
 
         private const float MIN_HORIZONTAL_SLIDE = -2f;
         private const float MAX_HORIZONTAL_SLIDE = 2f;
-        private const float GROUND_CHECK_DISTANCE = 0.35f;
+        private const float GROUND_CHECK_DISTANCE = 0.5f;
         private const int SURFACE_CHECK_INTERVAL = 5;
 
         private void FixedUpdate()
