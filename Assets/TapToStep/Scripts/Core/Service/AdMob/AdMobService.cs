@@ -1,4 +1,9 @@
 using System;
+using System.Threading;
+using Core.Service.AdMob.Banner;
+using Core.Service.AdMob.Enums;
+using Core.Service.AdMob.Reward;
+using Cysharp.Threading.Tasks;
 using GoogleMobileAds.Api;
 using UnityEngine;
 
@@ -6,40 +11,56 @@ namespace Core.Service.AdMob
 {
     public class AdMobService: IMobileAdsService
     {
-        private bool _isInitialized;
-
 #if UNITY_ANDROID
-        private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/7559106027";
         private const string REWARD_CONTINUE_ADS = "ca-app-pub-7582758822795295/8275391517";
         private const string REWARD_RARE_AFTER_DEAD_ADS = "ca-app-pub-7582758822795295/9202332516";
-        private const string REWARD_EARN_BITS_ADS = "ca-app-pub-7582758822795295/1750685079";
         
 #elif UNITY_IOS
-        private const string BANNER_LOOP_ADS = "ca-app-pub-7582758822795295/2913284002";
         private const string REWARD_CONTINUE_ADS = "ca-app-pub-7582758822795295/4991624763";
         private const string REWARD_RARE_AFTER_DEAD_ADS = "ca-app-pub-7582758822795295/8153200068";
-        private const string REWARD_EARN_BITS_ADS = "ca-app-pub-7582758822795295/2420730920";
 #endif
-        private BannerView _loopBanner;
-        private InterstitialAd _deadContinueInterstitial;
-        private InterstitialAd _afterDeadInterstitial;
+        
+        
+        private InterstitialAd _continueAfterDead;
+        private InterstitialAd _rareAfterDead;
         private RewardedAd _rewardedBitsAd;
+
+        private readonly BannerAdController r_bannerController;
+        private readonly RewardAdController r_rewardController;
         
         public event Action<InterstitialAd> OnShowInterstitialAd;
         public event Action OnContinueAdRecorded;
 
-        public void Initialise()
+        public AdMobService()
         {
-            if (_isInitialized)
-            {
-                Debug.LogWarning("Admob service is already initialized.");
-                return;
-            }
+            r_bannerController = new BannerAdController();
+            r_rewardController = new RewardAdController();
+            
             MobileAds.Initialize(status =>
             {
                 Debug.Log($"Admob service has been initialized.| {status}" );
-                _isInitialized = true;
             });
+        }
+
+        public void LoadAndShowBanner(BannerAdType adType)
+        {
+            r_bannerController.LoadAndShowBanner(adType);
+        }
+
+        public void HideAndUnloadBanner(BannerAdType adType)
+        {
+            r_bannerController.HideAndUnloadBanner(adType);
+        }
+
+        public async UniTask<(LoadStatus, double)> LoadRewardAdAsync(RewardAdType adType, CancellationToken token)
+        {
+             return await r_rewardController.LoadRewardAdAsync(adType, token);
+        }
+
+        public async UniTask<double> ShowRewardAdAsync(RewardAdType adType)
+        {
+            var result= await r_rewardController.ShowRewardAdAsync(adType);
+            return result ?? 0.0;
         }
 
         public void ShowInterstitialAd(InterstitialAd ad)
@@ -49,34 +70,13 @@ namespace Core.Service.AdMob
                 ad.Show();
             }
         }
-
-        public void LoadRewardBitsAd(Action onComplete)
-        {
-            if (_rewardedBitsAd != null)
-            {
-                _rewardedBitsAd.Destroy();
-                _rewardedBitsAd = null;
-            }
-
-            var adRequest = new AdRequest();
-            RewardedAd.Load(REWARD_EARN_BITS_ADS, adRequest, (ad, error) =>
-            {
-                if (error != null || ad == null)
-                {
-                    return;
-                }
-                
-                _rewardedBitsAd = ad;
-                onComplete?.Invoke();
-            });
-        }
         
         public void LoadAndShowDeadAd()
         {
-            if (_afterDeadInterstitial != null)
+            if (_rareAfterDead != null)
             {
-                _afterDeadInterstitial.Destroy();
-                _afterDeadInterstitial = null;
+                _rareAfterDead.Destroy();
+                _rareAfterDead = null;
             }
 
             var adRequest = new AdRequest();
@@ -85,39 +85,17 @@ namespace Core.Service.AdMob
 
         public void LoadContinueAd()
         {
-            if (_deadContinueInterstitial != null)
+            if (_continueAfterDead != null)
             {
-                _deadContinueInterstitial.OnAdImpressionRecorded -= ContinueAdsRecorded;
-                _deadContinueInterstitial.Destroy();
-                _deadContinueInterstitial = null;
+                _continueAfterDead.OnAdImpressionRecorded -= ContinueAdsRecorded;
+                _continueAfterDead.Destroy();
+                _continueAfterDead = null;
             }
 
             var adRequest = new AdRequest();
             InterstitialAd.Load(REWARD_CONTINUE_ADS, adRequest, ContinueAdLoaded);
         }
         
-        public void LoadBannerAd()
-        {
-            if (_loopBanner == null)
-            {
-                CreateBannerView();
-            }
-            
-            var adRequest = new AdRequest();
-            _loopBanner?.LoadAd(adRequest);
-        }
-
-        public void ShowRewardedBitsAd(Action<double> onComplete)
-        {
-            if (_rewardedBitsAd != null && _rewardedBitsAd.CanShowAd())
-            {
-                _rewardedBitsAd.Show(reward =>
-                {
-                    onComplete?.Invoke(reward.Amount);
-                } );
-            }
-        }
-
         private void AfterDeadAdLoaded(InterstitialAd adRequest, LoadAdError error)
         {
             if (error != null || adRequest == null)
@@ -125,10 +103,10 @@ namespace Core.Service.AdMob
                 return;
             }
 
-            _afterDeadInterstitial = adRequest;
-            _afterDeadInterstitial.Show();
+            _rareAfterDead = adRequest;
+            _rareAfterDead.Show();
         }
-        
+
         private void ContinueAdLoaded(InterstitialAd adRequest, LoadAdError error)
         {
             if (error != null || adRequest == null)
@@ -136,32 +114,14 @@ namespace Core.Service.AdMob
                 return;
             }
 
-            _deadContinueInterstitial = adRequest;
-            _deadContinueInterstitial.OnAdImpressionRecorded += ContinueAdsRecorded;
-            OnShowInterstitialAd?.Invoke(_deadContinueInterstitial);
+            _continueAfterDead = adRequest;
+            _continueAfterDead.OnAdImpressionRecorded += ContinueAdsRecorded;
+            OnShowInterstitialAd?.Invoke(_continueAfterDead);
         }
-        
+
         private void ContinueAdsRecorded()
         {
             OnContinueAdRecorded?.Invoke();
-        }
-
-        private void CreateBannerView()
-        {
-            if (_loopBanner != null)
-            {
-                DestroyBanner(_loopBanner);
-            }
-            _loopBanner = new BannerView(BANNER_LOOP_ADS, AdSize.Banner, AdPosition.Bottom);
-        }
-
-        private void DestroyBanner(BannerView selectedBanner)
-        {
-            if (selectedBanner != null)
-            {
-                selectedBanner.Destroy();
-                selectedBanner = null;
-            }
         }
     }
 }
