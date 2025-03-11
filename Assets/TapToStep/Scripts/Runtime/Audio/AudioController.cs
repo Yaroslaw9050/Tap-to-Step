@@ -33,10 +33,13 @@ namespace Runtime.Audio
 
         private bool _isInitialized;
         private GlobalEventsHolder _globalEventsHolder;
+        private AudioSource _stepAudioSource;
+        private AudioSource _vfxAudioSource;
+        private AudioSource _uiAudioSource;
         private CancellationTokenSource _cts;
 
         public AudioSource MusicSource => _musicSource;
-        private readonly List<AudioSource> r_stepsAudioSources = new(10);
+        
 
         [Inject]
         public void Constructor(GlobalEventsHolder globalEventsHolder)
@@ -62,27 +65,27 @@ namespace Runtime.Audio
         {
             _globalEventsHolder.PlayerEvents.OnStartMoving += () =>
             {
-                PlayShortSound(_stepMixer, _stepClip, Random.Range(0.9f, 1.1f));
+                PlayShortSound(_stepAudioSource, _stepMixer, _stepClip, Random.Range(0.9f, 1.1f));
             };
 
             _globalEventsHolder.PlayerEvents.OnDied += () =>
             {
-                PlayShortSound(_vfxMixer, _playerDiedClip);
+                PlayShortSound(_vfxAudioSource, _vfxMixer, _playerDiedClip);
             };
 
             _globalEventsHolder.OnCollectablesChanged += () =>
             {
-                PlayShortSound(_vfxMixer, _bitCollectedClip);
+                PlayShortSound(_vfxAudioSource, _vfxMixer, _bitCollectedClip);
             };
             
             _globalEventsHolder.UIEvents.OnClickedOnAnyElements += () =>
             {
-                PlayShortSound(_uiMixer, _uiClickClip);
+                PlayShortSound(_uiAudioSource, _uiMixer, _uiClickClip);
             };
 
             _globalEventsHolder.OnSomeSkillUpgraded += _ =>
             {
-                PlayShortSound(_uiMixer, _levelUpClip);
+                PlayShortSound(_uiAudioSource, _uiMixer, _levelUpClip);
             };
         }
 
@@ -101,30 +104,18 @@ namespace Runtime.Audio
 
         private void InitGlobalAudioSourceSystem()
         {
-            var stepAudio = new GameObject("GlobalAudioSource");
-            stepAudio.transform.SetParent(transform);
-
-            for (var i = 0; i < r_stepsAudioSources.Capacity; i++)
-            {
-                var temp = stepAudio.AddComponent<AudioSource>();
-                temp.playOnAwake = false;
-                r_stepsAudioSources.Add(temp);
-            }
+            _stepAudioSource = gameObject.AddComponent<AudioSource>();
+            _vfxAudioSource = gameObject.AddComponent<AudioSource>();
+            _uiAudioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        private void PlayShortSound(AudioMixerGroup audioMixerGroup,
+        private void PlayShortSound(AudioSource targetAudioSource, AudioMixerGroup audioMixerGroup,
             AudioClip clip, float pitch = 1f, float volume = 1f)
         {
-            foreach (var audioSource in r_stepsAudioSources)
-            {
-                if(audioSource.isPlaying) continue;
-                audioSource.outputAudioMixerGroup = audioMixerGroup;
-                audioSource.clip = clip;
-                audioSource.volume = volume;
-                audioSource.pitch = pitch;
-                audioSource.Play();
-                return;
-            }
+            targetAudioSource.outputAudioMixerGroup = audioMixerGroup;
+            targetAudioSource.volume = volume;
+            targetAudioSource.pitch = pitch;
+            targetAudioSource.PlayOneShot(clip, volume);
         }
 
         private async UniTask OnMusicEndedAsync(Action onComplete)
