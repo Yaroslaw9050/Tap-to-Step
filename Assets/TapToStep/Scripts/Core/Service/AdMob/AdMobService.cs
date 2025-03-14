@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using Core.Service.AdMob.Banner;
 using Core.Service.AdMob.Enums;
@@ -58,9 +57,9 @@ namespace Core.Service.AdMob
             return await r_interstitialController.LoadInterstitialAdAsync(adType, token);
         }
 
-        public void ShowInterstitialAd(InterstitialAdType adType)
+        public async UniTask ShowInterstitialAdAsync(InterstitialAdType adType, CancellationToken token)
         {
-            r_interstitialController.ShowInterstitialAd(adType);
+            await r_interstitialController.ShowInterstitialAdAsync(adType, token);
         }
     }
 }
