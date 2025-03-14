@@ -6,12 +6,12 @@ namespace CompositionRoot.SO.Player.Logic
     [CreateAssetMenu(fileName = "PlayerSettingSO", menuName = "Player/Parameters", order = 1)]
     public class PlayerSettingSO : ScriptableObject
     {
-        [SerializeField] private float _turnSpeed = 1;
-        [SerializeField] private float _stepLenght = 1;
-        [SerializeField] private float _stepSpeed = 1;
-        public float StepLenght => _stepLenght;
+        [SerializeField] private double _turnSpeed = 1;
+        [SerializeField] private double _stepLenght = 1;
+        [SerializeField] private double _stepSpeed = 1;
+        public double StepLenght => _stepLenght;
 
-        public float StepSpeed => _stepSpeed;
+        public double StepSpeed => _stepSpeed;
 
         public PlayerSetting ConvertToClass()
         {
@@ -22,11 +22,11 @@ namespace CompositionRoot.SO.Player.Logic
     [Serializable]
     public class PlayerSetting
     {
-        private float turnSpeed;
-        private float stepLenght;
-        private float stepSpeed;
+        private double turnSpeed;
+        private double stepLenght;
+        private double stepSpeed;
 
-        public PlayerSetting(float turnSpeed, float stepLenght, float stepSpeed)
+        public PlayerSetting(double turnSpeed, double stepLenght, double stepSpeed)
         {
             this.turnSpeed = turnSpeed;
             this.stepLenght = stepLenght;

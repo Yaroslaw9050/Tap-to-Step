@@ -66,11 +66,11 @@ namespace Runtime.Player.Upgrade
             }
         }
 
-        public float GetPerkValueByType(PerkType type)
+        public double GetPerkValueByType(PerkType type)
         {
             var perk = GetPerkByType(type);
             var raw = perk.CurrentLevel / 20f;
-            var rounded = (float)Math.Round(raw, 1);
+            var rounded = (double)Math.Round(raw, 1);
             return rounded;
         }
 

@@ -93,9 +93,9 @@ namespace Runtime.Player
         {
             return moveDirection switch
             {
-                MoveDirection.Left => -0.3f - _localPlayerService.GetTurnSpeed(),
+                MoveDirection.Left => -0.3f - (float)_localPlayerService.GetTurnSpeed(),
                 MoveDirection.Up => 0f,
-                MoveDirection.Right => 0.3f + _localPlayerService.GetTurnSpeed(),
+                MoveDirection.Right => 0.3f + (float)_localPlayerService.GetTurnSpeed(),
                 MoveDirection.Down => 0f,
                 MoveDirection.None => 0f,
                 _ => 0f
@@ -114,7 +114,7 @@ namespace Runtime.Player
             var endPosition = new Vector3(
                 Mathf.Clamp(startPosition.x + horizontalSlide, MIN_HORIZONTAL_SLIDE, MAX_HORIZONTAL_SLIDE),
                 startPosition.y,
-                startPosition.z + stepLength
+                startPosition.z + (float)stepLength
             );
             
             _isMoving = true;
@@ -125,7 +125,7 @@ namespace Runtime.Player
             {
                 elapsedTime += Time.deltaTime;
                 var t = elapsedTime / stepTime;
-                _playerRigidBody.MovePosition(Vector3.Lerp(startPosition, endPosition, t));
+                _playerRigidBody.MovePosition(Vector3.Lerp(startPosition, endPosition, (float)t));
                 await UniTask.Yield();
             }
             
