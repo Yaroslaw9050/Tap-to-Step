@@ -19,16 +19,16 @@ namespace Core.Service.RemoteDataStorage
             _databaseReference = FirebaseDatabase.DefaultInstance.GetReference(DATABASE_KEY);
         }
 
-        public void CreateStartedFieldsForNewUser(string userId)
+        public async UniTask CreateStartedFieldsForNewUserAsync(string userId)
         {
             var userName = RandomNameGenerator.GetRandomName();
-            _databaseReference.Child(userId).Child(DatabaseKeyAssets.USER_NAME_KEY).SetValueAsync(userName);
-            _databaseReference.Child(userId).Child(DatabaseKeyAssets.BITS_KEY).SetValueAsync(0);
-            _databaseReference.Child(userId).Child(DatabaseKeyAssets.BEST_DISTANCE_KEY).SetValueAsync(0.0);
-            _databaseReference.Child(userId).Child(DatabaseKeyAssets.CURRENT_DISTANCE_KEY).SetValueAsync(0.0);
+            await _databaseReference.Child(userId).Child(DatabaseKeyAssets.USER_NAME_KEY).SetValueAsync(userName);
+            await _databaseReference.Child(userId).Child(DatabaseKeyAssets.BITS_KEY).SetValueAsync(0);
+            await _databaseReference.Child(userId).Child(DatabaseKeyAssets.BEST_DISTANCE_KEY).SetValueAsync(0.0);
+            await _databaseReference.Child(userId).Child(DatabaseKeyAssets.CURRENT_DISTANCE_KEY).SetValueAsync(0.0);
         }
 
-        public async UniTask SaveBaseUserDataAsync<T>(string userId, string key, T value)
+        public async UniTask SaveUserDataAsync<T>(string userId, string key, T value)
         {
             await _databaseReference.Child(userId).Child(key).SetValueAsync(value);
         }
