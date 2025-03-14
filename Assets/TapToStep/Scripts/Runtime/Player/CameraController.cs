@@ -17,6 +17,7 @@ namespace Runtime.Player
 
         private Tween _cameraFieldOfViewTween;
         private Tween _cameraTurnTween;
+        private Tween _cameraStepTween;
         private Tween _cameraMoveTween;
         
         private float _currentRotationY;
@@ -36,8 +37,10 @@ namespace Runtime.Player
         public void Destruct()
         {
             _entryPoint.GlobalEventsHolder.PlayerEvents.OnStartMoving -= MoveLikeStep;
-            _cameraMoveTween?.Kill();
+            _entryPoint.GlobalEventsHolder.UIEvents.OnMainMenuOpening -= OnMeinMenuIs;
+            _cameraStepTween?.Kill();
             _cameraTurnTween?.Kill();
+            _cameraMoveTween?.Kill();
             _cameraFieldOfViewTween?.Kill();
         }
 
@@ -45,14 +48,18 @@ namespace Runtime.Player
         {
             _cameraMoveTween?.Kill();
             
-            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y - 1.2f, _cameraTransform.position.z);
-            _cameraMoveTween = _cameraTransform.DOMove(camPosition, 1f).SetEase(Ease.InOutFlash);
+            var camPosition = new Vector3(_cameraTransform.localPosition.x, _cameraTransform.localPosition.y - 1.2f, 
+                _cameraTransform.localPosition.z);
+            _cameraMoveTween = _cameraTransform.DOLocalMove(camPosition, 1f).SetEase(Ease.InOutFlash);
         }
 
         public void MoveToPlayerResumePosition()
         {
-            var camPosition = new Vector3(_cameraTransform.position.x, _cameraTransform.position.y + 1.2f, _cameraTransform.position.z);
-            _cameraMoveTween = _cameraTransform.DOMove(camPosition, 0.5f).SetEase(Ease.InOutFlash);
+            _cameraMoveTween?.Kill();
+            
+            var camPosition = new Vector3(_cameraTransform.localPosition.x, _cameraTransform.localPosition.y + 1.2f, 
+                _cameraTransform.localPosition.z);
+            _cameraMoveTween = _cameraTransform.DOLocalMove(camPosition, 0.5f).SetEase(Ease.InOutFlash);
         }
 
         private void MoveLikeStep()
@@ -61,9 +68,11 @@ namespace Runtime.Player
             var secondHalfCamPosition = firstHalfCamPosition - CAMERA_LIFT_AMOUNT;
             var halfStepTime = _localPlayerService.GetStepTime() / 2;
 
-            _cameraMoveTween = _cameraTransform.DOLocalMoveY(firstHalfCamPosition, halfStepTime).SetEase(Ease.InFlash).OnComplete(() =>
+            _cameraStepTween = _cameraTransform.DOLocalMoveY(firstHalfCamPosition, (float)halfStepTime).SetEase(Ease
+                .InFlash).OnComplete(() =>
             {
-                _cameraMoveTween = _cameraTransform.DOLocalMoveY(secondHalfCamPosition, halfStepTime).SetEase(Ease.OutFlash);
+                _cameraStepTween = _cameraTransform.DOLocalMoveY(secondHalfCamPosition, (float)halfStepTime).SetEase
+                    (Ease.OutFlash);
             });
         }
 
