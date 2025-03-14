@@ -1,6 +1,7 @@
 using Core.Service.Authorization;
 using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
+using Core.Service.LocalDataStorage;
 using Core.Service.LocalUser;
 using Core.Service.RemoteDataStorage;
 using Runtime.Audio;
@@ -20,6 +21,12 @@ namespace Core.Installers
             BindAuthorizationService();
             BindRemoteDataStorageService();
             BindLeaderboardService();
+            BindLocalStorageService();
+        }
+
+        private void BindLocalStorageService()
+        {
+            Container.BindInterfacesTo<LocalDataStorageService>().AsSingle().NonLazy();
         }
 
         private void BindLeaderboardService()
