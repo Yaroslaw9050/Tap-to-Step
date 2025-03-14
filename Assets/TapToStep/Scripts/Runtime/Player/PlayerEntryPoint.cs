@@ -47,14 +47,12 @@ namespace Runtime.Player
 
         private void SubscribeToEvents()
         {
-            //_gameEventHandler.OnMenuViewStatusChanged += OnMenuView;
             _globalEventsHolder.PlayerEvents.OnReborn += OnPlayerResumed;
             _globalEventsHolder.PlayerEvents.OnDied += OnPlayerDied;
         }
 
         private void UnSubscribeFromEvents()
         {
-            //_gameEventHandler.OnMenuViewStatusChanged -= OnMenuView;
             _globalEventsHolder.PlayerEvents.OnReborn -= OnPlayerResumed;
             _globalEventsHolder.PlayerEvents.OnDied -= OnPlayerDied;
         }

@@ -1,4 +1,3 @@
-using System;
 using Core.Extension.UI;
 using Core.Service.LocalUser;
 using TMPro;
@@ -7,7 +6,6 @@ using UI.ViewModels;
 using UI.Views.Upgrades;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zenject;
 
