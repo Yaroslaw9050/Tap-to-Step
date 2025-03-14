@@ -59,15 +59,25 @@ namespace Core.Service.AdMob.Interstitial
             });
             return await tcs.Task.AttachExternalCancellation(cancellationToken);
         }
-        
-        public void ShowInterstitialAd(InterstitialAdType adType)
+
+        public async UniTask<bool> ShowInterstitialAdAsync(InterstitialAdType adType, CancellationToken token)
         {
             if (!r_interstitialAd.TryGetValue(adType, out var ad) || !ad.CanShowAd())
             {
                 Debug.LogWarning($"Interstitial ad {adType} is not ready to show.");
-                return;
+                return false;
             }
+            
+            var tcs = new UniTaskCompletionSource<bool>();
+
+            ad.OnAdFullScreenContentClosed += () =>
+            {
+                Debug.Log($"Interstitial ad {adType} closed.");
+                tcs.TrySetResult(true);
+            };
+
             ad.Show();
+            return await tcs.Task.AttachExternalCancellation(token);
         }
         
         private string GetInterstitialAdUid(InterstitialAdType adType)

@@ -11,6 +11,6 @@ namespace Core.Service.AdMob
         public UniTask<(LoadStatus, double)> LoadRewardAdAsync(RewardAdType adType, CancellationToken token);
         public UniTask<double> ShowRewardAdAsync(RewardAdType adType);
         public UniTask<LoadStatus> LoadInterstitialAdAsync(InterstitialAdType adType, CancellationToken token);
-        public void ShowInterstitialAd(InterstitialAdType adType);
+        public UniTask ShowInterstitialAdAsync(InterstitialAdType adType, CancellationToken token);
     }
 }
