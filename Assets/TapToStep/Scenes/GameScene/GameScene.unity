@@ -298,9 +298,9 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0, g: 0, b: 0, a: 1}
+    m_DisabledColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
     m_ColorMultiplier: 1
-    m_FadeDuration: 1
+    m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -1861,7 +1861,6 @@ Transform:
   - {fileID: 1149702569}
   - {fileID: 1579732901}
   - {fileID: 168719397}
-  - {fileID: 902690229}
   - {fileID: 953246749}
   - {fileID: 992080238}
   m_Father: {fileID: 0}
@@ -2718,8 +2717,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294927612
-  m_fontColor: {r: 0.9876639, g: 0.3915094, b: 1, a: 1}
+    rgba: 4293429503
+  m_fontColor: {r: 1, g: 0.5330188, b: 0.9092526, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3473,7 +3472,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Distance: 500m'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ac57cb7d69b7c4147b66c2e13211ff04, type: 2}
   m_sharedMaterial: {fileID: 8551396185467028209, guid: ac57cb7d69b7c4147b66c2e13211ff04, type: 2}
@@ -5511,50 +5510,6 @@ MonoBehaviour:
   _restartButton: {fileID: 734728761}
   _continueByAdButton: {fileID: 80544503}
   _currentDistanceText: {fileID: 672660638}
---- !u!1 &902690228
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 902690229}
-  - component: {fileID: 902690230}
-  m_Layer: 0
-  m_Name: LeaderboardService
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &902690229
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 902690228}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 296039473}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &902690230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 902690228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23e25f27be1b4f9e945ae95ca3df305e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &924890570
 GameObject:
   m_ObjectHideFlags: 0
@@ -8007,8 +7962,10 @@ MonoBehaviour:
   _thisViewCanvasGroup: {fileID: 1322196255}
   _toMenuButton: {fileID: 876041478}
   _getRewardButton: {fileID: 60510698}
+  _getRewardButtonRectTransform: {fileID: 60510695}
   _distanceText: {fileID: 1130280211}
   _bitsText: {fileID: 1847680843}
+  _rewardAmountText: {fileID: 577654489}
   _characterEnergyImage: {fileID: 1754334481}
 --- !u!1 &1336791784 stripped
 GameObject:
