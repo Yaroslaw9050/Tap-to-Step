@@ -8,6 +8,6 @@ namespace Core.Service.Authorization
 
         public UniTask<string> SignUpAsync();
 
-        public UniTask<string> SignInAsync();
+        public UniTask<(bool, string)> TrySignInAsync();
     }
 }

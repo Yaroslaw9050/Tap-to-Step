@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using CompositionRoot.Constants;
 using CompositionRoot.Enums;
 using Core.Service.AdMob;
@@ -61,7 +62,6 @@ namespace Runtime.EntryPoints
         private async void Start()
         {
             SetupGraphicSetting();
-            _audioController.Initialise();
             _viewController.Initialize();
             _viewController.DisplayPreparingViews();
             
@@ -72,6 +72,7 @@ namespace Runtime.EntryPoints
             _playerBuilder.CreatePlayer(Vector3.zero, _locationBuilder.StaticBackgroundTransform);
             _musicToMaterialEmision.Initialise(_audioController.MusicSource);
             _viewController.DisplayGameLoopViews();
+            _audioController.Initialise();
             
             _mobileAdsService.LoadAndShowBanner(BannerAdType.GameLoopBanner);
         }
@@ -109,25 +110,26 @@ namespace Runtime.EntryPoints
         {
             _authorizationService.Initialise();
             _remoteDataStorageService.Initialise();
-            var userId = _localPlayerService.PlayerModel.UserId.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                userId = await _authorizationService.SignInAsync();
-                if (string.IsNullOrEmpty(userId))
-                {
-                    userId = await _authorizationService.SignUpAsync();
-                    _localPlayerService.PlayerModel.UserId.Value = userId;
-                    _remoteDataStorageService.CreateStartedFieldsForNewUser(userId);
-                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepSpeed).ToPlayerPerkData());
-                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepLenght).ToPlayerPerkData());
-                    _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.TurnSpeed).ToPlayerPerkData());
-                    return;
-                }
-                _localPlayerService.PlayerModel.UserId.Value = userId;
-            }
             
+            var (isSuccess, userId) = await _authorizationService.TrySignInAsync();
+            
+            if (isSuccess == false)
+            {
+                userId = await _authorizationService.SignUpAsync();
+                await _remoteDataStorageService.CreateStartedFieldsForNewUserAsync(userId);
+                await SavePerksAsync(userId);
+            }
+                
+            _localPlayerService.PlayerModel.UserId.Value = userId; 
             await _localPlayerService.LoadAllPerksAsync();
             await _localPlayerService.LoadBaseUserDataAsync();
+        }
+
+        private async UniTask SavePerksAsync(string userId)
+        {
+            await _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepSpeed).ToPlayerPerkData());
+            await _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.StepLenght).ToPlayerPerkData());
+            await _remoteDataStorageService.SavePerkAsync(userId, _localPlayerService.GetPerk(PerkType.TurnSpeed).ToPlayerPerkData());
         }
     }
 }

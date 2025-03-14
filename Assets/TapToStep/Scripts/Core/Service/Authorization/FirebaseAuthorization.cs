@@ -20,29 +20,26 @@ namespace Core.Service.Authorization
             try
             {
                 var result = await _auth.CreateUserWithEmailAndPasswordAsync(data.Item2, data.Item1);
-                Debug.Log($"User signed up successfully: {result.User.DisplayName} ({result.User.UserId})");
                 return result.User.UserId;
             }
             catch (Exception ex)
             {
                 Debug.LogError($"SignUpAsync encountered an error: {ex}");
-                return string.Empty;
+                return null;
             }
         }
 
-        public async UniTask<string> SignInAsync()
+        public async UniTask<(bool, string)> TrySignInAsync()
         {
-            var data = SplitInHalf(SystemInfo.deviceUniqueIdentifier);
             try
             {
+                var data = SplitInHalf(SystemInfo.deviceUniqueIdentifier);
                 var result = await _auth.SignInWithEmailAndPasswordAsync(data.Item2, data.Item1);
-                Debug.Log($"User signed in successfully: {result.User.DisplayName} ({result.User.UserId})");
-                return result.User.UserId;
+                return (true, result.User.UserId); 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.LogError($"SignInAsync encountered an error: {ex}");
-                return string.Empty;
+                return (false, null);
             }
         }
 
