@@ -7,6 +7,7 @@ using Core.Service.LocalUser;
 using Cysharp.Threading.Tasks;
 using UI.Views.Controller;
 using UniRx;
+using UnityEngine;
 
 namespace UI.ViewModels
 {
@@ -25,7 +26,7 @@ namespace UI.ViewModels
         public ReactiveProperty<double> Distance { get; } = new(0.0);
         public ReactiveProperty<ulong> Bits { get; } = new(0);
 
-        public ReactiveCommand<float> PlayerStartMoveCommand { get; } = new();
+        public ReactiveCommand<double> PlayerStartMoveCommand { get; } = new();
         
         public const int REWARD_AD_SHOW_DELAY = 40_000;
         
@@ -110,6 +111,12 @@ namespace UI.ViewModels
             RewardAdStatusChanged.Execute(false);
             await UniTask.Delay(REWARD_AD_SHOW_DELAY, cancellationToken: _rewardAdCancellationTokenSource.Token);
             
+            if (Debug.isDebugBuild)
+            {
+                RewardAdStatusChanged.Execute(true);
+                return;
+            }
+            
             var (status, amount) = await r_mobileAdsService.LoadRewardAdAsync(RewardAdType.GameLoopGetBits, _rewardAdCancellationTokenSource.Token);
             if (status == LoadStatus.Success)
             {
@@ -120,6 +127,12 @@ namespace UI.ViewModels
 
         private async UniTaskVoid ShowRewardAdAsync()
         {
+            if (Debug.isDebugBuild)
+            {
+                r_localPlayerService.AddBits(5000);
+                return;
+            }
+            
             var reward = await r_mobileAdsService.ShowRewardAdAsync(RewardAdType.GameLoopGetBits);
             r_localPlayerService.AddBits((ushort)reward);
             LoadRewardAdAsync().Forget();

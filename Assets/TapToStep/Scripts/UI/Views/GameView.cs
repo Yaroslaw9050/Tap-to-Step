@@ -3,7 +3,6 @@ using Core.Extension.UI;
 using DG.Tweening;
 using MPUIKIT;
 using TMPro;
-using UI.CustomElements.Buttons;
 using UI.ViewModels;
 using UI.Views.Upgrades;
 using UniRx;
@@ -17,17 +16,24 @@ namespace UI.Views
     {
         [Header("Buttons:")]
         [SerializeField] private Button _toMenuButton;
-        [SerializeField] private TMPButton _getRewardButton;
+        [SerializeField] private Button _getRewardButton;
+        
+        [Header("Transforms:")]
+        [SerializeField] private RectTransform _getRewardButtonRectTransform;
 
         [Header("Texts:")]
         [SerializeField] private TextMeshProUGUI _distanceText;
         [SerializeField] private TextMeshProUGUI _bitsText;
+        [SerializeField] private TextMeshProUGUI _rewardAmountText;
         
         [Header("Images:")]
         [SerializeField] private MPImage _characterEnergyImage;
         
         private GameViewModel _viewModel;
         private Tween _energyAnimationTween;
+
+        private const float SHOW_REWARD_BUTTON_POSITION = -20f;
+        private const float HIDE_REWARD_BUTTON_POSITION = -220f;
         
         [Inject]
         public void Constructor(GameViewModel gameViewModel)
@@ -81,19 +87,26 @@ namespace UI.Views
 
         private void ReactAdAmountUpdated(double amount)
         {
-            _getRewardButton.Text.SetText($"+{(int)amount}");
+            _rewardAmountText.SetText($"+{(int)amount}");
         }
         
-        private void ReactPlayEnergyAnimation(float duration)
+        private void ReactPlayEnergyAnimation(double duration)
         {
             _energyAnimationTween?.Kill();
             _characterEnergyImage.fillAmount = 0f;
-            _energyAnimationTween = _characterEnergyImage.DOFillAmount(1f, duration).SetEase(Ease.Linear);
+            _energyAnimationTween = _characterEnergyImage.DOFillAmount(1f, (float)duration).SetEase(Ease.Linear);
         }
 
         private void ReactRewardAdStatusChanged(bool isActive)
         {
             _getRewardButton.interactable = isActive;
+            
+            if (isActive)
+            {
+                _getRewardButtonRectTransform.DOAnchorPosX(SHOW_REWARD_BUTTON_POSITION, 1f).SetEase(Ease.OutBounce);
+                return;
+            }
+            _getRewardButtonRectTransform.DOAnchorPosX(HIDE_REWARD_BUTTON_POSITION, 0.5f);
         }
     }
 }

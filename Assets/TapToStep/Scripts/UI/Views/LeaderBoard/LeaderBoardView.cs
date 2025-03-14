@@ -1,147 +1,83 @@
-using System;
+using System.Collections.Generic;
+using CompositionRoot.Constants;
 using Core.Extension.UI;
-using Core.Service.GlobalEvents;
 using Core.Service.Leaderboard;
-using Core.Service.LocalUser;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
+using UI.ViewModels;
 using UI.Views.Upgrades;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
 namespace UI.Views.LeaderBoard
 {
-    public class LeaderBoardView : BaseView
+    public class LeaderBoardView: BaseView
     {
+        [Header("Builders:")]
         [SerializeField] private LeaderBoardBuilder _boardBuilder;
-        [SerializeField] private Button _backButton;
 
-        [Header("User data")]
-        [SerializeField] private TMP_InputField _userNameField;
-        [SerializeField] private TextMeshProUGUI _bits;
-        [SerializeField] private TextMeshProUGUI _userRankText;
-        [SerializeField] private TextMeshProUGUI _userDistanceText;
-        [SerializeField] private TextMeshProUGUI _userUniqIDText;
-
-        [SerializeField] private Button _saveNameButton;
-        [SerializeField] private RectTransform _userContainerRect;
-
-        private GlobalEventsHolder _globalEventsHolder;
-        private PlayerBuilder _playerBuilder;
-        private LocalPlayerService _localPlayerService;
+        [Header("Texts:")]
+        [SerializeField] private TextMeshProUGUI _bitsText;
         
+        [Header("Buttons:")]
+        [SerializeField] private Button _backButton;
+        
+        private LeaderBoardViewModel _viewModel;
         
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder, 
-        PlayerBuilder playerBuilder, LocalPlayerService localPlayerService)
+        public void Constructor(LeaderBoardViewModel leaderBoardViewModel)
         {
-            _localPlayerService = localPlayerService;
-            _globalEventsHolder = globalEventsHolder;
-            _playerBuilder = playerBuilder;
-        }
-        
-        public void Init()
-        {
-            _backButton.onClick.AddListener(BackButtonClicked);
+            _viewModel = leaderBoardViewModel;
         }
 
         protected override void SubscribeToEvents()
         {
-            
+            _backButton.onClick.AddListener(() => _viewModel.CloseLeaderboardCommand.Execute());
+            _viewModel.OnViewActivityStatusChanged += OnViewActivityStatusChanged;
+
+            _viewModel.Top100UsersUpdated.Subscribe(DisplayTop100Users).AddTo(_disposable);
+            _viewModel.Bits.Subscribe(ReactBitsUpdated).AddTo(_disposable);
+            _viewModel.BlockInteraction.Subscribe(ReactBlockInteraction).AddTo(_disposable);
         }
 
         protected override void UnSubscribeFromEvents()
         {
-            
+            _backButton.onClick.RemoveAllListeners();
+            _viewModel.OnViewActivityStatusChanged -= OnViewActivityStatusChanged;
         }
 
-        public override void ShowView(float duration = 0.5f)
+        private void OnViewActivityStatusChanged(bool isActive)
         {
-            base.ShowView(duration);
-            DisplayLeaderboardAsync().Forget();
-            _saveNameButton.interactable = false;
-            _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
-
-            _userNameField.onSelect.AddListener(OnFieldSelected);
-            _userNameField.onDeselect.AddListener(OnDeselected);
-            _userNameField.onSubmit.AddListener(OnDeselected);
-            _userNameField.onEndEdit.AddListener(OnDeselected);
-            
-            _userNameField.onValueChanged.AddListener(OnUserNameChanged);
-            _saveNameButton.onClick.AddListener(ChangeNameButtonClicked);
-        }
-
-        private void OnDeselected(string data)
-        {
-            _userContainerRect.anchorMin = new Vector2(0f, 0f);
-            _userContainerRect.anchorMax = new Vector2(1f, 0f);
-            _userContainerRect.anchoredPosition = new Vector2(0, -20);
-        }
-
-        private void OnFieldSelected(string data)
-        {
-            _userContainerRect.anchorMin = new Vector2(0f, 1f);
-            _userContainerRect.anchorMax = new Vector2(1f, 1f);
-            _userContainerRect.anchoredPosition = new Vector2(0, 0);
-        }
-
-        public override void HideView(float duration = 0.5f)
-        {
-            base.HideView(duration);
-            _boardBuilder.DestroyBoard();
-        }
-
-        private void OnUserNameChanged(string newUserName)
-        {
-            if (string.IsNullOrEmpty(newUserName))
+            if (isActive)
             {
-                _saveNameButton.interactable = false;
+                ShowView(ViewAnimationAssets.FAST);
+            }
+            else HideView(ViewAnimationAssets.FAST);
+        }
+        
+        private void ReactBitsUpdated(ulong newValue)
+        {
+            _bitsText.SetText(ValueConvertor.ToBits(newValue));
+            _bitsText.DOColor(Color.magenta, 0.5f).OnComplete(() => _bitsText.DOColor(Color.white, 1f));
+        }
+
+        private void ReactBlockInteraction(bool isBlocked)
+        {
+            _thisViewCanvasGroup.interactable = !isBlocked;
+        }
+
+        private void DisplayTop100Users(List<LeaderboardUser> users)
+        {
+            if (users.Count == 0)
+            {
+                _boardBuilder.DestroyBoard();
                 return;
             }
-            _userNameField.SetTextWithoutNotify(newUserName);
-            _saveNameButton.interactable = _playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits >= 30;
-        }
-
-        private void ChangeNameButtonClicked()
-        {
-            ChangeUserNameAsync().Forget();
-        }
-
-        private void BackButtonClicked()
-        {
-            _globalEventsHolder.UIEvents.InvokeClickedOnAnyElements(); 
-            //OnBackButtonPressed?.Invoke();
-        }
-
-        private async UniTask DisplayLeaderboardAsync()
-        {
-            _thisViewCanvasGroup.interactable = false;
             
-            //var (top100Users, myCard, myRank) =  await _leaderboardService.RequestAllLeaderboardAsync();
-            
-            // await _boardBuilder.CreateBoardAsync(top100Users, myCard);
-            // _userNameField.SetTextWithoutNotify(myCard.userName);
-            // _userRankText.SetText(myRank.ToString());
-            // _userDistanceText.SetText(ValueConvertor.ToDistance(_localPlayerService.PlayerModel.CurrentDistance.Value));
-            // _userUniqIDText.SetText(SystemInfo.deviceUniqueIdentifier);
-            
-            _thisViewCanvasGroup.interactable = true;
-        }
-
-        private async UniTaskVoid ChangeUserNameAsync()
-        {
-            _globalEventsHolder.InvokeNickNameChanged();
-            // TODO: Fix on collectable changed!
-            _bits.SetText(_playerBuilder.PlayerEntryPoint.PlayerStatistic.Bits.ToString());
-            _bits.DOColor(Color.magenta, 0.5f).OnComplete(() => _bits.DOColor(Color.white, 1f));
-            
-            _thisViewCanvasGroup.interactable = false;
-           _boardBuilder.DestroyBoard();
-           await DisplayLeaderboardAsync();
-           _thisViewCanvasGroup.interactable = true;
-
+            _boardBuilder.CreateBoardAsync(users).Forget();
         }
     }
 }

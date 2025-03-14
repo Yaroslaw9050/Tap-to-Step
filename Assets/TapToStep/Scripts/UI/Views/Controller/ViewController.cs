@@ -109,23 +109,9 @@ namespace UI.Views.Controller
 
         private void OnPlayerDiedHandler()
         {
-            //TODO: If user enter to ded view and exit - reset current distance
-            
             r_viewModelStorage.CloseAllViewModels();
             r_globalEventsHolder.PlayerEvents.InvokeScreenInputStatusChanged(false);
             _deadViewModel.OpenView();
-        }
-
-        private void OnGetRewardButtonClichedHandler()
-        {
-           
-        }
-
-        private void OnRestartButtonClicked()
-        {
-            //TODO: Reset current player distance
-            var scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(scene.name);
         }
     }
 }

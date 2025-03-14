@@ -61,8 +61,6 @@ namespace UI.Views.Upgrades
             if(_playerPerkSystem.TryUpgradePerk(perkType) == false) return;
             
             _localPlayerService.RemoveBits((uint)cost);
-            
-            _globalEventsHolder.InvokeOnCollectablesChanged();
 
             foreach (var subView in _upgradeSubViews)
             {
