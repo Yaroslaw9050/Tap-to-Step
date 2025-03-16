@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _coinsPrefabPull:
   - {fileID: 6687340946588494962, guid: dbb9330c784d5404f9119e49c3c2cbc0, type: 3}
-  _coinSpawnPointHolder: {fileID: 0}
+  _bitsSpawnPointHolder: {fileID: 0}
   _yOffset: 1
 --- !u!114 &6343094277119696952
 MonoBehaviour:
@@ -62,10 +62,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _obstaclePullPrefab:
-  - {fileID: 6910655246503341929, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
-  - {fileID: 6910655246503341929, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
+  - {fileID: 1717910190883027136, guid: 72161adb42950ec4980cc588cedf7912, type: 3}
+  - {fileID: -4459458815398819881, guid: d1e4872a52a1a4f279031bcf9dd22646, type: 3}
+  - {fileID: 6364187820836880046, guid: e0ffbba3a14b0814b9cf8cbeac3b84c8, type: 3}
+  - {fileID: 247984246063669778, guid: 59180e69e5d5d4e51a521876073b3a31, type: 3}
+  - {fileID: 3668911747232428703, guid: 9299250e0fec77348944b726eda175fe, type: 3}
+  - {fileID: 6531680255744355809, guid: 87a06084fba382048a467e0795e24dd1, type: 3}
   _obstacleSpawnPointHolder: {fileID: 0}
-  _yOffset: 0.3
 --- !u!1 &6364218991868894703
 GameObject:
   m_ObjectHideFlags: 0

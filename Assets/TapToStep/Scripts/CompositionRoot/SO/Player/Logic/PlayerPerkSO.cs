@@ -1,11 +1,11 @@
-using System;
 using UnityEngine;
 using CompositionRoot.Enums;
+using CompositionRoot.Static;
 
 namespace CompositionRoot.SO.Player.Logic
 {
     [CreateAssetMenu(fileName = "PlayerUpgradeSO", menuName = "Player/Upgrades", order = 1)]
-    public class PlayerPerkSO: ScriptableObject
+    public class PlayerPerkSO: RuntimeScriptableObject
     {
         [SerializeField] private PerkType _upgradeType;
         [Range(1, 1000)]
@@ -54,7 +54,7 @@ namespace CompositionRoot.SO.Player.Logic
             return new PlayerPerkData(this);
         }
 
-        public void Reset()
+        protected override void OnReset()
         {
             _currentLevel = 0;
         }

@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using CompositionRoot.SO.Location.Logic;
 using Core.Service.GlobalEvents;
+using Core.Service.LocalUser;
 using Cysharp.Threading.Tasks;
-using Runtime.Builders.Location;
+using Runtime.Location;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
 
-namespace Runtime.Service.LocationGenerator
+namespace Runtime.Builders.Location
 {
     public class LocationBuilder: MonoBehaviour, ILocationGenerator
     {
@@ -32,17 +32,19 @@ namespace Runtime.Service.LocationGenerator
 
         private readonly List<GameObject> r_locationElementHoldersPull = new();
         private readonly List<GameObject> r_backgroundElementHoldersPull = new();
-        public Transform StaticBackgroundTransform => _staticBackgroundTransform;
         private GlobalEventsHolder _globalEventsHolder;
+        private LocalPlayerService _localPlayerService;
         private CancellationToken _token;
 
+        public Transform StaticBackgroundTransform => _staticBackgroundTransform;
         private const int BACKGROUND_OFFSET = 1000;
         
 
         [Inject]
-        public void Constructor(GlobalEventsHolder globalEventsHolder)
+        public void Constructor(GlobalEventsHolder globalEventsHolder, LocalPlayerService localPlayerService)
         {
             _globalEventsHolder = globalEventsHolder;
+            _localPlayerService = localPlayerService;
         }
         
         private void Start()
@@ -100,8 +102,11 @@ namespace Runtime.Service.LocationGenerator
             while (elementQueue.Count > 0)
             {
                 if (token.IsCancellationRequested) break;
-                var temp = Instantiate(elementQueue.Dequeue(), startLocationSpawnPosition, Quaternion.identity);
-                temp.transform.SetParent(locationElementsHolder.transform);
+                
+                var temp = Instantiate(elementQueue.Dequeue(), startLocationSpawnPosition, Quaternion.identity).
+                    GetComponent<SprintLocationStorage>();
+                
+                temp.Initialise(_localPlayerService.GeneralPlayerLevel, locationElementsHolder.transform);
                 await UniTask.NextFrame();
 
                 startLocationSpawnPosition = 

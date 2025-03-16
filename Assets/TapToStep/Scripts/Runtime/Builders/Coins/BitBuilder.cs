@@ -2,27 +2,27 @@ using System.Collections.Generic;
 using Runtime.InteractedObjects.Collectables;
 using UnityEngine;
 
-namespace TapToStep.Scripts.Runtime.Builders.Coins
+namespace Runtime.Builders.Coins
 {
     public class BitBuilder : MonoBehaviour
     {
         [SerializeField] private Bit[] _coinsPrefabPull;
-        [SerializeField] private Transform _coinSpawnPointHolder;
+        [SerializeField] private Transform _bitsSpawnPointHolder;
         [SerializeField] private float _yOffset;
         
         private readonly List<Transform> r_points = new();
-        
-        private void Start()
+
+        public void Initialise()
         {
-            Initialise();
+            LoadSpawnPoints();
             Generate();
         }
         
-        private void Initialise()
+        private void LoadSpawnPoints()
         {
-            for (var i = 0; i < _coinSpawnPointHolder.childCount; i++)
+            for (var i = 0; i < _bitsSpawnPointHolder.childCount; i++)
             {
-                r_points.Add(_coinSpawnPointHolder.GetChild(i));
+                r_points.Add(_bitsSpawnPointHolder.GetChild(i));
             }
         }
 

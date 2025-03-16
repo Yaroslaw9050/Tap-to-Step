@@ -10,7 +10,7 @@ using Core.Service.LocalUser;
 using Core.Service.RemoteDataStorage;
 using Cysharp.Threading.Tasks;
 using Runtime.Audio;
-using Runtime.Service.LocationGenerator;
+using Runtime.Builders.Location;
 using UI.Models;
 using UI.Views.Controller;
 using UnityEngine;

@@ -1,24 +1,31 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Runtime.InteractedObjects.Obstacles;
 using UnityEngine;
 
-namespace TapToStep.Scripts.Runtime.Builders.Coins
+namespace Runtime.Builders.Coins
 {
     public class ObstacleBuilder : MonoBehaviour
     {
-        [SerializeField] private GameObject[] _obstaclePullPrefab;
+        [SerializeField] private Obstacle[] _obstaclePullPrefab;
+       
         [SerializeField] private Transform _obstacleSpawnPointHolder;
-        [SerializeField] private float _yOffset;
         
         private readonly List<Transform> r_points = new();
-        
-        private void Start()
+
+        public void Initialise(int playerLevel)
         {
-            Initialise();
-            GenerateAsync().Forget();
+            if (_obstaclePullPrefab.Length == 0)
+            {
+                Debug.LogWarning("You are missing add some obstacles to pull!");
+                return;
+            }
+            
+            LoadSpawnPoints();
+            GenerateAsync(playerLevel).Forget();
         }
         
-        private void Initialise()
+        private void LoadSpawnPoints()
         {
             for (var i = 0; i < _obstacleSpawnPointHolder.childCount; i++)
             {
@@ -26,7 +33,7 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
             }
         }
 
-        private async UniTaskVoid GenerateAsync()
+        private async UniTaskVoid GenerateAsync(int playerLevel)
         {
             var numberOfPoints = Random.Range(2, r_points.Count);
 
@@ -42,12 +49,25 @@ namespace TapToStep.Scripts.Runtime.Builders.Coins
 
             foreach (var point in selectedPoints)
             {
-                var newXPoint = Random.Range(-1.9f, 1.9f);
-                point.localPosition = new Vector3(newXPoint, point.localPosition.y + _yOffset, point.localPosition.z);
-                point.localRotation = Quaternion.Euler(0, Random.Range(-30f, 45f), 0);
-                Instantiate(_obstaclePullPrefab[Random.Range(0, _obstaclePullPrefab.Length)], point);
+                point.localPosition = new Vector3(point.localPosition.x, point.localPosition.y, point.localPosition.z);
+                var obstaclesVariant = GetObstaclesByPlayerLevel(playerLevel);
+                Instantiate(obstaclesVariant[Random.Range(0, obstaclesVariant.Length)], point);
                 await UniTask.NextFrame();
             }
+        }
+
+        private Obstacle[] GetObstaclesByPlayerLevel(int playerLevel)
+        {
+            var obstacles = new List<Obstacle>();
+            foreach (var obstacle in _obstaclePullPrefab)
+            {
+                if (obstacle.SpawnInPlayerLevel <= playerLevel)
+                {
+                    obstacles.Add(obstacle);
+                }
+            }
+
+            return obstacles.ToArray();
         }
     }
 }

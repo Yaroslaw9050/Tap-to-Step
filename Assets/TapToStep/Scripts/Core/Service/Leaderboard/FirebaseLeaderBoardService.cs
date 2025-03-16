@@ -76,7 +76,7 @@ namespace Core.Service.Leaderboard
                 if (snapshot is not { HasChildren: true }) return false;
                 if(snapshot.HasChild(DatabaseKeyAssets.BEST_DISTANCE_KEY)) return true;
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 Debug.Log("Any user data not found!");
                 return false;

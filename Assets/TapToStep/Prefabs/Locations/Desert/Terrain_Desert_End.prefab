@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 136803082758301400}
+  - component: {fileID: 7620284924176082395}
   m_Layer: 0
   m_Name: Terrain_Desert_End
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   - {fileID: 6523893132110314954}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7620284924176082395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3903392615988023582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ce6389173ef480c838a9e213acf7d3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _obstacleBuilder: {fileID: 2589151929533061314}
+  _bitBuilder: {fileID: 6472055156978540820}
 --- !u!1001 &2304497088568516464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -323,29 +338,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2465978678701283822, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
-      propertyPath: _coinSpawnPointHolder
+      propertyPath: _bitsSpawnPointHolder
       value: 
       objectReference: {fileID: 2129514338920636324}
     - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
       propertyPath: _obstacleSpawnPointHolder
       value: 
       objectReference: {fileID: 8203277529619928090}
-    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
-      propertyPath: _obstaclePullPrefab.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
-      propertyPath: '_obstaclePullPrefab.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
-    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
-      propertyPath: '_obstaclePullPrefab.Array.data[1]'
-      value: 
-      objectReference: {fileID: 4033293931355521997, guid: baa8bf9b2c62c4a0081c11c48b7adbb7, type: 3}
-    - target: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
-      propertyPath: '_obstaclePullPrefab.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2757615016203842692, guid: 23c1ddcf6db23cd41ae23eaf2199d34b, type: 3}
     - target: {fileID: 6364218991868894703, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
       propertyPath: m_Name
       value: Logic
@@ -355,6 +354,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+--- !u!114 &2589151929533061314 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6343094277119696952, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+  m_PrefabInstance: {fileID: 8928862715034581242}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57cef36022f47d7af3308c063b61a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6472055156978540820 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2465978678701283822, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}
+  m_PrefabInstance: {fileID: 8928862715034581242}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b8c167a735b479f82b387c95d7e7645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6523893132110314954 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2404983121332536624, guid: fd273b52898bc4f2cb854bb62af9efb1, type: 3}

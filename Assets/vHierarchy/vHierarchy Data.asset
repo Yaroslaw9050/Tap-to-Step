@@ -22,6 +22,7 @@ MonoBehaviour:
     - 8e0f1c7ccd45ed546afced900dd5de6d
     - 0dd63c3c374a6419e8ad769421196ef3
     - 09410d9dc23554bd39a3c2170d8a2c77
+    - 85dab177a6e0be342ba8ec16a96d5e26
     values:
     - goDatas_byGlobalId:
         keys:
@@ -207,5 +208,11 @@ MonoBehaviour:
         values:
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon
+        - colorIndex: 0
+          iconNameOrGuid: cs Script Icon
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-85dab177a6e0be342ba8ec16a96d5e26-5218485636429854439-0
+        values:
         - colorIndex: 0
           iconNameOrGuid: cs Script Icon

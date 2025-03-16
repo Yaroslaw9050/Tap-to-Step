@@ -16,7 +16,15 @@ namespace Runtime.Player.Upgrade
         
         private IRemoteDataStorageService _remoteDataStorageService;
         private LocalPlayerService _localPlayerService;
-        
+
+        public int GeneralPlayerLevel
+        {
+            get
+            {
+                return _supportedUpgrades.Sum(perkSo => perkSo.CurrentLevel);
+            }
+        }
+
         [Inject]
         public void Constructor(IRemoteDataStorageService remoteDataStorageService, LocalPlayerService localPlayerService)
         {
@@ -61,7 +69,6 @@ namespace Runtime.Player.Upgrade
         {
             foreach (var perk in _supportedUpgrades)
             {
-                perk.Reset();
                 await LoadFromRemoteAsync(perk.UpgradeType);
             }
         }

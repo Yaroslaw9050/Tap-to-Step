@@ -30,12 +30,12 @@ namespace Runtime.Player
                     return;
                 }
 
-                if (other.TryGetComponent<Obstacle>(out var obstacle))
+                if (other.TryGetComponent<ObstacleTrigger>(out var trigger))
                 {
-                    switch (obstacle.ObstacleType)
+                    switch (trigger.Obstacle.ObstacleType)
                     {
                         case ObstacleType.OneTouch:
-                            obstacle.Collect();
+                            trigger.Collect();
                             _globalEventsHolder.PlayerEvents.InvokeOnDied();
                             break;
                     }

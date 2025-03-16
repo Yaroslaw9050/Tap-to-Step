@@ -23,6 +23,8 @@ namespace Core.Service.LocalUser
         private short _distanceCounter;
         public PlayerModel PlayerModel { get; } = new();
 
+        public int GeneralPlayerLevel => _playerPerkSystem.GeneralPlayerLevel;
+
         [Inject]
         public void Constructor(PlayerPerkSystem perkSystem, IRemoteDataStorageService remoteDataStorageService, ILeaderboardService leaderboardService)
         {

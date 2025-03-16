@@ -1,9 +1,9 @@
 using Core.Service.AdMob;
 using Core.Service.LocalUser;
 using Runtime.Audio;
+using Runtime.Builders.Location;
 using Runtime.EntryPoints;
 using Runtime.Player.Upgrade;
-using Runtime.Service.LocationGenerator;
 using UI.Views.Controller;
 using UnityEngine;
 using Zenject;
