@@ -6,11 +6,12 @@ namespace Runtime.InteractedObjects.Collectables
     public class Bit : MonoBehaviour
     {
         [Range(1, 100)]
-        [SerializeField] private ushort _value = 5;
-
-        private Tween _collectTween;
+        [field: SerializeField] public ushort Value { get; private set; } = 5;
         
-        public ushort Value => _value;
+        [Range(0,100)]
+        [field: SerializeField] public float SpawnChance { get; private set; }
+        
+        private Tween _collectTween;
 
 
         public void Init()

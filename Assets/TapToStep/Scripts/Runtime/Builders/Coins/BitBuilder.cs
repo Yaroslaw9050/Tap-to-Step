@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Runtime.InteractedObjects.Collectables;
 using UnityEngine;
 
@@ -45,9 +46,31 @@ namespace Runtime.Builders.Coins
                 var newXPoint = Random.Range(-1.9f, 1.9f);
                 point.localPosition = new Vector3(newXPoint, point.localPosition.y + _yOffset, point.localPosition.z);
                 point.localRotation = Quaternion.Euler(0, Random.Range(-45f, 45f), 0);
-                var temp = Instantiate(_coinsPrefabPull[Random.Range(0, _coinsPrefabPull.Length)], point);
-                temp.Init();
+                var selectedBitPrefab = GetRandomBitByChance();
+                
+                if (selectedBitPrefab == null) continue;
+                var bitInstance = Instantiate(selectedBitPrefab, point);
+                bitInstance.Init();
             }
+        }
+        
+        private Bit GetRandomBitByChance()
+        {
+            var totalChance = _coinsPrefabPull.Sum(bit => bit.SpawnChance);
+
+            var randomPoint = Random.value * totalChance;
+            var cumulative = 0f;
+
+            foreach (var bit in _coinsPrefabPull)
+            {
+                cumulative += bit.SpawnChance;
+                if (randomPoint <= cumulative)
+                {
+                    return bit;
+                }
+            }
+
+            return null;
         }
     }
 }

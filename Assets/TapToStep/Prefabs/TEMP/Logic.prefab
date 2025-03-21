@@ -46,7 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _coinsPrefabPull:
+  - {fileID: 8126717643113727193, guid: c932d43383d6644cfa90c5754768d444, type: 3}
   - {fileID: 6687340946588494962, guid: dbb9330c784d5404f9119e49c3c2cbc0, type: 3}
+  - {fileID: 5156632270015271228, guid: b3c8bbd499e7f4d988b64eba2fc66890, type: 3}
   _bitsSpawnPointHolder: {fileID: 0}
   _yOffset: 1
 --- !u!114 &6343094277119696952
