@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Value>k__BackingField: 5
-  <SpawnChance>k__BackingField: 75
+  <SpawnChance>k__BackingField: 50
 --- !u!65 &5156299107225687713
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -307,7 +307,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a9d7edafa2db64cc093e4a56b2d28c7a, type: 2}
+  - {fileID: 2100000, guid: 3fe75fa1708b784419e58a25e8ac57ec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

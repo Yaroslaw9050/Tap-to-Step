@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Value>k__BackingField: 5
-  <SpawnChance>k__BackingField: 20
+  <SpawnChance>k__BackingField: 35
 --- !u!65 &1464921582033379061
 BoxCollider:
   m_ObjectHideFlags: 0
