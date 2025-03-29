@@ -12,6 +12,13 @@ namespace Runtime.InteractedObjects.Obstacles
         protected override void Init()
         {
             SetPosition();
+            SetRandomRotation();
+        }
+
+        protected override void SetRandomRotation()
+        {
+            var yRotation = Random.Range(0f,1f) < 0.5f ? 0f: 180f;
+            transform.localRotation = Quaternion.Euler(0f,yRotation,0f);
         }
 
         private void SetPosition()
